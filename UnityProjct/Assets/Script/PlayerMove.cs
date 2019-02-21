@@ -52,6 +52,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     float shotSpeed = 0.5f;
 
+    //チャージポイント使用時のユーザーゲージ上昇量
+    [SerializeField]
+    float userChargePonitTime = 0.001f;
 
     //-------------フラグ用変数------------------------------
     [SerializeField]
@@ -95,18 +98,9 @@ public class PlayerMove : MonoBehaviour
         //移動
         Move(dx, dx, jumpFlag);
 
-        //アニメーション
-        //if (dx != 0)
-        //{
-        //    animatorComponent.SetBool("MoveFlag", true);
-        //}
-        //else
-        //{
-        //    animatorComponent.SetBool("MoveFlag", false);
-        //}
-
         if (Input.GetKeyDown(KeyCode.Y))
         {
+            Debug.Log("攻撃方向 = " + attack.OnAttack(new Vector2(dx, dy),this.gameObject));
             
         }
 
@@ -120,10 +114,10 @@ public class PlayerMove : MonoBehaviour
         {
 
             OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100),new Vector2(dx,dy));
+            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
             chargeNow = 0.0f;
             attackFlag = false;
         }
-
 
 
     }
@@ -158,38 +152,38 @@ public class PlayerMove : MonoBehaviour
     {
 
         charge *= 100.0f;
-        int usedPoint = (int)charge;
+        float usedPoint = charge;
         string attackName;
 
         if (charge >= 80)
         {
-            usedPoint = (int)PlayerAttackState.Attack5;
-            attackName = "BigBurn";//ビックバーン
+            usedPoint = (float)PlayerAttackState.Attack5;
+            attackName = "BigBang";//ビックバン
         }
         else if (charge >= 60)
         {
-            usedPoint = (int)PlayerAttackState.Attack4;
+            usedPoint = (float)PlayerAttackState.Attack4;
             attackName = "LastSupper";//最後の晩餐
         }
         else if (charge >= 40)
         {
-            usedPoint = (int)PlayerAttackState.Attack3;
+            usedPoint = (float)PlayerAttackState.Attack3;
             attackName = "Explosion";// 爆発
         }
         else if (charge >= 20)
         {
-            usedPoint = (int)PlayerAttackState.Attack2;
+            usedPoint = (float)PlayerAttackState.Attack2;
             attackName = "Dynamite";// ダイナマイト
         }
         else
         {
-            usedPoint = (int)PlayerAttackState.Attack1;
+            usedPoint = (float)PlayerAttackState.Attack1;
             attackName = "Bullet01";// 通常攻撃
         }
         
-        Singleton.Instance.gameSceneController.ChargePoint -= usedPoint;
+        //Singleton.Instance.gameSceneController.ChargePoint -= usedPoint;
 
-        attack.OnAttackBullet(usedPoint, attackName, this.gameObject, shotSpeed,new Vector2(direction.x, direction.y));
+        attack.OnAttackBullet(attackName, this.gameObject, shotSpeed,new Vector2(direction.x, direction.y));
     }
 
     //狙い(チャージ)
@@ -200,7 +194,7 @@ public class PlayerMove : MonoBehaviour
 
 
         //チャージ量の+-量
-        float chargeProportion = 0.01f;
+        float chargeProportion = userChargePonitTime;
 
         if (charge != 0)
         {
@@ -218,12 +212,11 @@ public class PlayerMove : MonoBehaviour
             {
                 chargeNow += chargeProportion;
             }
-            else if (!chargeUp)
-            {
-                chargeNow -= chargeProportion;
-            }
+
         }
         return chargeNow;
     }
+
+    
 
 }
