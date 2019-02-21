@@ -12,7 +12,7 @@ public class StarController : MonoBehaviour
     float moveSpeed = 2.0f;
 
     [SerializeField]
-    int starPoint = 10;
+    int starPoint = 5;
     //------------フラグ変数の宣言------------------
 
     // Start is called before the first frame update

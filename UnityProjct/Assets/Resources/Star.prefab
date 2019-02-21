@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1821891640523869608}
   - component: {fileID: 493717974129438767}
   m_Layer: 0
-  m_Name: star
+  m_Name: Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,4 +104,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f644e727281634f8aa30e29e7ef503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  starPoint: 10
+  starPoint: 5
