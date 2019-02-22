@@ -28,11 +28,9 @@ public class PlayerMove : MonoBehaviour
     new Rigidbody rigidbody;
 
     //スター獲得エフェクト
-    [SerializeField]
-    GameObject starEffect;
+    [SerializeField] GameObject starEffect;
     //Hp回復エフェクト
-    [SerializeField]
-    GameObject hpRecoveryEffect;
+    [SerializeField] GameObject hpRecoveryEffect;
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
     Attack attack = new Attack();
@@ -41,15 +39,12 @@ public class PlayerMove : MonoBehaviour
 
     //-------------数値用変数--------------------------------
     //移動速度を設定します
-    [SerializeField]
-    private float moveSpeed;
+    [SerializeField] private float moveSpeed;
     //回転速度を設定します
-    [SerializeField]
-    private float rotSpeed;
+    [SerializeField] private float rotSpeed;
 
     //ジャンプ力
-    [SerializeField]
-    float jumpSpeed;
+    [SerializeField] float jumpSpeed;
 
     private float moveTime;
 
@@ -59,20 +54,21 @@ public class PlayerMove : MonoBehaviour
     //チャージ量
     float chargeNow = 0.0f;
 
-    [SerializeField]
-    float shotSpeed = 0.5f;
+    [SerializeField] float shotSpeed = 0.5f;
 
     //チャージポイント使用時のユーザーゲージ上昇量
-    [SerializeField]
-    float userChargePonitTime = 0.001f;
+    [SerializeField] float userChargePonitTime = 0.001f;
+
+    //攻撃力
+    [SerializeField] float offensivePower;
+    //移動量
+    [SerializeField] float speedForce;
 
     //-------------フラグ用変数------------------------------
     //ジャンプフラグ
-    [SerializeField]
-    bool jumpFlag;
+    [SerializeField] bool jumpFlag;
     //アタックフラグ
-    [SerializeField]
-    bool attackFlag;
+    [SerializeField] bool attackFlag;
     public bool AttackFlag
     {
         get { return attackFlag; }
@@ -142,16 +138,20 @@ public class PlayerMove : MonoBehaviour
                         objectState.objState = ObjectState.ObjState.Attack;
                     }
 
-
+                    //チャージ
                     if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
                     {
+                        //チャージ中
                         Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
 
                     }
                     else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
                     {
+                        //チャージ終了（チャージゲージを0に戻す）
+                        //OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100), new Vector2(dx, dy));
 
-                        OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100), new Vector2(dx, dy));
+                        offensivePower = OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100);
+                        Debug.Log("offensivePower" + offensivePower);
                         Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                         chargeNow = 0.0f;
                     }
@@ -275,6 +275,7 @@ public class PlayerMove : MonoBehaviour
         return chargeNow;
     }
 
+    //アタック
     void OnAttackMotion(int attackNum)
     {
         animatorComponent.SetInteger("AttackNum", attackNum);

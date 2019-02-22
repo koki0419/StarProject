@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectState : MonoBehaviour
+public class ObjectState
 {
     //オブジェクトステータス
     public enum ObjState
@@ -15,4 +15,5 @@ public class ObjectState : MonoBehaviour
     }
 
     public ObjState objState = ObjState.None;
+
 }
