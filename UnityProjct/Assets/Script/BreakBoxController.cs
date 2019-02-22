@@ -12,6 +12,8 @@ public class BreakBoxController : MonoBehaviour
     GameObject[] childrenOBJ;// = new GameObject[62];
     //-------------クラス関係--------------------------------
 
+    //『PlayerMove』を取得します
+    PlayerMove playerMove;
     //-------------数値用変数--------------------------------
     //生成する星の数
     [SerializeField]
@@ -47,6 +49,8 @@ public class BreakBoxController : MonoBehaviour
 
     public void Init()
     {
+        //『PlayerMove』を取得します
+        playerMove =GameObject.Find("Player").GetComponent<PlayerMove>();
         //破壊したときの動き
         onMove = false;
         //オブジェクトを削除するかどうか
@@ -140,7 +144,7 @@ public class BreakBoxController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player" && acquisitionPoint == 0)
+        if (other.name == "Player_Hand" && acquisitionPoint == 0 && playerMove.AttackFlag)
         { 
             for (int i = 0; transform.childCount > i; i++)
             {

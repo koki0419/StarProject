@@ -7,7 +7,9 @@ public class StarController : MonoBehaviour
 
     //---------Unityコンポーネント宣言--------------
     GameObject playerObj;
+
     //------------クラスの宣言----------------------
+    PlayerMove playerMove;
     //------------数値変数の宣言--------------------
     float moveSpeed = 2.0f;
 
@@ -16,9 +18,10 @@ public class StarController : MonoBehaviour
     //------------フラグ変数の宣言------------------
 
     // Start is called before the first frame update
-    public void Init(GameObject player)
+    public void Init(GameObject player,PlayerMove playermove)
     {
         playerObj = player;
+        playerMove = playermove;
     }
 
     // Update is called once per frame
@@ -53,6 +56,7 @@ public class StarController : MonoBehaviour
         if (other.name == "Player")
         {
             Singleton.Instance.gameSceneController.ChargePoint += starPoint;
+            playerMove.GetStar = true;
             Destroy(this.gameObject);
         }
     }

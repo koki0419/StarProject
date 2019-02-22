@@ -5,6 +5,19 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
 
+    //Attack消費ポイント
+    public enum PlayerAttackIndex
+    {
+        None,
+        AttackNormal = 1001,
+        AttackUp = 1010,
+        AttackDown = 1011,
+
+    }
+
+    public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
+
+
     public void OnAttackBullet(string objName, GameObject obj, float shotSpeed, Vector2 direction)
     {
         // プレハブデータ取得
@@ -84,9 +97,9 @@ public class Attack : MonoBehaviour
         //attackObj.transform.parent = obj.transform;
     }
 
-    public string OnAttack(Vector2 direction, GameObject obj)
+    public int OnAttack(Vector2 direction, GameObject obj)
     {
-        string animationName;
+        int animationName;
 
         // 座標設定用変数
         float x;
@@ -108,33 +121,37 @@ public class Attack : MonoBehaviour
         // 角度
         float degree = radian * Mathf.Rad2Deg;
 
-        Debug.Log("firing = " + firing);
-        Debug.Log("degree = " + degree);
+        //Debug.Log("firing = " + firing);
+        //Debug.Log("degree = " + degree);
         if (firing.x == 0 && firing.y == 0)
         {
-            animationName = null;
+            animationName = -1;
         }
         else
         {
+            //右
             if (degree < 30 && degree > -30)
             {
-                animationName = "右";
+                animationName = (int)PlayerAttackIndex.AttackNormal;
             }
+            //左
             else if (degree > 150 && degree <= 180 || degree < -150 && degree >= -180)
             {
-                animationName = "左";
+                animationName = (int)PlayerAttackIndex.AttackNormal;
             }
+            //上
             else if (degree > 30 && degree < 150)
             {
-                animationName = "上";
+                animationName = (int)PlayerAttackIndex.AttackUp;
             }
+            //下
             else if (degree < -30 && degree > -150)
             {
-                animationName = "下";
+                animationName = (int)PlayerAttackIndex.AttackDown;
             }
             else
             {
-                animationName = null;
+                animationName = -1;
             }
         }
         return animationName;
