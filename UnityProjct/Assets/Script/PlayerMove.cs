@@ -18,9 +18,6 @@ public class PlayerMove : MonoBehaviour
 
     public PlayerAttackState playerAttackState = PlayerAttackState.None;
 
-
-
-
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
     public Animator animatorComponent;
@@ -59,10 +56,23 @@ public class PlayerMove : MonoBehaviour
     //チャージポイント使用時のユーザーゲージ上昇量
     [SerializeField] float userChargePonitTime = 0.001f;
 
+
+    //初期攻撃力
+    [SerializeField]
+    float foundationoffensivePower;
+
     //攻撃力
     [SerializeField] float offensivePower;
+    public float OffensivePower
+    {
+        get { return offensivePower; }
+    }
     //移動量
     [SerializeField] float speedForce;
+    public float SpeedForce
+    {
+        get { return speedForce; }
+    }
 
     //-------------フラグ用変数------------------------------
     //ジャンプフラグ
@@ -97,7 +107,7 @@ public class PlayerMove : MonoBehaviour
         //右向きに指定
         transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
         rigidbody = gameObject.GetComponent<Rigidbody>();
-        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
+        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
 
         //----初期化-----
         attackFlag = false;
@@ -112,6 +122,7 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float dx = Input.GetAxis("Horizontal");
         switch (objectState.objState)
         {
             case ObjectState.ObjState.Normal:
@@ -126,23 +137,21 @@ public class PlayerMove : MonoBehaviour
                     }
 
                     //移動
-                    float dx = Input.GetAxis("Horizontal");
+
                     float dy = Input.GetAxis("Vertical");
                     //移動
                     Move(dx, dx, jumpFlag);
 
                     if (Input.GetKeyDown(KeyCode.Y))
                     {
-                        attackFlag = true;
-                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                        objectState.objState = ObjectState.ObjState.Attack;
+
                     }
 
                     //チャージ
                     if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
                     {
                         //チャージ中
-                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
+                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
 
                     }
                     else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
@@ -150,10 +159,15 @@ public class PlayerMove : MonoBehaviour
                         //チャージ終了（チャージゲージを0に戻す）
                         //OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100), new Vector2(dx, dy));
 
-                        offensivePower = OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100);
-                        Debug.Log("offensivePower" + offensivePower);
+                        offensivePower = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower;
+                        speedForce = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100;
+
                         Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                         chargeNow = 0.0f;
+
+                        attackFlag = true;
+                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                        objectState.objState = ObjectState.ObjState.Attack;
                     }
                 }
                 break;
@@ -177,8 +191,8 @@ public class PlayerMove : MonoBehaviour
         {
             hpRecoveryEffect.SetActive(false);
         }
-
     }
+
 
     //--------------関数-----------------------------
     //移動
@@ -297,4 +311,5 @@ public class PlayerMove : MonoBehaviour
         getStar = false;
         starEffect.SetActive(false);
     }
+
 }

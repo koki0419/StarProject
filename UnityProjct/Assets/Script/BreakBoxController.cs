@@ -14,6 +14,9 @@ public class BreakBoxController : MonoBehaviour
 
     //『PlayerMove』を取得します
     PlayerMove playerMove;
+
+
+    public Substance.Game.SubstanceGraph substanceGraph;
     //-------------数値用変数--------------------------------
     //生成する星の数
     [SerializeField]
@@ -24,6 +27,18 @@ public class BreakBoxController : MonoBehaviour
 
     [SerializeField]
     float deleteTime = 2.0f;
+
+    //防御力
+    [SerializeField]
+    float defensePower;
+
+    //Hp
+    [SerializeField]
+    float foundationHP;
+    //Hp
+    [SerializeField]
+    float foundationHPMax;
+
     //-------------フラグ用変数------------------------------
     bool onRemoveObjFlag = false;
 
@@ -49,8 +64,9 @@ public class BreakBoxController : MonoBehaviour
 
     public void Init()
     {
+        foundationHPMax = foundationHP;
         //『PlayerMove』を取得します
-        playerMove =GameObject.Find("Player").GetComponent<PlayerMove>();
+        playerMove = Singleton.Instance.gameSceneController.PlayerMove;
         //破壊したときの動き
         onMove = false;
         //オブジェクトを削除するかどうか
@@ -64,6 +80,10 @@ public class BreakBoxController : MonoBehaviour
         {
             childrenOBJ[i] = transform.GetChild(i).gameObject;
         }
+
+        var hp = 1.0;
+        hp -= (foundationHP / foundationHPMax);
+        OnSliderUpdate((float)hp);
     }
 
 
@@ -74,9 +94,9 @@ public class BreakBoxController : MonoBehaviour
     {
         if (onMove)
         {
-            for(int i = 0; i < childrenOBJ.Length; i++)
+            for (int i = 0; i < childrenOBJ.Length; i++)
             {
-                childrenOBJ[i].transform.localPosition += OnBreak(gravityDirection, lnitialVelocity, i,childrenOBJ[i]);
+                childrenOBJ[i].transform.localPosition += OnBreak(gravityDirection, lnitialVelocity, i, childrenOBJ[i]);
             }
             lnitialVelocity *= gravityMove;
         }
@@ -96,21 +116,45 @@ public class BreakBoxController : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-    }
 
-    private Vector3 OnBreak(Vector3 direction,float lnitialVelocity,float gravityMove, GameObject chilld)
+    //    //**************************************************************
+    //    if (Input.GetKey(KeyCode.E))    //******************************
+    //    {
+    //        var kkk = (nnn += 1) / 100;   //******************************
+    //        OnSliderUpdate(kkk);        //******************************
+    //        Debug.Log("kkk" + kkk);     //******************************
+    //    }
+
+    //    if (Input.GetKey(KeyCode.Q))   //******************************
+    //    {
+    //        var kkk = (nnn -= 1) / 100;   //******************************
+    //        OnSliderUpdate(kkk);        //******************************
+    //        Debug.Log("kkk" + kkk);     //******************************
+    //    }
+
+    }
+    //float nnn = 0;//******************************
+    public void OnSliderUpdate(float value) //******************************
+    {
+        substanceGraph.SetInputFloat("dust_Level", value);//******************************
+        substanceGraph.QueueForRender();    //******************************
+        substanceGraph.RenderAsync();       //******************************
+    }                                       //******************************
+                                            //*******************************************************************************
+
+    private Vector3 OnBreak(Vector3 direction, float lnitialVelocity, float gravityMove, GameObject chilld)
     {
         var randx = Random.Range(-1, 2);
         var randy = Random.Range(-1, 2);
         var randz = Random.Range(-1, 2);
         var obj = chilld.transform;
-        var x = lnitialVelocity * gravityMove * direction.x* randx;
-        var y = lnitialVelocity * gravityMove * direction.y* randy;
-        var z = lnitialVelocity * gravityMove * direction.z* randz;
+        var x = lnitialVelocity * gravityMove * direction.x * randx;
+        var y = lnitialVelocity * gravityMove * direction.y * randy;
+        var z = lnitialVelocity * gravityMove * direction.z * randz;
 
         return new Vector3(x, y, z);
     }
-    private Vector3 OnBreak(Vector3 direction,float lnitialVelocity, int objNo, GameObject chilld)
+    private Vector3 OnBreak(Vector3 direction, float lnitialVelocity, int objNo, GameObject chilld)
     {
         var randx = 0;
         var randy = 0;
@@ -120,7 +164,8 @@ public class BreakBoxController : MonoBehaviour
             randx = 1;
             randy = 1;
             randz = 1;
-        }else if(objNo % 3 == 0)
+        }
+        else if (objNo % 3 == 0)
         {
             randx = -1;
             randy = 1;
@@ -134,9 +179,9 @@ public class BreakBoxController : MonoBehaviour
         }
 
         var obj = chilld.transform;
-        var x = lnitialVelocity *  lnitialVelocity * direction.x* randx;
-        var y = lnitialVelocity *  lnitialVelocity * direction.y* randy;
-        var z = lnitialVelocity *  lnitialVelocity * direction.z* randz;
+        var x = lnitialVelocity * lnitialVelocity * direction.x * randx;
+        var y = lnitialVelocity * lnitialVelocity * direction.y * randy;
+        var z = lnitialVelocity * lnitialVelocity * direction.z * randz;
 
         return new Vector3(x, y, z);
 
@@ -145,14 +190,23 @@ public class BreakBoxController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.name == "Player_Hand" && acquisitionPoint == 0 && playerMove.AttackFlag)
-        { 
-            for (int i = 0; transform.childCount > i; i++)
+        {
+            foundationHP -= OnDamage(playerMove.OffensivePower, playerMove.SpeedForce);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.OffensivePower, playerMove.SpeedForce), this.gameObject.transform);
+            Debug.Log("foundationHP" + OnDamage(playerMove.OffensivePower, playerMove.SpeedForce));
+            var hp = 1.0;
+            hp -= (foundationHP / foundationHPMax);
+            OnSliderUpdate((float)hp);
+            if (foundationHP <= 0)
             {
-                childrenOBJ[i].GetComponent<Rigidbody>().isKinematic = false;
+                for (int i = 0; transform.childCount > i; i++)
+                {
+                    childrenOBJ[i].GetComponent<Rigidbody>().isKinematic = false;
+                }
+                Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
+                acquisitionPoint++;
+                onRemoveObjFlag = true;
             }
-            Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
-            acquisitionPoint++;
-            onRemoveObjFlag = true;
         }
     }
 
@@ -164,5 +218,14 @@ public class BreakBoxController : MonoBehaviour
             childrenOBJ[i].transform.localScale -= new Vector3(0.01f, 0.0f, 0.01f);
 
         }
+    }
+
+
+    //ダメージ量
+    int OnDamage(float damage, float speed)
+    {
+        float nowHp = damage * speed / defensePower;
+
+        return (int)nowHp;
     }
 }
