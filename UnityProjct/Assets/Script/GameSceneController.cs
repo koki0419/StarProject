@@ -8,6 +8,10 @@ public class GameSceneController : MonoBehaviour
     //------------クラスの宣言----------------------
     [SerializeField]
     PlayerMove playerMove;
+    public PlayerMove PlayerMove
+    {
+        get { return playerMove; }
+    }
     [SerializeField]
     BreakBoxController[] breakBoxController;
 
@@ -23,12 +27,19 @@ public class GameSceneController : MonoBehaviour
         set { chargePoint = value; }
     }
 
+    [SerializeField]
+    float chargePointMax = 300;
+    public float ChargePointMax
+    {
+        get { return chargePointMax; }
+        set { chargePointMax = value; }
+    }
 
     //プレイヤーHP
     [SerializeField]
-    int playerHp = 100;
+    float playerHp;
 
-    int playerHpMax;
+    float playerHpMax;
 
     //HPの減少時間
     [SerializeField]
@@ -39,9 +50,10 @@ public class GameSceneController : MonoBehaviour
     //Hpゲージの数
     int hpGageNum = 5;
 
-    //float[] updateHPs = new float[5];
-
-    float updateHP;
+    //*****************************
+    //デバックポイント
+    [SerializeField]
+    int debugPoint;
 
     //ゲージダウン割合
     [SerializeField]
@@ -57,9 +69,9 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
         //チャージポイント
         chargePoint = 0;
+        chargePoint = debugPoint;
 
         playerHpMax = playerHp;
-        updateHP = playerHp;
         //for (int i = 0;i< updateHPs.Length; i++)
         //{
         //    updateHPs[i] = hp;
@@ -86,11 +98,11 @@ public class GameSceneController : MonoBehaviour
         {
             chargePoint = 0;
         }
-        else if (chargePoint >= 100)
+        else if (chargePoint >= chargePointMax)
         {
-            chargePoint = 100;
+            chargePoint = chargePointMax;
         }
-        chargeUIController.UpdateChargePoint(chargePoint / 100.0f);
+        chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
 
         //ダメージを受ける
         HpDamage(hpDownTime);
@@ -115,101 +127,52 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    //ダメージを受けます
     void HpDamage(float damage)
     {
-        //int hpNum = -1;
-        //if (updateHPs[0] > 0)
-        //{
-        //    if (updateHPs[4] > 0)
-        //    {
-        //        updateHPs[4] -= damage;
-        //        hpNum = 4;
-        //    }
-        //    else if (updateHPs[3] > 0)
-        //    {
-        //        updateHPs[3] -= damage;
-        //        hpNum = 3;
-        //    }
-        //    else if (updateHPs[2] > 0)
-        //    {
-        //        updateHPs[2] -= damage;
-        //        hpNum = 2;
-        //    }
-        //    else if (updateHPs[1] > 0)
-        //    {
-        //        updateHPs[1] -= damage;
-        //        hpNum = 1;
-        //    }
-        //    else if (updateHPs[0] > 0)
-        //    {
-        //        updateHPs[0] -= damage;
-        //        hpNum = 0;
-        //    }
-        //}
-        //else
-        //{
-        //    updateHPs[0] = 0; hpNum = 0;
-        //}
 
-        if (updateHP > 0)
+        if (playerHp > 0)
         {
-            updateHP -= damage;
+            playerHp -= damage;
         }
         else
         {
-            updateHP = 0;
+            playerHp = 0;
         }
 
         //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-        chargeUIController.UpdateHppoint(updateHP / 100);
+        chargeUIController.UpdateHppoint(playerHp/playerHpMax);
     }
 
     //HPを回復します
     void HpRecovery(float recovery)
     {
-        //int hpNum = -1;
-        //if (updateHPs[4] < playerHpMax)
-        //{
-        //    if (updateHPs[0] < playerHpMax)
-        //    {
-        //        updateHPs[0] += recovery;
-        //        hpNum = 0;
-        //    }
-        //    else if (updateHPs[1] < playerHpMax)
-        //    {
-        //        updateHPs[1] += recovery;
-        //        hpNum = 1;
-        //    }
-        //    else if (updateHPs[2] < playerHpMax)
-        //    {
-        //        updateHPs[2] += recovery;
-        //        hpNum = 2;
-        //    }
-        //    else if (updateHPs[3] < playerHpMax)
-        //    {
-        //        updateHPs[3] += recovery;
-        //        hpNum = 3;
-        //    }
-        //    else if (updateHPs[4] < playerHpMax)
-        //    {
-        //        updateHPs[4] += recovery;
-        //        hpNum = 4;
-        //    }
-        //}
-        //else
-        //{
-        //    updateHPs[4] = playerHpMax; hpNum = 4;
-        //}
-
-        if (updateHP < playerHpMax)
+        if (playerHp < playerHpMax)
         {
-            updateHP += recovery;
+            playerHp += recovery;
         }
         else
         {
-            updateHP = playerHpMax;
+            playerHp = playerHpMax;
         }
-        //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-        chargeUIController.UpdateHppoint(updateHP / 100);
+        chargeUIController.UpdateHppoint(playerHp / playerHpMax);
     }
+
+
+    //private void OnPawnTakeDamage(Pawn pawn, float damage)
+    //{
+    //    DamageText dmgText = GameObject.Instantiate<DamageText>(damageText);
+    //    dmgText.SetText((int)damage);
+    //    dmgText.transform.position = pawn.transform.position;
+    //    GameObject.Destroy(dmgText.gameObject, damageTextLifeTime);
+
+    //    if (pawn == Singleton.instance.playerPawn)
+    //    {
+    //        cameraEffect.ShakeCamera(shakeCameraStrength, shakeCameraPeriod);
+    //    }
+    //    else
+    //    {
+    //        cameraEffect.ShakeCamera(shakeCameraStrength / 2, shakeCameraPeriod / 2);
+    //    }
+    //}
 }
