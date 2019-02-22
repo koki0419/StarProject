@@ -53,6 +53,13 @@ public class EnemyController : MonoBehaviour
     private Vector3 deltaPos;
     private float elapsedTime;
     private bool bStartToEnd = true;
+
+    public Transform target;
+    //追いかける対象-オブジェクトをインスペクタから登録できるように
+    public float MoveSpeed = 1;
+    //移動スピード
+    private Vector3 vec;
+
     void Start()
     {
         // StartPosをオブジェクトに初期位置に設定
@@ -104,6 +111,12 @@ public class EnemyController : MonoBehaviour
             case EnemyState.Discovery:
                 {
                     Debug.Log("プレイヤー発見");
+
+                    //targetの方に少しずつ向きが変わる
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), 0.009f);
+
+                    //targetに向かって進む
+                    transform.position += transform.forward * MoveSpeed * 0.1f;
 
                 } break;
         }
