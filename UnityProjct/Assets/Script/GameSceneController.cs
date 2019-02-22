@@ -26,7 +26,7 @@ public class GameSceneController : MonoBehaviour
 
     //プレイヤーHP
     [SerializeField]
-    int playerHp =100;
+    int playerHp = 100;
 
     int playerHpMax;
 
@@ -85,7 +85,8 @@ public class GameSceneController : MonoBehaviour
         if (chargePoint <= 0)
         {
             chargePoint = 0;
-        }else if (chargePoint >= 100)
+        }
+        else if (chargePoint >= 100)
         {
             chargePoint = 100;
         }
@@ -93,7 +94,7 @@ public class GameSceneController : MonoBehaviour
 
         //ダメージを受ける
         HpDamage(hpDownTime);
-
+        //HPを回復します
         if (Input.GetKey(KeyCode.H))
         {
             if (chargePoint > 0)
@@ -105,12 +106,16 @@ public class GameSceneController : MonoBehaviour
                 {
                     chargePoint = 0;
                 }
+                playerMove.HpRecoveryFlag = true;
             }
         }
-        
+        if (Input.GetKeyUp(KeyCode.H))
+        {
+            playerMove.HpRecoveryFlag = false;
+        }
     }
 
-    void HpDamage( float damage)
+    void HpDamage(float damage)
     {
         //int hpNum = -1;
         //if (updateHPs[0] > 0)
@@ -155,8 +160,8 @@ public class GameSceneController : MonoBehaviour
             updateHP = 0;
         }
 
-            //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-            chargeUIController.UpdateHppoint(updateHP / 100);
+        //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
+        chargeUIController.UpdateHppoint(updateHP / 100);
     }
 
     //HPを回復します

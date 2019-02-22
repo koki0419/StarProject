@@ -18,17 +18,27 @@ public class PlayerMove : MonoBehaviour
 
     public PlayerAttackState playerAttackState = PlayerAttackState.None;
 
+
+
+
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
-    private Animator animatorComponent;
+    public Animator animatorComponent;
 
     new Rigidbody rigidbody;
 
-    //[SerializeField]
-    //GameSceneController gameSceneController;
-
+    //スター獲得エフェクト
+    [SerializeField]
+    GameObject starEffect;
+    //Hp回復エフェクト
+    [SerializeField]
+    GameObject hpRecoveryEffect;
     //-------------クラス関係--------------------------------
+    //『Attack』をインスタンス
     Attack attack = new Attack();
+    //『ObjectState』をインスタンス
+    ObjectState objectState = new ObjectState();
+
     //-------------数値用変数--------------------------------
     //移動速度を設定します
     [SerializeField]
@@ -57,68 +67,116 @@ public class PlayerMove : MonoBehaviour
     float userChargePonitTime = 0.001f;
 
     //-------------フラグ用変数------------------------------
+    //ジャンプフラグ
     [SerializeField]
     bool jumpFlag;
-
+    //アタックフラグ
+    [SerializeField]
     bool attackFlag;
-
+    public bool AttackFlag
+    {
+        get { return attackFlag; }
+    }
+    //チャージUp
     bool chargeUp = true;
 
+    //☆獲得時フラグ
+    bool getStar = false;
+    public bool GetStar
+    {
+        set { getStar = value; }
+    }
+    //Hp回復フラグ
+    bool hpRecoveryFlag = false;
+    public bool HpRecoveryFlag
+    {
+        set { hpRecoveryFlag = value; }
+    }
 
     //初期化
     public void Init()
     {
-        // アニメーションコンポーネント取得
-        animatorComponent = gameObject.GetComponentInChildren<Animator>();
+        //プレイヤーの状態を通常状態に設定します
+        objectState.objState = ObjectState.ObjState.Normal;
         //右向きに指定
         transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
         rigidbody = gameObject.GetComponent<Rigidbody>();
         Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
 
         //----初期化-----
+        attackFlag = false;
         jumpFlag = false;
+        getStar = false;
+        hpRecoveryFlag = false;
+
+        starEffect.SetActive(false);
+        hpRecoveryEffect.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+        switch (objectState.objState)
         {
-            jumpFlag = true;
+            case ObjectState.ObjState.Normal:
+                {
+                    if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    {
+                        jumpFlag = true;
+                    }
+                    else
+                    {
+                        jumpFlag = false;
+                    }
+
+                    //移動
+                    float dx = Input.GetAxis("Horizontal");
+                    float dy = Input.GetAxis("Vertical");
+                    //移動
+                    Move(dx, dx, jumpFlag);
+
+                    if (Input.GetKeyDown(KeyCode.Y))
+                    {
+                        attackFlag = true;
+                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                        objectState.objState = ObjectState.ObjState.Attack;
+                    }
+
+
+                    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                    {
+                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
+
+                    }
+                    else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                    {
+
+                        OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100), new Vector2(dx, dy));
+                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
+                        chargeNow = 0.0f;
+                    }
+                }
+                break;
+
+            case ObjectState.ObjState.Attack:
+                {
+                    StartCoroutine(OnAttack(0));
+                }
+                break;
+        }
+
+        if (getStar)
+        {
+            StartCoroutine(OnGetStar());
+        }
+        if (hpRecoveryFlag)
+        {
+            hpRecoveryEffect.SetActive(true);
         }
         else
         {
-            jumpFlag = false;
+            hpRecoveryEffect.SetActive(false);
         }
-
-        //移動
-        float dx = Input.GetAxis("Horizontal");
-        float dy = Input.GetAxis("Vertical");
-        //移動
-        Move(dx, dx, jumpFlag);
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            Debug.Log("攻撃方向 = " + attack.OnAttack(new Vector2(dx, dy),this.gameObject));
-            
-        }
-
-        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
-        {
-            attackFlag = true;
-
-            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100));
-        }
-        else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint!=0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
-        {
-
-            OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100),new Vector2(dx,dy));
-            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-            chargeNow = 0.0f;
-            attackFlag = false;
-        }
-
 
     }
 
@@ -180,10 +238,10 @@ public class PlayerMove : MonoBehaviour
             usedPoint = (float)PlayerAttackState.Attack1;
             attackName = "Bullet01";// 通常攻撃
         }
-        
+
         //Singleton.Instance.gameSceneController.ChargePoint -= usedPoint;
 
-        attack.OnAttackBullet(attackName, this.gameObject, shotSpeed,new Vector2(direction.x, direction.y));
+        attack.OnAttackBullet(attackName, this.gameObject, shotSpeed, new Vector2(direction.x, direction.y));
     }
 
     //狙い(チャージ)
@@ -217,6 +275,25 @@ public class PlayerMove : MonoBehaviour
         return chargeNow;
     }
 
-    
+    void OnAttackMotion(int attackNum)
+    {
+        animatorComponent.SetInteger("AttackNum", attackNum);
+    }
 
+    //アタック時
+    public IEnumerator OnAttack(int attackResetNum)
+    {
+        yield return new WaitForSeconds(1.0f);
+        attackFlag = false;
+        animatorComponent.SetInteger("AttackNum", attackResetNum);
+        objectState.objState = ObjectState.ObjState.Normal;
+    }
+    //☆獲得時
+    public IEnumerator OnGetStar()
+    {
+        starEffect.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        getStar = false;
+        starEffect.SetActive(false);
+    }
 }

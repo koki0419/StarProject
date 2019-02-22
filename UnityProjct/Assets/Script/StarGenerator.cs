@@ -8,6 +8,8 @@ public class StarGenerator : MonoBehaviour
     [SerializeField]
     GameObject playerObj;
     //------------クラスの宣言----------------------
+    [SerializeField]
+    PlayerMove playerMove;
     //------------数値変数の宣言--------------------
     //------------フラグ変数の宣言------------------
     public void Init()
@@ -27,7 +29,7 @@ public class StarGenerator : MonoBehaviour
         //親オブジェクトにくっ付けます
         starObj.transform.parent = this.gameObject.transform;
         //『startObj』の初期化
-        starObj.GetComponent<StarController>().Init(playerObj);
+        starObj.GetComponent<StarController>().Init(playerObj, playerMove);
     }
 
     //他のスクリプトから呼び出します
