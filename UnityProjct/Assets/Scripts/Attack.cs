@@ -121,11 +121,12 @@ public class Attack : MonoBehaviour
         // 角度
         float degree = radian * Mathf.Rad2Deg;
 
-        //Debug.Log("firing = " + firing);
+        //Debug.Log("x = " + x);
         //Debug.Log("degree = " + degree);
         if (firing.x == 0 && firing.y == 0)
         {
-            animationName = -1;
+
+            animationName = (int)PlayerAttackIndex.AttackNormal;
         }
         else
         {

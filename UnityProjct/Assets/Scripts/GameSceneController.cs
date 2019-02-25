@@ -6,17 +6,18 @@ public class GameSceneController : MonoBehaviour
 {
     //---------Unityコンポーネント宣言--------------
     //------------クラスの宣言----------------------
-    [SerializeField]
-    PlayerMove playerMove;
+    [SerializeField] PlayerMove playerMove;
     public PlayerMove PlayerMove
     {
         get { return playerMove; }
     }
-    [SerializeField]
-    BreakBoxController[] breakBoxController;
+    [SerializeField] BreakBoxController[] breakBoxController;
 
     public ChargeUIController chargeUIController;
 
+    [SerializeField] FadeLayer fadeLayer;
+    [SerializeField] GameObject fadeText;
+    [SerializeField] GameObject fadeChara;
 
     //------------数値変数の宣言--------------------
     [SerializeField]
@@ -72,58 +73,82 @@ public class GameSceneController : MonoBehaviour
         chargePoint = debugPoint;
 
         playerHpMax = playerHp;
-        //for (int i = 0;i< updateHPs.Length; i++)
-        //{
-        //    updateHPs[i] = hp;
-        //}
-
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        Init();
-        playerMove.Init();
         for (int i = 0; i < breakBoxController.Length; i++)
         {
             breakBoxController[i].Init();
         }
+
     }
+
+    private void Awake()
+    {
+        fadeLayer.ForceColor(Color.black);
+        fadeText.SetActive(true);
+        fadeChara.SetActive(true);
+    }
+
+    IEnumerator Start()
+    {
+        isPlaying = false;
+
+        yield return null;
+        Init();
+        playerMove.Init();
+        yield return null;
+        fadeText.SetActive(false);
+        fadeChara.SetActive(false);
+        yield return null;
+
+        yield return fadeLayer.FadeInEnumerator(2);
+        isPlaying = true;
+
+    }
+
+    // Start is called before the first frame update
+    //void Start()
+    //{
+
+
+    //}
 
     // Update is called once per frame
     void Update()
     {
-        if (chargePoint <= 0)
+        if (isPlaying)
         {
-            chargePoint = 0;
-        }
-        else if (chargePoint >= chargePointMax)
-        {
-            chargePoint = chargePointMax;
-        }
-        chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
+            playerMove.OnUpdate();
 
-        //ダメージを受ける
-        HpDamage(hpDownTime);
-        //HPを回復します
-        if (Input.GetKey(KeyCode.H))
-        {
-            if (chargePoint > 0)
+            if (chargePoint <= 0)
             {
-                //HPを回復します
-                HpRecovery(hpRecovery);
-                chargePoint -= gaugeDroportion;
-                if (chargePoint <= 0)
-                {
-                    chargePoint = 0;
-                }
-                playerMove.HpRecoveryFlag = true;
+                chargePoint = 0;
             }
-        }
-        if (Input.GetKeyUp(KeyCode.H))
-        {
-            playerMove.HpRecoveryFlag = false;
+            else if (chargePoint >= chargePointMax)
+            {
+                chargePoint = chargePointMax;
+            }
+            chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
+
+            //ダメージを受ける
+            HpDamage(hpDownTime);
+            //HPを回復します
+            if (Input.GetKey(KeyCode.H))
+            {
+                if (chargePoint > 0)
+                {
+                    //HPを回復します
+                    HpRecovery(hpRecovery);
+                    chargePoint -= gaugeDroportion;
+                    if (chargePoint <= 0)
+                    {
+                        chargePoint = 0;
+                    }
+                    playerMove.HpRecoveryFlag = true;
+                }
+            }
+            if (Input.GetKeyUp(KeyCode.H))
+            {
+                playerMove.HpRecoveryFlag = false;
+            }
         }
     }
 
