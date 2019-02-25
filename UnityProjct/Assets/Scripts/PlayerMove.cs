@@ -83,6 +83,9 @@ public class PlayerMove : MonoBehaviour
     {
         get { return attackFlag; }
     }
+
+    //地面との接触
+    bool isGroundFlag;
     //チャージUp
     bool chargeUp = true;
 
@@ -98,6 +101,9 @@ public class PlayerMove : MonoBehaviour
     {
         set { hpRecoveryFlag = value; }
     }
+    //キャラクターの向き
+    bool rightDirection;
+    bool leftDirection;
 
     //初期化
     public void Init()
@@ -112,6 +118,7 @@ public class PlayerMove : MonoBehaviour
         //----初期化-----
         attackFlag = false;
         jumpFlag = false;
+        isGroundFlag = false;
         getStar = false;
         hpRecoveryFlag = false;
 
@@ -120,9 +127,8 @@ public class PlayerMove : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void OnUpdate()
     {
-        float dx = Input.GetAxis("Horizontal");
         switch (objectState.objState)
         {
             case ObjectState.ObjState.Normal:
@@ -137,7 +143,7 @@ public class PlayerMove : MonoBehaviour
                     }
 
                     //移動
-
+                    float dx = Input.GetAxis("Horizontal");
                     float dy = Input.GetAxis("Vertical");
                     //移動
                     Move(dx, dx, jumpFlag);
@@ -162,6 +168,7 @@ public class PlayerMove : MonoBehaviour
                         offensivePower = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower;
                         speedForce = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100;
 
+                        Debug.Log("speedForce" + speedForce);
                         Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                         chargeNow = 0.0f;
 
@@ -174,6 +181,7 @@ public class PlayerMove : MonoBehaviour
 
             case ObjectState.ObjState.Attack:
                 {
+                    MoveAttack(speedForce/10);
                     StartCoroutine(OnAttack(0));
                 }
                 break;
@@ -195,30 +203,57 @@ public class PlayerMove : MonoBehaviour
 
 
     //--------------関数-----------------------------
+    //地面との当たり判定
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            isGroundFlag = true;
+        }
+    }
+
     //移動
     void Move(float x, float horizontal, bool jumpFlag)
     {
         var position = transform.position;
-        position.x += x * moveSpeed;// * Time.deltaTime;
+        position.x += x * moveSpeed; //Time.deltaTime;
         transform.position = position;
 
         //キャラクターの向き
         if (horizontal > 0)
         {
             transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+            rightDirection = true;
+            leftDirection = false;
         }
         else if (horizontal < 0)
         {
             transform.rotation = Quaternion.AngleAxis(-rot, new Vector3(0, 1, 0));
+            rightDirection = false;
+            leftDirection = true;
         }
         if (jumpFlag)
         {
+            isGroundFlag = false;
             var velocity = rigidbody.velocity;
             velocity.y = jumpSpeed; // * Time.deltaTime;
             rigidbody.velocity = velocity;
         }
     }
 
+    //攻撃時の移動
+    void MoveAttack(float speedForce)
+    {
+        var position = transform.position;
+        if (rightDirection && !leftDirection)
+        {
+            position.x += speedForce * Time.deltaTime;
+        }else
+        {
+            position.x -= speedForce * Time.deltaTime;
+        }
+        transform.position = position;
+    }
     //攻撃
     void OnAttack(float charge, Vector2 direction)
     {
@@ -301,6 +336,8 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         attackFlag = false;
         animatorComponent.SetInteger("AttackNum", attackResetNum);
+        animatorComponent.SetBool("Ground", isGroundFlag);
+        
         objectState.objState = ObjectState.ObjState.Normal;
     }
     //☆獲得時
