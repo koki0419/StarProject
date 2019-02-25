@@ -116,24 +116,7 @@ public class BreakBoxController : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-
-    //    //**************************************************************
-    //    if (Input.GetKey(KeyCode.E))    //******************************
-    //    {
-    //        var kkk = (nnn += 1) / 100;   //******************************
-    //        OnSliderUpdate(kkk);        //******************************
-    //        Debug.Log("kkk" + kkk);     //******************************
-    //    }
-
-    //    if (Input.GetKey(KeyCode.Q))   //******************************
-    //    {
-    //        var kkk = (nnn -= 1) / 100;   //******************************
-    //        OnSliderUpdate(kkk);        //******************************
-    //        Debug.Log("kkk" + kkk);     //******************************
-    //    }
-
     }
-    //float nnn = 0;//******************************
     public void OnSliderUpdate(float value) //******************************
     {
         substanceGraph.SetInputFloat("dust_Level", value);//******************************
@@ -193,7 +176,6 @@ public class BreakBoxController : MonoBehaviour
         {
             foundationHP -= OnDamage(playerMove.OffensivePower, playerMove.SpeedForce);
             Singleton.Instance.OnDamage(OnDamage(playerMove.OffensivePower, playerMove.SpeedForce), this.gameObject.transform);
-            Debug.Log("foundationHP" + OnDamage(playerMove.OffensivePower, playerMove.SpeedForce));
             var hp = 1.0;
             hp -= (foundationHP / foundationHPMax);
             OnSliderUpdate((float)hp);

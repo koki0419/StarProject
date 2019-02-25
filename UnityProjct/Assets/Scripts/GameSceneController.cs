@@ -28,8 +28,7 @@ public class GameSceneController : MonoBehaviour
         set { chargePoint = value; }
     }
 
-    [SerializeField]
-    float chargePointMax = 300;
+    [SerializeField] float chargePointMax = 300;
     public float ChargePointMax
     {
         get { return chargePointMax; }
@@ -37,14 +36,12 @@ public class GameSceneController : MonoBehaviour
     }
 
     //プレイヤーHP
-    [SerializeField]
-    float playerHp;
+    [SerializeField] float playerHp;
 
     float playerHpMax;
 
     //HPの減少時間
-    [SerializeField]
-    float hpDownTime = 1;
+    [SerializeField] float hpDownTime = 1;
     //HPの回復量
     float hpRecovery = 2;
 
@@ -53,13 +50,10 @@ public class GameSceneController : MonoBehaviour
 
     //*****************************
     //デバックポイント
-    [SerializeField]
-    int debugPoint;
+    [SerializeField] int debugPoint;
 
     //ゲージダウン割合
-    [SerializeField]
-    float gaugeDroportion = 3;
-
+    float gaugeDroportion;
     //------------フラグ変数の宣言------------------
     bool isPlaying = false;
 
@@ -72,12 +66,14 @@ public class GameSceneController : MonoBehaviour
         chargePoint = 0;
         chargePoint = debugPoint;
 
+        gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost/100;//StarCostを『0.01』にする
+
         playerHpMax = playerHp;
         for (int i = 0; i < breakBoxController.Length; i++)
         {
             breakBoxController[i].Init();
         }
-
+        chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
     }
 
     private void Awake()
@@ -129,26 +125,32 @@ public class GameSceneController : MonoBehaviour
             chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
 
             //ダメージを受ける
-            HpDamage(hpDownTime);
+            if (playerMove.BeastModeFlag){
+                HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
+            }else{
+                HpDamage(hpDownTime);
+            }
             //HPを回復します
-            if (Input.GetKey(KeyCode.H))
+            if (playerMove.BeastModeFlag)
             {
                 if (chargePoint > 0)
                 {
                     //HPを回復します
-                    HpRecovery(hpRecovery);
+                    //HpRecovery(hpRecovery);
                     chargePoint -= gaugeDroportion;
                     if (chargePoint <= 0)
                     {
                         chargePoint = 0;
+                        playerMove.BeastModeFlag = false;
+                        playerMove.BeastModeEffect.SetActive(playerMove.BeastModeFlag);
                     }
-                    playerMove.HpRecoveryFlag = true;
+                    //playerMove.HpRecoveryFlag = true;
                 }
             }
-            if (Input.GetKeyUp(KeyCode.H))
-            {
-                playerMove.HpRecoveryFlag = false;
-            }
+            //if (Input.GetKeyUp(KeyCode.H))
+            //{
+            //    playerMove.HpRecoveryFlag = false;
+            //}
         }
     }
 
