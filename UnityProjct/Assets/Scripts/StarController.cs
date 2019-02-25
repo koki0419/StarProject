@@ -25,25 +25,25 @@ public class StarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
 
-        //var playerPos = playerObj.position;
-        // 自分の座標とプレイヤーのベクトル作成(プレイヤー座標からEnemy座標を引く)
-        Vector3 moveVec = playerObj.transform.position - gameObject.transform.localPosition; // (オペレータ機能を利用している)
+    //    //var playerPos = playerObj.position;
+    //    // 自分の座標とプレイヤーのベクトル作成(プレイヤー座標からEnemy座標を引く)
+    //    Vector3 moveVec = playerObj.transform.position - gameObject.transform.localPosition; // (オペレータ機能を利用している)
 
-        // 単位ベクトルの作成（上記のベクトル）
-        Vector3 V2 = moveVec.normalized;
+    //    // 単位ベクトルの作成（上記のベクトル）
+    //    Vector3 V2 = moveVec.normalized;
 
 
-        // 近づくスピード
-        // -1をかけると遠ざかる
+    //    // 近づくスピード
+    //    // -1をかけると遠ざかる
 
-        moveVec = V2 * moveSpeed * Time.deltaTime;
+    //    moveVec = V2 * moveSpeed * Time.deltaTime;
 
-        gameObject.transform.localPosition += moveVec;
+    //    gameObject.transform.localPosition += moveVec;
 
-    }
+    //}
 
     void AdditionStarPoint(int point)
     {

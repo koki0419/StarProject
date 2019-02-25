@@ -18,6 +18,20 @@ public class PlayerMove : MonoBehaviour
 
     public PlayerAttackState playerAttackState = PlayerAttackState.None;
 
+    //ビーストモード消費ポイント
+    public enum PlayerBeastModeState
+    {
+        None,
+        AttacPower = 2,     //攻撃力2倍
+        SpeedPower = 2,     //スピード2倍
+        StarCost = 1,       //☆消費
+        Resilience = 0,        //回復力
+        PhysicalFitnessCost = 2,//体力消費
+
+    }
+
+    public PlayerBeastModeState playerBeastModeState = PlayerBeastModeState.None;
+
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
     public Animator animatorComponent;
@@ -28,6 +42,21 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] GameObject starEffect;
     //Hp回復エフェクト
     [SerializeField] GameObject hpRecoveryEffect;
+    //チャージエフェクト1
+    [SerializeField] GameObject chargeEffect1;
+    bool chargeEffectFlag1 = false;
+    //チャージエフェクト2
+    [SerializeField] GameObject chargeEffect2;
+    bool chargeEffectFlag2 = false;
+
+    //ビーストモードエフェクト
+    [SerializeField] GameObject beastModeEffect;
+    public GameObject BeastModeEffect
+    {
+        get { return beastModeEffect; }
+        set { beastModeEffect = value; }
+    }
+
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
     Attack attack = new Attack();
@@ -58,8 +87,9 @@ public class PlayerMove : MonoBehaviour
 
 
     //初期攻撃力
-    [SerializeField]
-    float foundationoffensivePower;
+    [SerializeField] float foundationoffensivePower;
+    //初期移動量
+    [SerializeField] float foundationSpeedForce;
 
     //攻撃力
     [SerializeField] float offensivePower;
@@ -105,6 +135,13 @@ public class PlayerMove : MonoBehaviour
     bool rightDirection;
     bool leftDirection;
 
+    //ビーストモード
+    [SerializeField] bool beastModeFlag = false;
+    public bool BeastModeFlag
+    {
+        get { return beastModeFlag; }
+        set { beastModeFlag = value; }
+    }
     //初期化
     public void Init()
     {
@@ -121,9 +158,18 @@ public class PlayerMove : MonoBehaviour
         isGroundFlag = false;
         getStar = false;
         hpRecoveryFlag = false;
+        beastModeFlag = false;
 
         starEffect.SetActive(false);
         hpRecoveryEffect.SetActive(false);
+
+
+        //デバック用
+        chargeEffectFlag1 = false;
+        chargeEffectFlag2 = false;
+        chargeEffect1.SetActive(chargeEffectFlag1);
+        chargeEffect2.SetActive(chargeEffectFlag2);
+        beastModeEffect.SetActive(beastModeFlag);
     }
 
     // Update is called once per frame
@@ -145,43 +191,123 @@ public class PlayerMove : MonoBehaviour
                     //移動
                     float dx = Input.GetAxis("Horizontal");
                     float dy = Input.GetAxis("Vertical");
-                    //移動
-                    Move(dx, dx, jumpFlag);
-
-                    if (Input.GetKeyDown(KeyCode.Y))
+                    //通常時
+                    if (!beastModeFlag)
                     {
+                        //移動
+                        Move(dx, dx, jumpFlag);
 
+                        //チャージ
+                        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                        {
+                            //チャージ中
+                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
+
+
+                            //チャージエフェクトデバック---------------------------
+                            var charge = OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax);
+
+                            if (charge < 0.5)
+                            {
+                                chargeEffectFlag1 = true;
+                                chargeEffectFlag2 = false;
+                            }
+                            else
+                            {
+                                chargeEffectFlag1 = false;
+                                chargeEffectFlag2 = true;
+                            }
+
+                            chargeEffect1.SetActive(chargeEffectFlag1);
+                            chargeEffect2.SetActive(chargeEffectFlag2);
+
+
+
+                            //--------------------------------------------------
+                        }
+                        //else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                        else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                        {
+                            //通常時
+                            //if (!beastModeFlag)
+                            //{
+                            //チャージ終了（チャージゲージを0に戻す）
+                            offensivePower = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower;
+                            speedForce = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100 + foundationSpeedForce;
+                            //}
+                            //ビーストモード
+                            // else
+                            //{
+                            //チャージ終了（チャージゲージを0に戻す）
+                            //offensivePower = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower) * (int)PlayerBeastModeState.AttacPower;
+                            //speedForce = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100) * (int)PlayerBeastModeState.SpeedPower;
+                            //  }
+                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
+                            chargeNow = 0.0f;
+
+                            attackFlag = true;
+                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                            chargeEffect1.SetActive(false);
+                            chargeEffect2.SetActive(false);
+                            objectState.objState = ObjectState.ObjState.Attack;
+                        }
                     }
-
-                    //チャージ
-                    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                    //ビーストモード
+                    else
                     {
-                        //チャージ中
-                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
+                        //移動
+                        Move(dx * (int)PlayerBeastModeState.SpeedPower, dx, jumpFlag);
 
-                    }
-                    else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                    {
-                        //チャージ終了（チャージゲージを0に戻す）
-                        //OnAttack(OnCharge((float)Singleton.Instance.gameSceneController.ChargePoint / 100), new Vector2(dx, dy));
+                        //チャージ
+                        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                        {
+                            //チャージ中
+                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
 
-                        offensivePower = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower;
-                        speedForce = OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100;
 
-                        Debug.Log("speedForce" + speedForce);
-                        Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-                        chargeNow = 0.0f;
+                            //チャージエフェクトデバック---------------------------
+                            var charge = OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax);
 
-                        attackFlag = true;
-                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                        objectState.objState = ObjectState.ObjState.Attack;
+                            if (charge < 0.5)
+                            {
+                                chargeEffectFlag1 = true;
+                                chargeEffectFlag2 = false;
+                            }
+                            else
+                            {
+                                chargeEffectFlag1 = false;
+                                chargeEffectFlag2 = true;
+                            }
+
+                            chargeEffect1.SetActive(chargeEffectFlag1);
+                            chargeEffect2.SetActive(chargeEffectFlag2);
+
+
+
+                            //--------------------------------------------------
+                        }
+                        //else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                        else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                        {
+                            //チャージ終了（チャージゲージを0に戻す）
+                            offensivePower = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower) * (int)PlayerBeastModeState.AttacPower;
+                            speedForce = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100) * (int)PlayerBeastModeState.SpeedPower;
+                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
+                            chargeNow = 0.0f;
+
+                            attackFlag = true;
+                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                            chargeEffect1.SetActive(false);
+                            chargeEffect2.SetActive(false);
+                            objectState.objState = ObjectState.ObjState.Attack;
+                        }
                     }
                 }
                 break;
 
             case ObjectState.ObjState.Attack:
                 {
-                    MoveAttack(speedForce/10);
+                    MoveAttack(speedForce / 10);
                     StartCoroutine(OnAttack(0));
                 }
                 break;
@@ -198,6 +324,34 @@ public class PlayerMove : MonoBehaviour
         else
         {
             hpRecoveryEffect.SetActive(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!chargeEffectFlag1)
+            {
+                chargeEffectFlag1 = true;
+                chargeEffectFlag2 = false;
+            }
+            else
+            {
+                chargeEffectFlag1 = false;
+                chargeEffectFlag2 = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.B) && Singleton.Instance.gameSceneController.ChargePoint > 0)
+        {
+            if (!beastModeFlag)
+            {
+                beastModeFlag = true;
+            }
+            else
+            {
+                beastModeFlag = false;
+            }
+            beastModeEffect.SetActive(beastModeFlag);
+
         }
     }
 
@@ -248,7 +402,8 @@ public class PlayerMove : MonoBehaviour
         if (rightDirection && !leftDirection)
         {
             position.x += speedForce * Time.deltaTime;
-        }else
+        }
+        else
         {
             position.x -= speedForce * Time.deltaTime;
         }
@@ -337,7 +492,7 @@ public class PlayerMove : MonoBehaviour
         attackFlag = false;
         animatorComponent.SetInteger("AttackNum", attackResetNum);
         animatorComponent.SetBool("Ground", isGroundFlag);
-        
+
         objectState.objState = ObjectState.ObjState.Normal;
     }
     //☆獲得時
