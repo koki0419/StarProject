@@ -1,32 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    /*
-        //移動開始位置
-        public Vector3 StartPos;
-
-        //移動終了位置
-        public Vector3 EndPos;
-
-        //移動時間
-        public float time;
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }*/
-
     public enum EnemyState
     {
         None,
@@ -41,7 +19,7 @@ public class EnemyController : MonoBehaviour
     void OnTriggerStay(Collider col)
     {
         //プレイキャラクターを発見
-        if(col.tag == "Player")
+        if (col.tag == "Player")
         {
             enemyState = EnemyState.Discovery;
         }
@@ -53,6 +31,22 @@ public class EnemyController : MonoBehaviour
     private Vector3 deltaPos;
     private float elapsedTime;
     private bool bStartToEnd = true;
+
+    public GameObject target;
+    private NavMeshAgent agent;
+
+    public Vector3 Position;
+    public Vector3 PlayerPos;
+
+    public float EnemySpeed;
+
+    public EnemyController(Vector3 pos,Vector3 playerPos, float speed)
+    {
+        Position = pos;
+        PlayerPos = playerPos;
+        EnemySpeed = speed;
+    }
+
     void Start()
     {
         // StartPosをオブジェクトに初期位置に設定
@@ -61,6 +55,9 @@ public class EnemyController : MonoBehaviour
         deltaPos = (EndPos - StartPos) / time;
         elapsedTime = 0;
         enemyState = EnemyState.Search;
+
+        agent = GetComponent<NavMeshAgent>();
+
     }
 
     void Update()
@@ -105,9 +102,18 @@ public class EnemyController : MonoBehaviour
                 {
                     Debug.Log("プレイヤー発見");
 
-                } break;
+                    // プレイヤーへの向きを獲得
+                    Vector3 direction = PlayerPos - Position;
+
+                    // ベクトルを、正規化し、向きだけを保存させる
+                    direction.Normalize();
+
+                    // 敵の移動
+                    Position += direction * EnemySpeed;
+
+                }
+                break;
         }
 
     }
 }
-

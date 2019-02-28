@@ -626,6 +626,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeFill: {fileID: 748086642}
   useChargeFill: {fileID: 1934947726}
+  hpFil: {fileID: 0}
 --- !u!1 &116503416 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100018, guid: d535fa6a3c5aae440a115ec894becc50,
@@ -949,6 +950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObj: {fileID: 1621443634}
+  playerMove: {fileID: 0}
 --- !u!1 &185138398
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,6 +989,9 @@ MonoBehaviour:
   - {fileID: 1492465244}
   chargeUIController: {fileID: 111622953}
   chargePoint: 0
+  playerHp: 100
+  hpDownTime: 1
+  gaugeDroportion: 3
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -1211,6 +1216,10 @@ MonoBehaviour:
   StartPos: {x: 10, y: 0.5, z: 0}
   EndPos: {x: 8, y: 0.5, z: 0}
   time: 1
+  target: {fileID: 1621443634}
+  Position: {x: 0, y: 0, z: 0}
+  PlayerPos: {x: 0, y: 0, z: 0}
+  EnemySpeed: 1
 --- !u!135 &211319579
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3894,6 +3903,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeFill: {fileID: 0}
   useChargeFill: {fileID: 0}
+  hpFil: {fileID: 0}
 --- !u!114 &1231812591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5043,11 +5053,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttackState: 0
+  animatorComponent: {fileID: 0}
+  starEffect: {fileID: 0}
+  hpRecoveryEffect: {fileID: 0}
   moveSpeed: 0.1
   rotSpeed: 1.5
   jumpSpeed: 15
   shotSpeed: 5
+  userChargePonitTime: 0.001
+  offensivePower: 0
+  speedForce: 0
   jumpFlag: 0
+  attackFlag: 0
 --- !u!54 &1621443636
 Rigidbody:
   m_ObjectHideFlags: 0
