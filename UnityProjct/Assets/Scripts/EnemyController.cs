@@ -38,12 +38,20 @@ public class EnemyController : MonoBehaviour
 
     public EnemyState enemyState = EnemyState.None;
 
-    void OnTriggerStay(Collider col)
+    void OnTriggerStay(Collider collision)
     {
         //プレイキャラクターを発見
-        if(col.tag == "Player")
+        if(collision.tag == "Player")
         {
             enemyState = EnemyState.Discovery;
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.tag == "Player")
+        {
+            enemyState = EnemyState.Search;
         }
     }
 
@@ -104,6 +112,8 @@ public class EnemyController : MonoBehaviour
             case EnemyState.Discovery:
                 {
                     Debug.Log("プレイヤー発見");
+
+
 
                 } break;
         }
