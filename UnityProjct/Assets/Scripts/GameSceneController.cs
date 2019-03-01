@@ -1,10 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSceneController : MonoBehaviour
 {
     //---------Unityコンポーネント宣言--------------
+    [SerializeField] GameObject gameOvreUI;
+    [SerializeField] GameObject gameClearUI;
+    [SerializeField] GameObject playerObj;
+
+    [SerializeField] GameObject starObj;
+
+    //☆子供オブジェクト取得用
+    GameObject[] starChildrenOBJ;
     //------------クラスの宣言----------------------
     [SerializeField] PlayerMove playerMove;
     public PlayerMove PlayerMove
@@ -12,6 +21,10 @@ public class GameSceneController : MonoBehaviour
         get { return playerMove; }
     }
     [SerializeField] BreakBoxController[] breakBoxController;
+
+    [SerializeField] Boss[] boss;
+
+    [SerializeField] StarController[] starControllers;
 
     public ChargeUIController chargeUIController;
 
@@ -57,6 +70,14 @@ public class GameSceneController : MonoBehaviour
     //------------フラグ変数の宣言------------------
     bool isPlaying = false;
 
+    [SerializeField]
+    bool gameClear = false;
+    public bool GameClear
+    {
+        get { return gameClear; }
+        set { gameClear = value; }
+    }
+
     //初期化
     public void Init()
     {
@@ -73,7 +94,30 @@ public class GameSceneController : MonoBehaviour
         {
             breakBoxController[i].Init();
         }
+
+        for (int i = 0; i < boss.Length; i++)
+        {
+            boss[i].Init();
+        }
+
+        //子供オブジェクトを取得
+        //starControllers
+        starChildrenOBJ = new GameObject[starObj.transform.childCount];
+        starControllers = new StarController[starObj.transform.childCount];
+        //子供オブジェクト取得
+        for (int i = 0; starObj.transform.childCount > i; i++)
+        {
+            starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
+            starControllers[i] = starChildrenOBJ[i].GetComponent<StarController>();
+            starControllers[i].Init(playerObj, playerMove);
+        }
         chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
+
+        //初期化
+        gameOvreUI.SetActive(false);
+        gameClearUI.SetActive(false);
+        gameClear = false;
+
     }
 
     private void Awake()
@@ -147,10 +191,20 @@ public class GameSceneController : MonoBehaviour
                     //playerMove.HpRecoveryFlag = true;
                 }
             }
-            //if (Input.GetKeyUp(KeyCode.H))
-            //{
-            //    playerMove.HpRecoveryFlag = false;
-            //}
+
+            //ゲームオーバー
+            if (playerHp <= 0)
+            {
+                isPlaying = false;
+                gameOvreUI.SetActive(true);
+            }
+
+            //ゲームクリア
+            if (gameClear)
+            {
+                isPlaying = false;
+                gameClearUI.SetActive(true);
+            }
         }
     }
 

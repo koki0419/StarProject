@@ -9,6 +9,8 @@ public class ChargeUIController : MonoBehaviour
     public Image chargeFill;
     //攻撃使用ポイント
     public Image useChargeFill;
+    //ビーストモード
+    public Image beastModeFill;
 
     //public Image[] hpFils;
     public Image hpFil;
@@ -22,6 +24,11 @@ public class ChargeUIController : MonoBehaviour
     public void UseUpdateChargePoint(float percentage)
     {
         useChargeFill.fillAmount = percentage;
+    }
+    //ユーザー用チャージポイントのupdete
+    public void beastModeUpdateChargePoint(float percentage)
+    {
+        beastModeFill.fillAmount = percentage;
     }
 
     //public void UpdateHppoint(float hp,int hpFillNum)

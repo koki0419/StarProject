@@ -104,6 +104,10 @@ public class PlayerMove : MonoBehaviour
         get { return speedForce; }
     }
 
+
+    //ビーストモード攻撃力
+    float beastAttackPower;
+
     //-------------フラグ用変数------------------------------
     //ジャンプフラグ
     [SerializeField] bool jumpFlag;
@@ -175,6 +179,7 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     public void OnUpdate()
     {
+        float dy = Input.GetAxis("Vertical");
         switch (objectState.objState)
         {
             case ObjectState.ObjState.Normal:
@@ -190,7 +195,7 @@ public class PlayerMove : MonoBehaviour
 
                     //移動
                     float dx = Input.GetAxis("Horizontal");
-                    float dy = Input.GetAxis("Vertical");
+
                     //通常時
                     if (!beastModeFlag)
                     {
@@ -261,45 +266,31 @@ public class PlayerMove : MonoBehaviour
                         //チャージ
                         if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
                         {
-                            //チャージ中
-                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
-
-
                             //チャージエフェクトデバック---------------------------
-                            var charge = OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax);
-
-                            if (charge < 0.5)
-                            {
-                                chargeEffectFlag1 = true;
-                                chargeEffectFlag2 = false;
-                            }
-                            else
-                            {
-                                chargeEffectFlag1 = false;
-                                chargeEffectFlag2 = true;
-                            }
+                            chargeEffectFlag1 = false;
+                            chargeEffectFlag2 = true;
 
                             chargeEffect1.SetActive(chargeEffectFlag1);
                             chargeEffect2.SetActive(chargeEffectFlag2);
-
-
-
-                            //--------------------------------------------------
                         }
-                        //else if (Input.GetKeyUp(KeyCode.T) && Singleton.Instance.gameSceneController.ChargePoint != 0 || Input.GetKeyUp(KeyCode.Joystick1Button2))
                         else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
                         {
                             //チャージ終了（チャージゲージを0に戻す）
-                            offensivePower = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) + foundationoffensivePower) * (int)PlayerBeastModeState.AttacPower;
-                            speedForce = (OnCharge(Singleton.Instance.gameSceneController.ChargePoint) * 100) * (int)PlayerBeastModeState.SpeedPower;
-                            Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-                            chargeNow = 0.0f;
+                            offensivePower = beastAttackPower * (float)PlayerBeastModeState.AttacPower + foundationoffensivePower;
+                            speedForce = beastAttackPower * (int)PlayerBeastModeState.SpeedPower + foundationSpeedForce;
+
 
                             attackFlag = true;
                             OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
                             chargeEffect1.SetActive(false);
                             chargeEffect2.SetActive(false);
                             objectState.objState = ObjectState.ObjState.Attack;
+
+                            if (dy >= 1)
+                            {
+                                isGroundFlag = false;
+                                jumpFlag = true;
+                            }
                         }
                     }
                 }
@@ -307,7 +298,7 @@ public class PlayerMove : MonoBehaviour
 
             case ObjectState.ObjState.Attack:
                 {
-                    MoveAttack(speedForce / 10);
+                    MoveAttack(speedForce / 10,dy);
                     StartCoroutine(OnAttack(0));
                 }
                 break;
@@ -340,11 +331,12 @@ public class PlayerMove : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.B) && Singleton.Instance.gameSceneController.ChargePoint > 0)
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            if (!beastModeFlag)
+            if (!beastModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax)
             {
                 beastModeFlag = true;
+                beastAttackPower = Singleton.Instance.gameSceneController.ChargePointMax;
             }
             else
             {
@@ -363,6 +355,7 @@ public class PlayerMove : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
         {
             isGroundFlag = true;
+            jumpFlag = false;
         }
     }
 
@@ -396,18 +389,26 @@ public class PlayerMove : MonoBehaviour
     }
 
     //攻撃時の移動
-    void MoveAttack(float speedForce)
+    void MoveAttack(float speedForce, float horizontal)
     {
-        var position = transform.position;
-        if (rightDirection && !leftDirection)
+        if (horizontal == 0)
         {
-            position.x += speedForce * Time.deltaTime;
-        }
-        else
+            var position = transform.position;
+            if (rightDirection && !leftDirection)
+            {
+                position.x += speedForce * Time.deltaTime;
+            }
+            else
+            {
+                position.x -= speedForce * Time.deltaTime;
+            }
+            transform.position = position;
+        }else if (horizontal >= 1)
         {
-            position.x -= speedForce * Time.deltaTime;
+            var velocity = rigidbody.velocity;
+            velocity.y = speedForce; // * Time.deltaTime;
+            rigidbody.velocity = velocity;
         }
-        transform.position = position;
     }
     //攻撃
     void OnAttack(float charge, Vector2 direction)
