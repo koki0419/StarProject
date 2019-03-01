@@ -4,28 +4,6 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    /*
-        //移動開始位置
-        public Vector3 StartPos;
-
-        //移動終了位置
-        public Vector3 EndPos;
-
-        //移動時間
-        public float time;
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }*/
 
     public enum EnemyState
     {
@@ -59,22 +37,29 @@ public class EnemyController : MonoBehaviour
     const float DefSpeed = 0.05f;
 
     //プレイヤーポジション
-    public GameObject playerObj;
+    GameObject playerObj;
 
     //プレイヤーポジション
     Vector3 playerPos;
 
 
-    public Vector3 StartPos;
-    public Vector3 EndPos;
+     Vector3 StartPos;
+     Vector3 EndPos;
+    [SerializeField] Vector3 amountOfMovement;
+
     public float time;
     private Vector3 deltaPos;
     private float elapsedTime;
     private bool bStartToEnd = true;
-    void Start()
+
+    public void Init(GameObject player)
     {
+        playerObj = player;
+
         // StartPosをオブジェクトに初期位置に設定
-        transform.position = StartPos;
+        StartPos = transform.position;
+        var pos = transform.position;
+        EndPos = pos += amountOfMovement;
         // 1秒当たりの移動量を算出
         deltaPos = (EndPos - StartPos) / time;
         elapsedTime = 0;
