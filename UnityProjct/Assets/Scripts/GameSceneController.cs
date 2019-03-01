@@ -12,8 +12,11 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] GameObject starObj;
 
+    [SerializeField] GameObject enemyObj;
+
     //☆子供オブジェクト取得用
     GameObject[] starChildrenOBJ;
+    GameObject[] enemyChildrenOBJ;
     //------------クラスの宣言----------------------
     [SerializeField] PlayerMove playerMove;
     public PlayerMove PlayerMove
@@ -25,6 +28,9 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] Boss[] boss;
 
     [SerializeField] StarController[] starControllers;
+
+
+    [SerializeField] EnemyController[] enemyController;
 
     public ChargeUIController chargeUIController;
 
@@ -100,16 +106,27 @@ public class GameSceneController : MonoBehaviour
             boss[i].Init();
         }
 
-        //子供オブジェクトを取得
+        //☆子供オブジェクトを取得
         //starControllers
         starChildrenOBJ = new GameObject[starObj.transform.childCount];
         starControllers = new StarController[starObj.transform.childCount];
-        //子供オブジェクト取得
+        //☆子供オブジェクト取得
         for (int i = 0; starObj.transform.childCount > i; i++)
         {
             starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
             starControllers[i] = starChildrenOBJ[i].GetComponent<StarController>();
             starControllers[i].Init(playerObj, playerMove);
+        }
+
+        //エネミー子供オブジェクト取得
+        enemyChildrenOBJ = new GameObject[enemyObj.transform.childCount];
+        enemyController = new EnemyController[enemyObj.transform.childCount];
+        //エネミー子供オブジェクト取得
+        for (int i = 0; enemyObj.transform.childCount > i; i++)
+        {
+            enemyChildrenOBJ[i] = enemyObj.transform.GetChild(i).gameObject;
+            enemyController[i] = enemyChildrenOBJ[i].GetComponent<EnemyController>();
+            enemyController[i].Init(playerObj);
         }
         chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
 
