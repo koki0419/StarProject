@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 61466075}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.471, y: 2.05, z: 0}
   m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_Children:
@@ -54,7 +54,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 175, y: 175, z: 175}
-  m_Center: {x: 25, y: 200, z: 0}
+  m_Center: {x: 25, y: 210, z: 0}
 --- !u!114 &61466077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
   starNum: 3
   deleteTime: 2
   defensePower: 10
-  foundationHP: 10
+  foundationHP: 100
   foundationHPMax: 0
   lnitialVelocity: 0
   gravityMove: 0

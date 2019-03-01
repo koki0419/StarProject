@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 48ba7c2591f796245bfa8fb79e567089
+guid: d53b7c626a0e3e24a86def0797a6d651
 ScriptedImporter:
   fileIDToRecycleName:
     2100000: New_Graph
@@ -21,9 +21,7 @@ ScriptedImporter:
     graphDescIndex: 0
     generateAllOutputs: 0
     generateMipMaps: 1
-    preset: " <sbspreset pkgurl=\"pkg://New_Graph\" label=\"\" >\n  <presetinput identifier=\"$randomseed\"
-      uid=\"227089467\" type=\"4\" value=\"4794\" />\n  <presetinput identifier=\"dust_Level\"
-      uid=\"807819449\" type=\"0\" value=\"0\" />\n </sbspreset>\n"
+    preset: " <sbspreset pkgurl=\"pkg://New_Graph\" label=\"\" >\n </sbspreset>\n"
     shaderName: Standard
     outputNames: baseColor,normal,metallic,height
     texturePackingList:
@@ -73,9 +71,9 @@ ScriptedImporter:
     targetSettingList:
     - label: 
       bLockRatio: 1
-      textureWidth: 512
-      textureHeight: 512
-      textureFormat: 2
+      textureWidth: 256
+      textureHeight: 256
+      textureFormat: 0
       bGenerateOnLoad: 1
-    material: {fileID: 2100000, guid: 48ba7c2591f796245bfa8fb79e567089, type: 3}
+    material: {fileID: 2100000, guid: d53b7c626a0e3e24a86def0797a6d651, type: 3}
     generatedTextures: []
