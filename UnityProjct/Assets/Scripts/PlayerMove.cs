@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour
     public Animator animatorComponent;
 
     new Rigidbody rigidbody;
-
+    [Header("エフェクト関係")]
     //スター獲得エフェクト
     [SerializeField] GameObject starEffect;
     //Hp回復エフェクト
@@ -64,32 +64,42 @@ public class PlayerMove : MonoBehaviour
     ObjectState objectState = new ObjectState();
 
     //-------------数値用変数--------------------------------
+    [Header("プレイヤー情報")]
     //移動速度を設定します
     [SerializeField] private float moveSpeed;
-    //回転速度を設定します
-    [SerializeField] private float rotSpeed;
 
     //ジャンプ力
     [SerializeField] float jumpSpeed;
 
-    private float moveTime;
-
-
-    private float rot = 90;
-
-    //チャージ量
-    float chargeNow = 0.0f;
-
-    [SerializeField] float shotSpeed = 0.5f;
-
     //チャージポイント使用時のユーザーゲージ上昇量
     [SerializeField] float userChargePonitTime = 0.001f;
 
+    //回転速度を設定します
+    [SerializeField] private float rotSpeed;
 
+
+    [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
     [SerializeField] float foundationoffensivePower;
     //初期移動量
     [SerializeField] float foundationSpeedForce;
+
+
+    //チャージ量
+    float chargeNow = 0.0f;
+
+    private float moveTime;
+
+    private float rot = 90;
+
+
+
+    [SerializeField] float shotSpeed = 0.5f;
+
+
+
+
+
 
     //攻撃力
     [SerializeField] float offensivePower;
@@ -104,11 +114,11 @@ public class PlayerMove : MonoBehaviour
         get { return speedForce; }
     }
 
-
     //ビーストモード攻撃力
     float beastAttackPower;
 
     //-------------フラグ用変数------------------------------
+    [Header("各種フラグ")]
     //ジャンプフラグ
     [SerializeField] bool jumpFlag;
     //アタックフラグ
