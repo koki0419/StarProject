@@ -154,6 +154,8 @@ public class GameSceneController : MonoBehaviour
         //chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
         //☆画像の初期化
         starChargeController.UpdateChildrenUI(starChildCount);
+        starChargeController.UpdateDestroyPoint(0);
+
         //初期化
         gameOvreUI.SetActive(false);
         gameClearUI.SetActive(false);

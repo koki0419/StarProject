@@ -1662,6 +1662,7 @@ MonoBehaviour:
   chargePoint: 0
   chargePointMax: 50
   starChildCount: 0
+  starChildCountSkip: 0
   destroyCount: 0
   playerHp: 500
   hpDownTime: 0.05
@@ -55968,7 +55969,7 @@ GameObject:
   - component: {fileID: 1934947727}
   - component: {fileID: 1934947726}
   m_Layer: 5
-  m_Name: UseFill
+  m_Name: DestroyFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
