@@ -34,26 +34,50 @@ public class GameSceneController : MonoBehaviour
 
     public ChargeUIController chargeUIController;
 
+    public StarChargeController starChargeController;
+
     [SerializeField] FadeLayer fadeLayer;
     [SerializeField] GameObject fadeText;
     [SerializeField] GameObject fadeChara;
 
     //------------数値変数の宣言--------------------
-    [SerializeField]
-    float chargePoint = 0;
+    //☆チャージポイント
+    [SerializeField] float chargePoint = 0;
     public float ChargePoint
     {
         get { return chargePoint; }
         set { chargePoint = value; }
     }
-
-    [SerializeField] float chargePointMax = 300;
+    //☆チャージポイント最大値+1で入力
+    [SerializeField] float chargePointMax = 51;
     public float ChargePointMax
     {
         get { return chargePointMax; }
         set { chargePointMax = value; }
     }
 
+
+    //小さい☆の獲得状況
+    [SerializeField] int starChildCount = 0;
+    public float StarChildCount
+    {
+        get { return starChildCount; }
+        set { starChildCount = (int)value; }
+    }
+    //小さい☆の獲得状況スキップ
+    [SerializeField] int starChildCountSkip = 0;
+    public float StarChildCountSkip
+    {
+        get { return starChildCountSkip; }
+        set { starChildCountSkip = (int)value; }
+    }
+
+    [SerializeField] float destroyCount = 0;
+    public float DestroyCount
+    {
+        get { return destroyCount; }
+        set { destroyCount = (int)value; }
+    }
     //プレイヤーHP
     [SerializeField] float playerHp;
 
@@ -69,7 +93,7 @@ public class GameSceneController : MonoBehaviour
 
     //*****************************
     //デバックポイント
-    [SerializeField] int debugPoint;
+    //[SerializeField] int debugPoint;
 
     //ゲージダウン割合
     float gaugeDroportion;
@@ -91,9 +115,8 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
         //チャージポイント
         chargePoint = 0;
-        chargePoint = debugPoint;
 
-        gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost/100;//StarCostを『0.01』にする
+        gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost / 100;//StarCostを『0.01』にする
 
         playerHpMax = playerHp;
         for (int i = 0; i < breakBoxController.Length; i++)
@@ -107,10 +130,9 @@ public class GameSceneController : MonoBehaviour
         }
 
         //☆子供オブジェクトを取得
-        //starControllers
         starChildrenOBJ = new GameObject[starObj.transform.childCount];
         starControllers = new StarController[starObj.transform.childCount];
-        //☆子供オブジェクト取得
+        //☆子供オブジェクト初期化
         for (int i = 0; starObj.transform.childCount > i; i++)
         {
             starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
@@ -121,15 +143,17 @@ public class GameSceneController : MonoBehaviour
         //エネミー子供オブジェクト取得
         enemyChildrenOBJ = new GameObject[enemyObj.transform.childCount];
         enemyController = new EnemyController[enemyObj.transform.childCount];
-        //エネミー子供オブジェクト取得
+        //エネミー子供オブジェクト初期化
         for (int i = 0; enemyObj.transform.childCount > i; i++)
         {
             enemyChildrenOBJ[i] = enemyObj.transform.GetChild(i).gameObject;
             enemyController[i] = enemyChildrenOBJ[i].GetComponent<EnemyController>();
             enemyController[i].Init(playerObj);
         }
-        chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
 
+        //chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
+        //☆画像の初期化
+        starChargeController.UpdateChildrenUI(starChildCount);
         //初期化
         gameOvreUI.SetActive(false);
         gameClearUI.SetActive(false);
@@ -144,12 +168,14 @@ public class GameSceneController : MonoBehaviour
         fadeChara.SetActive(true);
     }
 
+    //スタート
     IEnumerator Start()
     {
         isPlaying = false;
 
         yield return null;
         Init();
+        starChargeController.Init();
         playerMove.Init();
         yield return null;
         fadeText.SetActive(false);
@@ -171,10 +197,11 @@ public class GameSceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPlaying)
+        if (isPlaying)//ゲームスタート
         {
-            playerMove.OnUpdate();
+            playerMove.OnUpdate();//PlayerのUpdate
 
+            //チャージポイント
             if (chargePoint <= 0)
             {
                 chargePoint = 0;
@@ -183,27 +210,76 @@ public class GameSceneController : MonoBehaviour
             {
                 chargePoint = chargePointMax;
             }
-            chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
-
-            //ダメージを受ける
-            if (playerMove.BeastModeFlag){
-                HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
-            }else{
-                HpDamage(hpDownTime);
+            if ((starChildCountSkip + chargePoint) >= chargePointMax)
+            {
+                starChildCountSkip = (int)chargePointMax - (int)chargePoint;
+                chargePoint += starChildCountSkip;
             }
-            //HPを回復します
-            if (playerMove.BeastModeFlag)
+
+            if (starChildCountSkip != 0)
+            {
+                for (int i = 0; i < starChildCountSkip; i++)
+                {
+                    starChildCount++;
+                    starChargeController.UpdateChildrenUI(starChildCount);
+                    //☆獲得10個になったら初期化
+                    if (starChildCount == 10)
+                    {
+                        starChildCount = 0;
+                    }
+                }
+            }
+            //chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
+            if (chargePoint <= chargePointMax)
+            {
+                starChargeController.UpdateChildrenUI(starChildCount);
+                //☆獲得10個になったら初期化
+                if (starChildCount == 10)
+                {
+                    starChildCount = 0;
+                }
+            }
+            //ダメージを受ける//デストロイモード
+            if (playerMove.DestroyModeFlag)
+            {
+                // HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
+            }
+            else
+            {
+                //  HpDamage(hpDownTime);
+            }
+
+            if (playerMove.DestroyModeFlag)
             {
                 if (chargePoint > 0)
                 {
                     //HPを回復します
                     //HpRecovery(hpRecovery);
                     chargePoint -= gaugeDroportion;
+
+                    if (destroyCount >= 0)
+                    {
+                        destroyCount -= gaugeDroportion;
+                    }
+                    else
+                    {
+                        
+                        destroyCount = 10;
+                    }
+                    starChargeController.ReMoveStarUI(DestroyMode(chargePoint));
+                    starChargeController.UpdateDestroyPoint(destroyCount / 10);
+
+
                     if (chargePoint <= 0)
                     {
                         chargePoint = 0;
-                        playerMove.BeastModeFlag = false;
-                        playerMove.BeastModeEffect.SetActive(playerMove.BeastModeFlag);
+                        playerMove.DestroyModeFlag = false;
+                        if (chargePointMax >= 10)
+                        {
+                            chargePointMax -= 10;
+                        }
+                        playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
+                        starChargeController.BanStar(BanStarCheck(chargePointMax));
                     }
                     //playerMove.HpRecoveryFlag = true;
                 }
@@ -239,7 +315,7 @@ public class GameSceneController : MonoBehaviour
         }
 
         //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-        chargeUIController.UpdateHppoint(playerHp/playerHpMax);
+        chargeUIController.UpdateHppoint(playerHp / playerHpMax);
     }
 
     //HPを回復します
@@ -254,6 +330,68 @@ public class GameSceneController : MonoBehaviour
             playerHp = playerHpMax;
         }
         chargeUIController.UpdateHppoint(playerHp / playerHpMax);
+    }
+
+    //☆使用後状態を確認します
+    public int DestroyMode(float charge)
+    {
+        if (charge < 10)
+        {
+            charge = 1;
+            starChargeController.StarCount = 0;
+        }
+        else if (charge < 20)
+        {
+            charge = 2;
+            starChargeController.StarCount = 1;
+        }
+        else if (charge < 30)
+        {
+            charge = 3;
+            starChargeController.StarCount = 2;
+        }
+        else if (charge < 40)
+        {
+            charge = 4;
+            starChargeController.StarCount = 3;
+        }
+        else if (charge < 50)
+        {
+            charge = 5;
+            starChargeController.StarCount = 4;
+        }
+
+        return (int)charge;
+    }
+    public int BanStarCheck(float charge)
+    {
+        if (charge <= 10)
+        {
+            charge = 1;
+            starChargeController.StarCount = 0;
+        }
+        else if (charge <= 20)
+        {
+            charge = 2;
+            starChargeController.StarCount = 1;
+        }
+        else if (charge <= 30)
+        {
+            charge = 3;
+            starChargeController.StarCount = 2;
+        }
+        else if (charge <= 40)
+        {
+            charge = 4;
+            starChargeController.StarCount = 3;
+        }
+        else if (charge <= 50)
+        {
+            charge = 5;
+            starChargeController.StarCount = 4;
+        }
+
+        return (int)charge;
     }
 
 

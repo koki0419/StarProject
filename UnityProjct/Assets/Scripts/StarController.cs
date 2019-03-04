@@ -18,7 +18,7 @@ public class StarController : MonoBehaviour
     //------------フラグ変数の宣言------------------
 
     // Start is called before the first frame update
-    public void Init(GameObject player,PlayerMove playermove)
+    public void Init(GameObject player, PlayerMove playermove)
     {
         playerObj = player;
         playerMove = playermove;
@@ -55,8 +55,21 @@ public class StarController : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            Singleton.Instance.gameSceneController.ChargePoint += starPoint;
-            playerMove.GetStar = true;
+            //Debug.Log("chargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
+            //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
+            if (starPoint == 1)
+            {
+                if (!playerMove.DestroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint < Singleton.Instance.gameSceneController.ChargePointMax)
+                {
+                    Singleton.Instance.gameSceneController.ChargePoint += starPoint;
+                    Singleton.Instance.gameSceneController.StarChildCount += starPoint;
+                    playerMove.GetStar = true;
+                }
+            }
+            else
+            {
+                Singleton.Instance.gameSceneController.StarChildCountSkip += starPoint;
+            }
             Destroy(this.gameObject);
         }
     }

@@ -16,20 +16,20 @@ public class ChargeUIController : MonoBehaviour
     public Image hpFil;
 
     //チャージポイントのupdete
-    public void UpdateChargePoint(float percentage)
-    {
-        chargeFill.fillAmount = percentage;
-    }
-    //ユーザー用チャージポイントのupdete
-    public void UseUpdateChargePoint(float percentage)
-    {
-        useChargeFill.fillAmount = percentage;
-    }
-    //ユーザー用チャージポイントのupdete
-    public void beastModeUpdateChargePoint(float percentage)
-    {
-        beastModeFill.fillAmount = percentage;
-    }
+    //public void UpdateChargePoint(float percentage)
+    //{
+    //    chargeFill.fillAmount = percentage;
+    //}
+    ////ユーザー用チャージポイントのupdete
+    //public void UseUpdateChargePoint(float percentage)
+    //{
+    //    useChargeFill.fillAmount = percentage;
+    //}
+    ////ユーザー用チャージポイントのupdete
+    //public void beastModeUpdateChargePoint(float percentage)
+    //{
+    //    beastModeFill.fillAmount = percentage;
+    //}
 
     //public void UpdateHppoint(float hp,int hpFillNum)
     //{
