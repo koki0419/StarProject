@@ -29,6 +29,7 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] StarController[] starControllers;
 
+    CameraController cameraController;
 
     [SerializeField] EnemyController[] enemyController;
 
@@ -129,6 +130,8 @@ public class GameSceneController : MonoBehaviour
             boss[i].Init();
         }
 
+        cameraController = Singleton.Instance.cameraController;
+
         //☆子供オブジェクトを取得
         starChildrenOBJ = new GameObject[starObj.transform.childCount];
         starControllers = new StarController[starObj.transform.childCount];
@@ -179,6 +182,7 @@ public class GameSceneController : MonoBehaviour
         Init();
         starChargeController.Init();
         playerMove.Init();
+        cameraController.Init();
         yield return null;
         fadeText.SetActive(false);
         fadeChara.SetActive(false);
@@ -203,6 +207,7 @@ public class GameSceneController : MonoBehaviour
         {
             playerMove.OnUpdate();//PlayerのUpdate
 
+            cameraController.OnUpdate();
             //チャージポイント
             if (chargePoint <= 0)
             {
