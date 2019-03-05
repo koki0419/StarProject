@@ -107,8 +107,6 @@ public class EnemyController : MonoBehaviour
                 break;
             case EnemyState.Discovery:
                 {
-                    Debug.Log("プレイヤー発見");
-
 
                     //プレイヤーポジション取得
                     playerPos = playerObj.transform.localPosition;

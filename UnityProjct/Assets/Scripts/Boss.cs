@@ -126,8 +126,8 @@ public class Boss : MonoBehaviour
     {
         if (other.name == "Player_Hand" && acquisitionPoint == 0 && playerMove.AttackFlag)
         {
-            foundationHP -= OnDamage(playerMove.OffensivePower, playerMove.SpeedForce);
-            Singleton.Instance.OnDamage(OnDamage(playerMove.OffensivePower, playerMove.SpeedForce), this.gameObject.transform);
+            foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
             var hp = 1.0;
             hp -= (foundationHP / foundationHPMax);
             OnSliderUpdate((float)hp);
