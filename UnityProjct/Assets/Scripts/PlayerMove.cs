@@ -110,7 +110,7 @@ public class PlayerMove : MonoBehaviour
 
     private float rot = 90;
 
-
+    //[Range(0.0f,1.0f)]
 
     [SerializeField] float shotSpeed = 0.5f;
 
