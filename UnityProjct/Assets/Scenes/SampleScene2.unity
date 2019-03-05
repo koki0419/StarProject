@@ -1013,6 +1013,7 @@ MonoBehaviour:
   playerHp: 0
   hpDownTime: 1
   gameClear: 0
+  gameOver: 0
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -4694,60 +4695,68 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 100050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 3800842657014006326, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_Name
       value: riginghero
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.23
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalRotation.y
       value: 0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_RootOrder
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+    - target: {fileID: 1088594591299816383, guid: fcebf27e513ad9b41bab461fd398b950,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9500000, guid: 599101063dca58947bb07fb207809427, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 174a950b8db89aa4da6496ea4cba808a, type: 2}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 599101063dca58947bb07fb207809427, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: fcebf27e513ad9b41bab461fd398b950, type: 3}
 --- !u!1 &1462597733 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100052, guid: 1779a69347e457343868c94296721496,
@@ -5162,6 +5171,8 @@ MonoBehaviour:
   shotSpeed: 5
   offensivePower: 0
   speedForce: 0
+  attackSpeed: 0
+  attackPower: 0
   jumpFlag: 0
   attackFlag: 0
   destroyModeFlag: 0

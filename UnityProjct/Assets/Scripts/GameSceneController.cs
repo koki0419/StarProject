@@ -213,7 +213,9 @@ public class GameSceneController : MonoBehaviour
     {
         if (isPlaying)//ゲームスタート
         {
-            playerMove.OnUpdate();//PlayerのUpdate
+            float deltaTime = Time.deltaTime;
+
+            playerMove.OnUpdate(deltaTime);//PlayerのUpdate
 
             cameraController.OnUpdate();
             //チャージポイント
