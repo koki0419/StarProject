@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameSceneController : MonoBehaviour
 {
@@ -101,12 +102,18 @@ public class GameSceneController : MonoBehaviour
     //------------フラグ変数の宣言------------------
     bool isPlaying = false;
 
-    [SerializeField]
-    bool gameClear = false;
+    [SerializeField] bool gameClear = false;
     public bool GameClear
     {
         get { return gameClear; }
         set { gameClear = value; }
+    }
+
+    [SerializeField] bool gameOver = false;
+    public bool GameOver
+    {
+        get { return gameOver; }
+        set { gameOver = value; }
     }
 
     //初期化
@@ -163,6 +170,7 @@ public class GameSceneController : MonoBehaviour
         gameOvreUI.SetActive(false);
         gameClearUI.SetActive(false);
         gameClear = false;
+        gameOver = false;
 
     }
 
@@ -293,17 +301,15 @@ public class GameSceneController : MonoBehaviour
             }
 
             //ゲームオーバー
-            if (playerHp <= 0)
+            if (gameOver)
             {
-                isPlaying = false;
-                gameOvreUI.SetActive(true);
+                StartCoroutine(OnGameOver());
             }
 
             //ゲームクリア
             if (gameClear)
             {
-                isPlaying = false;
-                gameClearUI.SetActive(true);
+               StartCoroutine(OnClear());
             }
         }
     }
@@ -401,6 +407,35 @@ public class GameSceneController : MonoBehaviour
         return (int)charge;
     }
 
+
+
+    //スタート
+    IEnumerator OnClear()
+    {
+        isPlaying = false;
+
+        yield return new WaitForSeconds(0.5f);
+        gameClearUI.SetActive(true);
+        yield return null;
+
+        yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("TitleScene");
+    }
+    
+    //スタート
+    IEnumerator OnGameOver()
+    {
+        isPlaying = false;
+
+        yield return new WaitForSeconds(0.5f);
+        gameOvreUI.SetActive(true);
+        yield return null;
+
+        yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
+
+        SceneManager.LoadScene("TitleScene");
+    }
 
     //private void OnPawnTakeDamage(Pawn pawn, float damage)
     //{
