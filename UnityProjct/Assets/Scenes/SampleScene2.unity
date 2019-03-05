@@ -630,6 +630,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeFill: {fileID: 748086642}
   useChargeFill: {fileID: 1934947726}
+  beastModeFill: {fileID: 0}
   hpFil: {fileID: 0}
 --- !u!1 &116503416 stripped
 GameObject:
@@ -985,21 +986,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a443dc526aeeae4dbc9a2d9f7c615ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOvreUI: {fileID: 0}
+  gameClearUI: {fileID: 0}
+  playerObj: {fileID: 0}
+  starObj: {fileID: 0}
+  enemyObj: {fileID: 0}
   playerMove: {fileID: 1621443635}
   breakBoxController:
   - {fileID: 373068827}
   - {fileID: 61466077}
   - {fileID: 805989565}
   - {fileID: 1492465244}
+  boss: []
+  starControllers: []
+  enemyController: []
   chargeUIController: {fileID: 111622953}
+  starChargeController: {fileID: 0}
   fadeLayer: {fileID: 0}
   fadeText: {fileID: 0}
   fadeChara: {fileID: 0}
   chargePoint: 0
   chargePointMax: 300
+  starChildCount: 0
+  starChildCountSkip: 0
+  destroyCount: 0
   playerHp: 0
   hpDownTime: 1
-  debugPoint: 0
+  gameClear: 0
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -1028,6 +1041,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   starGenerator: {fileID: 183918047}
   gameSceneController: {fileID: 185138399}
+  cameraController: {fileID: 0}
 --- !u!1 &192588420 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100090, guid: d535fa6a3c5aae440a115ec894becc50,
@@ -1221,9 +1235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyState: 0
-  playerObj: {fileID: 1621443634}
-  StartPos: {x: 10, y: 0.5, z: 0}
-  EndPos: {x: 8, y: 0.5, z: 0}
+  amountOfMovement: {x: 0, y: 0, z: 0}
   time: 1
 --- !u!135 &211319579
 SphereCollider:
@@ -2125,6 +2137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1621443640}
   camaraPos: 0.5
+  camaraMove: 1.5
 --- !u!1 &551600148 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100022, guid: d535fa6a3c5aae440a115ec894becc50,
@@ -3916,6 +3929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeFill: {fileID: 0}
   useChargeFill: {fileID: 0}
+  beastModeFill: {fileID: 0}
   hpFil: {fileID: 0}
 --- !u!114 &1231812591
 MonoBehaviour:
@@ -4673,6 +4687,67 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &1461809937
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 100050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_Name
+      value: riginghero
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 400050, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 599101063dca58947bb07fb207809427, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 174a950b8db89aa4da6496ea4cba808a, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 599101063dca58947bb07fb207809427, type: 3}
 --- !u!1 &1462597733 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100052, guid: 1779a69347e457343868c94296721496,
@@ -5069,7 +5144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3267c4185e4fda3468f9647a8249a3e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAttackState: 0
+  objState: 0
   playerBeastModeState: 0
   animatorComponent: {fileID: 0}
   starEffect: {fileID: 0}
@@ -5078,17 +5153,18 @@ MonoBehaviour:
   chargeEffect2: {fileID: 0}
   beastModeEffect: {fileID: 0}
   moveSpeed: 0.1
-  rotSpeed: 1.5
   jumpSpeed: 15
-  shotSpeed: 5
   userChargePonitTime: 0.001
+  destroyModeChargePonitTime: 0.001
+  rotSpeed: 1.5
   foundationoffensivePower: 0
   foundationSpeedForce: 0
+  shotSpeed: 5
   offensivePower: 0
   speedForce: 0
   jumpFlag: 0
   attackFlag: 0
-  beastModeFlag: 0
+  destroyModeFlag: 0
 --- !u!54 &1621443636
 Rigidbody:
   m_ObjectHideFlags: 0
