@@ -121,19 +121,27 @@ public class PlayerMove : MonoBehaviour
 
     //攻撃力
     [SerializeField] float offensivePower;
-    public float OffensivePower
-    {
-        get { return offensivePower; }
-    }
+
     //移動量
     [SerializeField] float speedForce;
-    public float SpeedForce
-    {
-        get { return speedForce; }
-    }
+
 
     //ビーストモード攻撃力
     float beastAttackPower;
+
+    //攻撃時Speed
+    [SerializeField] float attackSpeed;
+    public float AttackSpeed
+    {
+        get { return attackSpeed; }
+    }
+
+    //攻撃じパワー
+    [SerializeField] float attackPower;
+    public float AttackPower
+    {
+        get { return attackPower; }
+    }
 
     //-------------フラグ用変数------------------------------
     [Header("各種フラグ")]
@@ -329,7 +337,7 @@ public class PlayerMove : MonoBehaviour
 
             case ObjState.Attack:
                 {
-                    MoveAttack(speedForce/10, dy);
+                    MoveAttack(attackSpeed / 10, dy);
                     StartCoroutine(OnAttack(0));
                 }
                 break;
@@ -370,8 +378,8 @@ public class PlayerMove : MonoBehaviour
                         {
 
                             //チャージ終了（チャージゲージを0に戻す）
-                            offensivePower = chargeCount * foundationoffensivePower + foundationoffensivePower;
-                            speedForce = chargeCount * speedForce + foundationSpeedForce;
+                            attackPower = chargeCount * offensivePower + foundationoffensivePower;
+                            attackSpeed = chargeCount * speedForce + foundationSpeedForce;
 
                             //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                             //チャージゲージをリセットします
@@ -405,8 +413,9 @@ public class PlayerMove : MonoBehaviour
                         {
 
                             //チャージ終了（チャージゲージを0に戻す）
-                            offensivePower = chargeCount * foundationoffensivePower + foundationoffensivePower;
-                            speedForce = chargeCount * speedForce + foundationSpeedForce;
+                            attackPower = chargeCount * offensivePower + foundationoffensivePower;
+
+                            attackSpeed = chargeCount * speedForce + foundationSpeedForce;
 
                             //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                             //チャージゲージをリセットします
@@ -444,23 +453,26 @@ public class PlayerMove : MonoBehaviour
             hpRecoveryEffect.SetActive(false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!chargeEffectFlag1)
-            {
-                chargeEffectFlag1 = true;
-                chargeEffectFlag2 = false;
-            }
-            else
-            {
-                chargeEffectFlag1 = false;
-                chargeEffectFlag2 = true;
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    if (!chargeEffectFlag1)
+        //    {
+        //        chargeEffectFlag1 = true;
+        //        chargeEffectFlag2 = false;
+        //    }
+        //    else
+        //    {
+        //        chargeEffectFlag1 = false;
+        //        chargeEffectFlag2 = true;
+        //    }
+        //}
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Joystick1Button3))
         {
-            if (!destroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax && Singleton.Instance.gameSceneController.ChargePointMax != 0)
+            Debug.Log("ChargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
+            Debug.Log("ChargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
+
+            if (!destroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax && Singleton.Instance.gameSceneController.ChargePoint != 0)
             {
                 Singleton.Instance.gameSceneController.DestroyCount = 10;
                 destroyModeFlag = true;

@@ -249,11 +249,11 @@ public class GameSceneController : MonoBehaviour
             //ダメージを受ける//デストロイモード
             if (playerMove.DestroyModeFlag)
             {
-                // HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
+                 HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
             }
             else
             {
-                //  HpDamage(hpDownTime);
+                  HpDamage(hpDownTime);
             }
 
             if (playerMove.DestroyModeFlag)
