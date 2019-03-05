@@ -84,6 +84,8 @@ public class PlayerMove : MonoBehaviour
     //ジャンプ力
     [SerializeField] float jumpSpeed;
 
+    [SerializeField] float jumpgravity;
+
     //チャージポイント使用時のユーザーゲージ上昇量
     [SerializeField] float userChargePonitTime = 0.001f;
 
@@ -218,7 +220,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void OnUpdate()
+    public void OnUpdate(float deltaTime)
     {
         float dy = Input.GetAxis("Vertical");
         //移動
@@ -231,10 +233,8 @@ public class PlayerMove : MonoBehaviour
                     {
                         jumpFlag = true;
                     }
-                    else
-                    {
-                        jumpFlag = false;
-                    }
+
+
 
 
 
@@ -242,7 +242,7 @@ public class PlayerMove : MonoBehaviour
                     if (!destroyModeFlag)
                     {
                         //移動
-                        Move(dx, dx, jumpFlag);
+                        Move(dx, deltaTime);
 
                         //チャージ
                         if (Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
@@ -300,7 +300,7 @@ public class PlayerMove : MonoBehaviour
                     else
                     {
                         //移動
-                        Move(dx * (int)PlayerBeastModeState.SpeedPower, dx, jumpFlag);
+                        Move(dx * (int)PlayerBeastModeState.SpeedPower, deltaTime);
 
                         //チャージ
                         if (Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
@@ -467,53 +467,53 @@ public class PlayerMove : MonoBehaviour
         //    }
         //}
 
-        if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Joystick1Button3))
-        {
-            Debug.Log("ChargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
-            Debug.Log("ChargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
+        //if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Joystick1Button3))
+        //{
+        //    //Debug.Log("ChargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
+        //    //Debug.Log("ChargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
 
-            if (!destroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax && Singleton.Instance.gameSceneController.ChargePoint != 0)
-            {
-                Singleton.Instance.gameSceneController.DestroyCount = 10;
-                destroyModeFlag = true;
-                beastAttackPower = Singleton.Instance.gameSceneController.ChargePointMax;
-                //Debug.Log("chargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
-                //Debug.Log("chargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
-                //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
-            }
-            else
-            {
-                destroyModeFlag = false;
-                if (Singleton.Instance.gameSceneController.ChargePoint < 10)
-                {
-                    Singleton.Instance.gameSceneController.ChargePoint = 0;
-                }
-                else if (Singleton.Instance.gameSceneController.ChargePoint < 20)
-                {
-                    Singleton.Instance.gameSceneController.ChargePoint = 10;
-                }
-                else if (Singleton.Instance.gameSceneController.ChargePoint < 30)
-                {
-                    Singleton.Instance.gameSceneController.ChargePoint = 20;
-                }
-                else if (Singleton.Instance.gameSceneController.ChargePoint < 40)
-                {
-                    Singleton.Instance.gameSceneController.ChargePoint = 30;
-                }
-                else if (Singleton.Instance.gameSceneController.ChargePoint < 50)
-                {
-                    Singleton.Instance.gameSceneController.ChargePoint = 40;
-                }
-
-
+        //    if (!destroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax && Singleton.Instance.gameSceneController.ChargePoint != 0)
+        //    {
+        //        Singleton.Instance.gameSceneController.DestroyCount = 10;
+        //        destroyModeFlag = true;
+        //        beastAttackPower = Singleton.Instance.gameSceneController.ChargePointMax;
+        //        //Debug.Log("chargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
+        //        //Debug.Log("chargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
+        //        //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
+        //    }
+        //    else
+        //    {
+        //        destroyModeFlag = false;
+        //        if (Singleton.Instance.gameSceneController.ChargePoint < 10)
+        //        {
+        //            Singleton.Instance.gameSceneController.ChargePoint = 0;
+        //        }
+        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 20)
+        //        {
+        //            Singleton.Instance.gameSceneController.ChargePoint = 10;
+        //        }
+        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 30)
+        //        {
+        //            Singleton.Instance.gameSceneController.ChargePoint = 20;
+        //        }
+        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 40)
+        //        {
+        //            Singleton.Instance.gameSceneController.ChargePoint = 30;
+        //        }
+        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 50)
+        //        {
+        //            Singleton.Instance.gameSceneController.ChargePoint = 40;
+        //        }
 
 
-                Singleton.Instance.gameSceneController.starChargeController.BanStar(Singleton.Instance.gameSceneController.BanStarCheck(Singleton.Instance.gameSceneController.ChargePointMax));
-                Singleton.Instance.gameSceneController.ChargePointMax -= 10;
-            }
-            beastModeEffect.SetActive(destroyModeFlag);
 
-        }
+
+        //        Singleton.Instance.gameSceneController.starChargeController.BanStar(Singleton.Instance.gameSceneController.BanStarCheck(Singleton.Instance.gameSceneController.ChargePointMax));
+        //        //Singleton.Instance.gameSceneController.ChargePointMax -= 10;
+        //    }
+        //    beastModeEffect.SetActive(destroyModeFlag);
+
+        //}
     }
 
 
@@ -529,12 +529,14 @@ public class PlayerMove : MonoBehaviour
     }
 
     //移動
-    void Move(float x, float horizontal, bool jumpFlag)
+    void Move(float horizontal,float deltaTime)
     {
         var position = transform.position;
-        position.x += x * moveSpeed; //Time.deltaTime;
+        position.x += horizontal * moveSpeed * deltaTime;
         transform.position = position;
 
+        var velocity = rigidbody.velocity;
+       // velocity.x += moveSpeed;
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -550,11 +552,17 @@ public class PlayerMove : MonoBehaviour
         }
         if (jumpFlag)
         {
+            jumpFlag = false;
             isGroundFlag = false;
-            var velocity = rigidbody.velocity;
-            velocity.y = jumpSpeed; // * Time.deltaTime;
-            rigidbody.velocity = velocity;
+
+            velocity.y += jumpSpeed; // * Time.deltaTime;
+
         }
+
+        velocity.y += Physics.gravity.y *jumpgravity * deltaTime;
+
+        rigidbody.velocity = velocity;// * deltaTime;
+        //characterController.Move(velocity * Time.deltaTime);
     }
 
     void DirectionMove(float horizontal)
@@ -697,8 +705,7 @@ public class PlayerMove : MonoBehaviour
         var chargeNow = Singleton.Instance.gameSceneController.ChargePoint;
 
         var charge = chargeNow/ chargeMax;
-        Debug.Log("chargeNow" + chargeNow);
-        Debug.Log("chargeMax" + chargeMax);
+
         return charge;
     }
 
