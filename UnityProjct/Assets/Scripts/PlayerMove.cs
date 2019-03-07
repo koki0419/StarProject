@@ -1,22 +1,19 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    ////Attack消費ポイント
-    //public enum PlayerAttackState
-    //{
-    //    None,
-    //    Attack1 = 20,
-    //    Attack2 = 40,
-    //    Attack3 = 60,
-    //    Attack4 = 80,
-    //    Attack5 = 100,
+    //攻撃時設定数値
+    public enum PlayerAttackIndex
+    {
+        None,
+        AttackNormal = 1001,
+        AttackUp = 1010,
+        AttackDown = 1011,
 
-    //}
-    //public PlayerAttackState playerAttackState = PlayerAttackState.None;
+    }
 
+    public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
 
     //オブジェクトステータス
     public enum ObjState
@@ -28,8 +25,9 @@ public class PlayerMove : MonoBehaviour
         OnCharge,
 
     }
-
     public ObjState objState = ObjState.None;
+
+
 
     //ビーストモード消費ポイント
     public enum PlayerBeastModeState
@@ -83,7 +81,7 @@ public class PlayerMove : MonoBehaviour
 
     //ジャンプ力
     [SerializeField] float jumpSpeed;
-
+    //ジャンプ重力
     [SerializeField] float jumpgravity;
 
     //チャージポイント使用時のユーザーゲージ上昇量
@@ -102,30 +100,34 @@ public class PlayerMove : MonoBehaviour
     //初期移動量
     [SerializeField] float foundationSpeedForce;
 
-
-    //チャージ量
-    float chargeNow = 0.0f;
-
-    int chargeCount = 0;
-
-    private float moveTime;
-
-    private float rot = 90;
-
-    //[Range(0.0f,1.0f)]
-
-    [SerializeField] float shotSpeed = 0.5f;
-
-
-
-
-
-
+    [Header("チャージ回数に掛け算される力")]
     //攻撃力
     [SerializeField] float offensivePower;
 
     //移動量
     [SerializeField] float speedForce;
+
+
+    //現在のチャージ量
+    float chargeNow = 0.0f;
+    //何回チャージしたか
+    int chargeCount = 0;
+    //チャージ上限
+    int chargeCountMax = 0;
+    //回転
+    private float rot = 90;
+
+    //ジャンプボタンを押している時間
+    float jumpPushKeyTime = 0;
+
+    //private float moveTime;
+
+    //[Range(0.0f, 100.0f)]
+    //[SerializeField] float jumpTimeLimit;
+
+    //弾の発射スピード
+    //[SerializeField] float shotSpeed = 0.5f;
+
 
 
     //ビーストモード攻撃力
@@ -138,7 +140,7 @@ public class PlayerMove : MonoBehaviour
         get { return attackSpeed; }
     }
 
-    //攻撃じパワー
+    //攻撃時パワー
     [SerializeField] float attackPower;
     public float AttackPower
     {
@@ -195,6 +197,7 @@ public class PlayerMove : MonoBehaviour
         objState = ObjState.Normal;
         //右向きに指定
         transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+        //Rigidbodyを取得します
         rigidbody = gameObject.GetComponent<Rigidbody>();
         //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
         //チャージゲージをリセットします
@@ -211,7 +214,7 @@ public class PlayerMove : MonoBehaviour
         hpRecoveryEffect.SetActive(false);
 
 
-        //デバック用
+        //デバック用//エフェクト
         chargeEffectFlag1 = false;
         chargeEffectFlag2 = false;
         chargeEffect1.SetActive(chargeEffectFlag1);
@@ -223,115 +226,158 @@ public class PlayerMove : MonoBehaviour
     public void OnUpdate(float deltaTime)
     {
         float dy = Input.GetAxis("Vertical");
+
         //移動
         float dx = Input.GetAxis("Horizontal");
+
+        if (dx != 0 && !attack)
+        {
+            animatorComponent.SetBool("walkFlag", true);
+        }else
+        {
+            animatorComponent.SetBool("walkFlag", false);
+        }
         switch (objState)
         {
+            //通常時
             case ObjState.Normal:
                 {
-                    if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    if (!attackFlag)
                     {
-                        jumpFlag = true;
-                    }
-
-
-
-
-
-                    //通常時
-                    if (!destroyModeFlag)
-                    {
-                        //移動
-                        Move(dx, deltaTime);
-
-                        //チャージ
-                        if (Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
+                        if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Joystick1Button0))
                         {
-                            //チャージ中
-                            //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax));
-                            //              Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
-                            objState = ObjState.OnCharge;
-
-                            
-                            //チャージエフェクトデバック---------------------------
-                            //var charge = OnCharge(Singleton.Instance.gameSceneController.ChargePoint / Singleton.Instance.gameSceneController.ChargePointMax);
-
-                            //if (charge < 0.5)
-                            //{
-                            //    chargeEffectFlag1 = true;
-                            //    chargeEffectFlag2 = false;
-                            //}
-                            //else
-                            //{
-                            //    chargeEffectFlag1 = false;
-                            //    chargeEffectFlag2 = true;
-                            //}
-
-                            //chargeEffect1.SetActive(chargeEffectFlag1);
-                            //chargeEffect2.SetActive(chargeEffectFlag2);
-
-
-
-                            //--------------------------------------------------
+                            jumpFlag = true;
+                            animatorComponent.SetBool("walkFlag", false);
                         }
-                        //else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                        //else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button0))
                         //{
-
-                        //    //チャージ終了（チャージゲージを0に戻す）
-                        //    offensivePower = chargeCount * foundationoffensivePower + foundationoffensivePower;
-                        //    speedForce = chargeCount * speedForce + foundationSpeedForce;
-
-                        //    //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-                        //    //チャージゲージをリセットします
-                        //    Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
-                        //    //チャージ中☆を戻します
-                        //    Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
-                        //    chargeCount = 0;
-                        //    chargeNow = 0.0f;
-
-                        //    attackFlag = true;
-                        //    OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                        //    chargeEffect1.SetActive(false);
-                        //    chargeEffect2.SetActive(false);
-                        //    objState = ObjState.Attack;
-                        //}
-                    }
-                    //ビーストモード
-                    else
-                    {
-                        //移動
-                        Move(dx * (int)PlayerBeastModeState.SpeedPower, deltaTime);
-
-                        //チャージ
-                        if (Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
-                        {
-                            //チャージエフェクトデバック---------------------------
-                            chargeEffectFlag1 = false;
-                            chargeEffectFlag2 = true;
-
-                            chargeEffect1.SetActive(chargeEffectFlag1);
-                            chargeEffect2.SetActive(chargeEffectFlag2);
-                        }
-                        //else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                        //{
-                        //    //チャージ終了（チャージゲージを0に戻す）
-                        //    offensivePower = beastAttackPower * (float)PlayerBeastModeState.AttacPower + foundationoffensivePower;
-                        //    speedForce = beastAttackPower * (int)PlayerBeastModeState.SpeedPower + foundationSpeedForce;
-
-
-                        //    attackFlag = true;
-                        //    OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                        //    chargeEffect1.SetActive(false);
-                        //    chargeEffect2.SetActive(false);
-                        //    objState = ObjState.Attack;
-
-                        //    if (dy >= 1)
+                        //    jumpPushKeyTime += Time.deltaTime;
+                        //    if(jumpPushKeyTime > jumpTimeLimit && isGroundFlag)
                         //    {
                         //        isGroundFlag = false;
                         //        jumpFlag = true;
                         //    }
                         //}
+                        //else if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.Joystick1Button0))
+                        //{
+                        //    if (jumpPushKeyTime < jumpTimeLimit && isGroundFlag)
+                        //    {
+                        //        isGroundFlag = false;
+                        //        jumpFlag = true;
+                        //    }
+                        //    jumpPushKeyTime = 0.0f;
+                        //    //jumpFlag = true;
+
+                        //}
+                        //移動
+                        Move(dx, jumpPushKeyTime, deltaTime);
+                        //Debug.Log("jumpPushKeyTime" + jumpPushKeyTime);
                     }
+                    else
+                    {
+                        DirectionMove(dx);
+                        rigidbody.isKinematic = true;
+                    }
+
+                    //チャージ
+                    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                    {
+                        animatorComponent.SetBool("walkFlag", false);
+                        attackFlag = true;
+
+                        //チャージ中
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
+
+                        //チャージエフェクトデバック---------------------------
+                        if (chargeCount < 3)
+                        {
+                            chargeEffectFlag1 = true;
+                            chargeEffectFlag2 = false;
+                        }
+                        else
+                        {
+                            chargeEffectFlag1 = false;
+                            chargeEffectFlag2 = true;
+                        }
+
+                        chargeEffect1.SetActive(chargeEffectFlag1);
+                        chargeEffect2.SetActive(chargeEffectFlag2);
+
+                    }
+                    else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                    {
+                        //チャージ終了（チャージゲージを0に戻す）
+                        attackPower = chargeCount * offensivePower + foundationoffensivePower;
+                        attackSpeed = chargeCount * speedForce + foundationSpeedForce;
+
+                        //チャージゲージをリセットします
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+                        //チャージ中☆を戻します
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
+                        chargeCount = 0;
+                        chargeNow = 0.0f;
+
+                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                        chargeEffect1.SetActive(false);
+                        chargeEffect2.SetActive(false);
+
+                        rigidbody.isKinematic = false;
+
+
+                        objState = ObjState.Attack;
+                    }
+                }
+                break;
+                //デストロイモード
+            case ObjState.DestroyMode:
+                {
+                    if (!attackFlag)
+                    {
+                        //移動
+                        Move(dx * (int)PlayerBeastModeState.SpeedPower, jumpPushKeyTime, deltaTime);
+                    }
+                    else
+                    {
+                        DirectionMove(dx);
+                        rigidbody.isKinematic = true;
+                    }
+                    //チャージ
+                    if (Input.GetKey(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
+                    {
+                        animatorComponent.SetBool("walkFlag", false);
+                        attackFlag = true;
+                        //チャージエフェクトデバック---------------------------
+                        chargeEffectFlag1 = false;
+                        chargeEffectFlag2 = true;
+
+                        chargeEffect1.SetActive(chargeEffectFlag1);
+                        chargeEffect2.SetActive(chargeEffectFlag2);
+                    }
+                    if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                    {
+
+                        //チャージ終了（チャージゲージを0に戻す）
+                        attackPower = chargeCountMax * offensivePower + foundationoffensivePower;
+                        attackSpeed = chargeCountMax * speedForce + foundationSpeedForce;
+
+                        //チャージゲージをリセットします
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+                        //チャージ中☆を戻します
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
+                        chargeCount = 0;
+                        chargeNow = 0.0f;
+
+
+                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                        chargeEffect1.SetActive(false);
+                        chargeEffect2.SetActive(false);
+
+                        rigidbody.isKinematic = false;
+
+                        objState = ObjState.Attack;
+
+                    }
+
                 }
                 break;
 
@@ -342,116 +388,115 @@ public class PlayerMove : MonoBehaviour
                 }
                 break;
 
-            case ObjState.OnCharge:
-                {
-                    DirectionMove(dx);
-                    rigidbody.isKinematic = true;
-                    //通常時
-                    if (!destroyModeFlag)
-                    {
-                        //チャージ
-                        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
-                        {
-                            //チャージ中
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
+                //case ObjState.OnCharge:
+                //{
+                //DirectionMove(dx);
+                //rigidbody.isKinematic = true;
+                ////通常時
+                //if (!destroyModeFlag)
+                //{
+                //    //チャージ
+                //    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                //    {
+                //        //チャージ中
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
 
-                            //チャージエフェクトデバック---------------------------
-                          //  var charge = OnChargeEffect();
-                            //Debug.Log(OnChargeEffect());
-                           // if (charge < 0.5)
-                            if (chargeCount < 3)
-                            {
-                                chargeEffectFlag1 = true;
-                                chargeEffectFlag2 = false;
-                            }
-                            else
-                            {
-                                chargeEffectFlag1 = false;
-                                chargeEffectFlag2 = true;
-                            }
+                //        //チャージエフェクトデバック---------------------------
+                //        if (chargeCount < 3)
+                //        {
+                //            chargeEffectFlag1 = true;
+                //            chargeEffectFlag2 = false;
+                //        }
+                //        else
+                //        {
+                //            chargeEffectFlag1 = false;
+                //            chargeEffectFlag2 = true;
+                //        }
 
-                            chargeEffect1.SetActive(chargeEffectFlag1);
-                            chargeEffect2.SetActive(chargeEffectFlag2);
+                //        chargeEffect1.SetActive(chargeEffectFlag1);
+                //        chargeEffect2.SetActive(chargeEffectFlag2);
 
-                        }
-                        else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                        {
+                //    }
+                //    if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                //    {
 
-                            //チャージ終了（チャージゲージを0に戻す）
-                            attackPower = chargeCount * offensivePower + foundationoffensivePower;
-                            attackSpeed = chargeCount * speedForce + foundationSpeedForce;
+                //        //チャージ終了（チャージゲージを0に戻す）
+                //        attackPower = chargeCount * offensivePower + foundationoffensivePower;
+                //        attackSpeed = chargeCount * speedForce + foundationSpeedForce;
 
-                            //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-                            //チャージゲージをリセットします
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
-                            //チャージ中☆を戻します
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
-                            chargeCount = 0;
-                            chargeNow = 0.0f;
+                //        //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
+                //        //チャージゲージをリセットします
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+                //        //チャージ中☆を戻します
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
+                //        chargeCount = 0;
+                //        chargeNow = 0.0f;
 
-                            attackFlag = true;
-                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                            chargeEffect1.SetActive(false);
-                            chargeEffect2.SetActive(false);
+                //        attackFlag = true;
+                //        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                //        chargeEffect1.SetActive(false);
+                //        chargeEffect2.SetActive(false);
 
-                            rigidbody.isKinematic = false;
+                //        rigidbody.isKinematic = false;
 
-                            objState = ObjState.Attack;
+                //        objState = ObjState.Attack;
 
-                        }
-                    }
-                    else if (destroyModeFlag)
-                    {
-                        
-                        //チャージ
-                        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
-                        {
-                            //チャージ中
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
-                        }
-                        else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                        {
+                //    }
+                //}
+                //else if (destroyModeFlag)
+                //{
 
-                            //チャージ終了（チャージゲージを0に戻す）
-                            attackPower = chargeCount * offensivePower + foundationoffensivePower;
+                //    //チャージ
+                //    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+                //    {
+                //        //チャージ中
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
+                //    }
+                //    else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+                //    {
 
-                            attackSpeed = chargeCount * speedForce + foundationSpeedForce;
+                //        //チャージ終了（チャージゲージを0に戻す）
+                //        attackPower = chargeCount * offensivePower + foundationoffensivePower;
 
-                            //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
-                            //チャージゲージをリセットします
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
-                            //チャージ中☆を戻します
-                            Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
-                            chargeCount = 0;
-                            chargeNow = 0.0f;
+                //        attackSpeed = chargeCount * speedForce + foundationSpeedForce;
 
-                            attackFlag = true;
-                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                            chargeEffect1.SetActive(false);
-                            chargeEffect2.SetActive(false);
+                //        //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
+                //        //チャージゲージをリセットします
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+                //        //チャージ中☆を戻します
+                //        Singleton.Instance.gameSceneController.starChargeController.UpdateStarUI(chargeCount);
+                //        chargeCount = 0;
+                //        chargeNow = 0.0f;
 
-                            rigidbody.isKinematic = false;
+                //        attackFlag = true;
+                //        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                //        chargeEffect1.SetActive(false);
+                //        chargeEffect2.SetActive(false);
 
-                            objState = ObjState.Attack;
-                        }
-                    }
+                //        rigidbody.isKinematic = false;
 
-                }
-                break;
+                //        objState = ObjState.Attack;
+                //    }
         }
+
+        //}
+        //break;
+
+
+        // }
 
         if (getStar)
         {
             StartCoroutine(OnGetStar());
         }
-        if (hpRecoveryFlag)
-        {
-            hpRecoveryEffect.SetActive(true);
-        }
-        else
-        {
-            hpRecoveryEffect.SetActive(false);
-        }
+        //if (hpRecoveryFlag)
+        //{
+        //    hpRecoveryEffect.SetActive(true);
+        //}
+        //else
+        //{
+        //    hpRecoveryEffect.SetActive(false);
+        //}
 
         //if (Input.GetKeyDown(KeyCode.Space))
         //{
@@ -523,20 +568,20 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
+            animatorComponent.SetBool("walkFlag", true);
             isGroundFlag = true;
             jumpFlag = false;
         }
     }
 
     //移動
-    void Move(float horizontal,float deltaTime)
+    void Move(float horizontal, float jTime, float deltaTime)
     {
         var position = transform.position;
         position.x += horizontal * moveSpeed * deltaTime;
         transform.position = position;
 
         var velocity = rigidbody.velocity;
-       // velocity.x += moveSpeed;
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -555,14 +600,14 @@ public class PlayerMove : MonoBehaviour
             jumpFlag = false;
             isGroundFlag = false;
 
-            velocity.y += jumpSpeed; // * Time.deltaTime;
+            velocity.y += jumpSpeed;
 
+            animatorComponent.SetBool("walkFlag", true);
         }
 
-        velocity.y += Physics.gravity.y *jumpgravity * deltaTime;
+        velocity.y += Physics.gravity.y * jumpgravity * deltaTime;
 
-        rigidbody.velocity = velocity;// * deltaTime;
-        //characterController.Move(velocity * Time.deltaTime);
+        rigidbody.velocity = velocity;
     }
 
     void DirectionMove(float horizontal)
@@ -605,6 +650,7 @@ public class PlayerMove : MonoBehaviour
             velocity.y = speedForce; // * Time.deltaTime;
             rigidbody.velocity = velocity;
         }
+
     }
     //攻撃
     //void OnAttack(float charge, Vector2 direction)
@@ -704,7 +750,7 @@ public class PlayerMove : MonoBehaviour
         var chargeMax = Singleton.Instance.gameSceneController.ChargePointMax;
         var chargeNow = Singleton.Instance.gameSceneController.ChargePoint;
 
-        var charge = chargeNow/ chargeMax;
+        var charge = chargeNow / chargeMax;
 
         return charge;
     }
@@ -712,16 +758,29 @@ public class PlayerMove : MonoBehaviour
     //アタック
     void OnAttackMotion(int attackNum)
     {
-        animatorComponent.SetInteger("AttackNum", attackNum);
+        //animatorComponent.SetInteger("AttackNum", attackNum);
+        switch (attackNum)
+        {
+            case (int)PlayerAttackIndex.AttackNormal:
+                animatorComponent.SetBool("punchFlag", true);
+                break;
+            case (int)PlayerAttackIndex.AttackDown:
+                animatorComponent.SetBool("punchFlag", true);
+                break;
+            case (int)PlayerAttackIndex.AttackUp:
+                animatorComponent.SetBool("punchFlag", true);
+                break;
+        }
     }
 
     //アタック時
     public IEnumerator OnAttack(int attackResetNum)
     {
-        yield return new WaitForSeconds(1.0f);
+        //yield return new WaitForSeconds(0.5f);
+        yield return null;
         attackFlag = false;
-        animatorComponent.SetInteger("AttackNum", attackResetNum);
-        animatorComponent.SetBool("Ground", isGroundFlag);
+        //animatorComponent.SetInteger("AttackNum", attackResetNum);
+        //animatorComponent.SetBool("Ground", isGroundFlag);
 
         objState = ObjState.Normal;
     }
