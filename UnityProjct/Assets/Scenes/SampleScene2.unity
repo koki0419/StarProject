@@ -5153,6 +5153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3267c4185e4fda3468f9647a8249a3e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  payerAttackIndex: 0
   objState: 0
   playerBeastModeState: 0
   animatorComponent: {fileID: 0}
@@ -5163,12 +5164,12 @@ MonoBehaviour:
   beastModeEffect: {fileID: 0}
   moveSpeed: 0.1
   jumpSpeed: 15
+  jumpgravity: 0
   userChargePonitTime: 0.001
   destroyModeChargePonitTime: 0.001
   rotSpeed: 1.5
   foundationoffensivePower: 0
   foundationSpeedForce: 0
-  shotSpeed: 5
   offensivePower: 0
   speedForce: 0
   attackSpeed: 0
