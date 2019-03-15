@@ -295,7 +295,7 @@ public class GameSceneController : MonoBehaviour
                         {
                             chargePointMax -= 10;
                         }
-                        playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
+                       // playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
                         starChargeController.BanStar(BanStarCheck(chargePointMax));
                     }
                     //playerMove.HpRecoveryFlag = true;

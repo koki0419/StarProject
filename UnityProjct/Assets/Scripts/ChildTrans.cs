@@ -5,7 +5,7 @@ using UnityEngine;
 public class ChildTrans : MonoBehaviour
 {
 
-    [SerializeField] Transform transform;
+    //[SerializeField] Transform transform;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +15,9 @@ public class ChildTrans : MonoBehaviour
     void Update()
     {
         var pos = transform.localPosition;
+
         pos = new Vector3(0,0,0);
+
         transform.localPosition = pos;
     }
 }

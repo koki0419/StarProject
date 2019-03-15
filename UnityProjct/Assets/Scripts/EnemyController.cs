@@ -5,6 +5,9 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
 
+    [SerializeField] GameObject gameOvreUI;
+
+
     public enum EnemyState
     {
         None,
@@ -43,14 +46,22 @@ public class EnemyController : MonoBehaviour
     Vector3 playerPos;
 
 
-     Vector3 StartPos;
-     Vector3 EndPos;
+    Vector3 StartPos;
+    Vector3 EndPos;
     [SerializeField] Vector3 amountOfMovement;
 
     public float time;
     private Vector3 deltaPos;
     private float elapsedTime;
     private bool bStartToEnd = true;
+
+
+    [SerializeField] bool gameOver = false;
+    public bool GameOver
+    {
+        get { return gameOver; }
+        set { gameOver = value; }
+    }
 
     public void Init(GameObject player)
     {
@@ -64,6 +75,9 @@ public class EnemyController : MonoBehaviour
         deltaPos = (EndPos - StartPos) / time;
         elapsedTime = 0;
         enemyState = EnemyState.Search;
+
+        //gameOvreUI.SetActive(false);
+
 
     }
 
@@ -130,7 +144,6 @@ public class EnemyController : MonoBehaviour
                     Vector3 V2 = enemyVec.normalized;
 
                     //座標設定用変数
-                    Vector3 pos;
                     float x;
                     float z;
 
@@ -170,9 +183,26 @@ public class EnemyController : MonoBehaviour
                     transform.Rotate(new Vector3(0, rot, 0));
 
 
+
                 }
                 break;
         }
     }
+
+
+    /*  void OnTriggerEnter()
+      {
+
+                  yield return new WaitForSeconds(0.5f);
+              gameOvreUI.SetActive(true);
+              yield return null;
+
+              yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
+
+              SceneManager.LoadScene("TitleScene");
+
+
+      }*/
+
 }
 
