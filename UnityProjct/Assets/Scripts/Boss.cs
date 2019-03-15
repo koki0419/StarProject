@@ -67,7 +67,7 @@ public class Boss : MonoBehaviour
     {
         foundationHPMax = foundationHP;
         //『PlayerMove』を取得します
-        playerMove = Singleton.Instance.gameSceneController.PlayerMove;
+        playerMove = Singleton.Instance.gameSceneController.playerMove;
         //破壊したときの動き
         onMove = false;
         //オブジェクトを削除するかどうか

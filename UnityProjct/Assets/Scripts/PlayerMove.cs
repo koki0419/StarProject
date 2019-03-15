@@ -286,7 +286,7 @@ public class PlayerMove : MonoBehaviour
                         attackFlag = true;
 
                         //チャージ中
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePoint / 10));
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.chargePointManager.ChargePoint / 10));
 
                         //チャージエフェクトデバック---------------------------
                         if (chargeCount < 3)
@@ -747,8 +747,8 @@ public class PlayerMove : MonoBehaviour
 
     float OnChargeEffect()
     {
-        var chargeMax = Singleton.Instance.gameSceneController.ChargePointMax;
-        var chargeNow = Singleton.Instance.gameSceneController.ChargePoint;
+        var chargeMax = Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax;
+        var chargeNow = Singleton.Instance.gameSceneController.chargePointManager.ChargePoint;
 
         var charge = chargeNow / chargeMax;
 
