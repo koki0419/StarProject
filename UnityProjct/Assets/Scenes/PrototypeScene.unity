@@ -1775,7 +1775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOvreUI: {fileID: 1788986235}
   gameClearUI: {fileID: 1296657480}
-  playerObj: {fileID: 0}
+  playerObj: {fileID: 1774836254}
   starObj: {fileID: 1284816628}
   enemyObj: {fileID: 2041119324}
   playerMove: {fileID: 1774836255}

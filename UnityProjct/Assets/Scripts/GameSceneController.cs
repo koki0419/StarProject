@@ -175,8 +175,11 @@ public class GameSceneController : MonoBehaviour
 
     private void LateUpdate()
     {
-        cameraController.OnUpdate();
-        chargePointManager.OnUpdate();
+        if (isPlaying)//ゲームスタート
+        {
+            cameraController.OnUpdate();
+            chargePointManager.OnUpdate();
+        }
     }
 
 

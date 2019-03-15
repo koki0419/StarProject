@@ -205,7 +205,7 @@ public class PlayerMove : MonoBehaviour
         //----初期化-----
         attackFlag = false;
         jumpFlag = false;
-        isGroundFlag = false;
+        isGroundFlag = true;
         getStar = false;
         hpRecoveryFlag = false;
         destroyModeFlag = false;
@@ -244,9 +244,10 @@ public class PlayerMove : MonoBehaviour
                 {
                     if (!attackFlag)
                     {
-                        if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                        if (Input.GetKeyDown(KeyCode.J) && isGroundFlag || Input.GetKeyDown(KeyCode.Joystick1Button0) && isGroundFlag)
                         {
                             jumpFlag = true;
+                            isGroundFlag = false;
                             animatorComponent.SetBool("walkFlag", false);
                         }
                         //else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button0))
@@ -598,14 +599,16 @@ public class PlayerMove : MonoBehaviour
         if (jumpFlag)
         {
             jumpFlag = false;
-            isGroundFlag = false;
+
 
             velocity.y += jumpSpeed;
 
             animatorComponent.SetBool("walkFlag", true);
         }
-
-        velocity.y += Physics.gravity.y * jumpgravity * deltaTime;
+        if (!isGroundFlag)
+        {
+            velocity.y += Physics.gravity.y * jumpgravity * deltaTime;
+        }
 
         rigidbody.velocity = velocity;
     }
