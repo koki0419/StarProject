@@ -61,12 +61,12 @@ public class PlayerMove : MonoBehaviour
     bool chargeEffectFlag2 = false;
 
     //ビーストモードエフェクト
-    [SerializeField] GameObject beastModeEffect;
+   /* [SerializeField] GameObject beastModeEffect;
     public GameObject BeastModeEffect
     {
         get { return beastModeEffect; }
         set { beastModeEffect = value; }
-    }
+    }*/
 
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
@@ -219,7 +219,7 @@ public class PlayerMove : MonoBehaviour
         chargeEffectFlag2 = false;
         chargeEffect1.SetActive(chargeEffectFlag1);
         chargeEffect2.SetActive(chargeEffectFlag2);
-        beastModeEffect.SetActive(destroyModeFlag);
+        //beastModeEffect.SetActive(destroyModeFlag);
     }
 
     // Update is called once per frame
@@ -585,13 +585,13 @@ public class PlayerMove : MonoBehaviour
         //キャラクターの向き
         if (horizontal > 0)
         {
-            transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+            transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
             rightDirection = true;
             leftDirection = false;
         }
         else if (horizontal < 0)
         {
-            transform.rotation = Quaternion.AngleAxis(-rot, new Vector3(0, 1, 0));
+            transform.localRotation = Quaternion.AngleAxis(-rot, new Vector3(0, 1, 0));
             rightDirection = false;
             leftDirection = true;
         }
