@@ -7,8 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameSceneController : MonoBehaviour
 {
     //---------Unityコンポーネント宣言--------------
-    [SerializeField] GameObject gameOvreUI;
-    [SerializeField] GameObject gameClearUI;
+
     [SerializeField] GameObject playerObj;
 
     [SerializeField] GameObject starObj;
@@ -37,9 +36,7 @@ public class GameSceneController : MonoBehaviour
 
     public ChargePointManager chargePointManager;
 
-    [SerializeField] FadeLayer fadeLayer;
-    [SerializeField] GameObject fadeText;
-    [SerializeField] GameObject fadeChara;
+    [SerializeField] UiManager uiManager;
 
     //------------数値変数の宣言--------------------
 
@@ -65,6 +62,8 @@ public class GameSceneController : MonoBehaviour
         get { return gameOver; }
         set { gameOver = value; }
     }
+
+    bool changeScene;
 
     //初期化
     public void Init()
@@ -111,19 +110,18 @@ public class GameSceneController : MonoBehaviour
         starChargeController.UpdateChildrenUI(0);
         starChargeController.UpdateDestroyPoint(0);
 
-        //初期化
-        gameOvreUI.SetActive(false);
-        gameClearUI.SetActive(false);
+
         gameClear = false;
         gameOver = false;
 
+        changeScene = false;
+
     }
 
+    //Start()より早く処理する
     private void Awake()
     {
-        fadeLayer.ForceColor(Color.black);
-        fadeText.SetActive(true);
-        fadeChara.SetActive(true);
+        uiManager.Init();
     }
 
     //スタート
@@ -138,11 +136,12 @@ public class GameSceneController : MonoBehaviour
         cameraController.Init();
         chargePointManager.Init();
         yield return null;
-        fadeText.SetActive(false);
-        fadeChara.SetActive(false);
+        uiManager.fadeText.SetActive(false);
+        uiManager.fadeChara.SetActive(false);
         yield return null;
 
-        yield return fadeLayer.FadeInEnumerator(2);
+        yield return uiManager.fadeLayer.FadeInEnumerator(2);
+
         isPlaying = true;
 
     }
@@ -164,11 +163,14 @@ public class GameSceneController : MonoBehaviour
             {
                 StartCoroutine(OnGameOver());
             }
-
-            //ゲームクリア
-            if (gameClear)
+        }
+        //ゲームクリア
+        if (gameClear)
+        {
+            StartCoroutine(OnClear());
+            if (changeScene)
             {
-                StartCoroutine(OnClear());
+                uiManager.OnUpdate();
             }
         }
     }
@@ -192,12 +194,18 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
 
         yield return new WaitForSeconds(0.5f);
-        gameClearUI.SetActive(true);
-        yield return null;
+        uiManager.gameClearUI.SetActive(true);
+        yield return new WaitForSeconds(1.0f);
+        //uiManager.starUICanvas.SetActive(false);
+        uiManager.gameClearUI.SetActive(false);
+        //yield return null;
+        //yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
 
-        yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
-        yield return new WaitForSeconds(0.5f);
-        SceneManager.LoadScene("TitleScene");
+        uiManager.resultUIBG.SetActive(true);
+        changeScene = true;
+
+
+        //SceneManager.LoadScene("TitleScene");
     }
 
     //スタート
@@ -206,10 +214,10 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
 
         yield return new WaitForSeconds(0.5f);
-        gameOvreUI.SetActive(true);
+        uiManager.gameOvreUI.SetActive(true);
         yield return null;
 
-        yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
+        yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
 
         SceneManager.LoadScene("TitleScene");
     }
