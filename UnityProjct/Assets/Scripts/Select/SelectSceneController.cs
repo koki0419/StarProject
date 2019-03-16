@@ -5,18 +5,45 @@ using UnityEngine.SceneManagement;
 
 public class SelectSceneController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    [SerializeField] FadeLayer fadeLayer;
+
+    //フェード時表示用TEXT
+    public GameObject fadeText;
+
+    //フェード時表示用マスコットキャラ
+    public GameObject fadeChara;
+
+    bool isPlaying = false;
+
+    IEnumerator Start()
     {
-        
+        isPlaying = false;
+        yield return null;
+        fadeText.SetActive(false);
+        fadeChara.SetActive(false);
+        yield return null;
+
+        yield return fadeLayer.FadeInEnumerator(2);
+        isPlaying = true;
+    }
+
+    //Start()より早く処理する
+    private void Awake()
+    {
+        //初期化
+        fadeLayer.ForceColor(Color.black);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+        if (isPlaying)
         {
-            SceneManager.LoadScene("PrototypeScene");
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+            {
+                SceneManager.LoadScene("PrototypeScene");
+            }
         }
 
     }
