@@ -65,6 +65,8 @@ public class GameSceneController : MonoBehaviour
 
     bool changeScene;
 
+    bool cameraShake;
+
     //初期化
     public void Init()
     {
@@ -115,6 +117,8 @@ public class GameSceneController : MonoBehaviour
         gameOver = false;
 
         changeScene = false;
+
+        cameraShake = false;
 
     }
 
@@ -168,10 +172,14 @@ public class GameSceneController : MonoBehaviour
         if (gameClear)
         {
             StartCoroutine(OnClear());
-            if (changeScene)
-            {
-                uiManager.OnUpdate();
-            }
+        }
+        if (changeScene)
+        {
+            uiManager.OnUpdate();
+        }
+        if (cameraShake)
+        {
+            cameraController.Shake(0.25f, 0.1f);
         }
     }
 
@@ -193,16 +201,19 @@ public class GameSceneController : MonoBehaviour
     {
         isPlaying = false;
 
+        cameraShake = true;
         yield return new WaitForSeconds(0.5f);
         uiManager.gameClearUI.SetActive(true);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(3.0f);
+        cameraShake = false;
         //uiManager.starUICanvas.SetActive(false);
-        uiManager.gameClearUI.SetActive(false);
+        //uiManager.gameClearUI.SetActive(false);
         //yield return null;
         //yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
 
         uiManager.resultUIBG.SetActive(true);
         changeScene = true;
+        gameClear = false;
 
 
         //SceneManager.LoadScene("TitleScene");
