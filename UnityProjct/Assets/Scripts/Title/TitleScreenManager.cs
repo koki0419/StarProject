@@ -1,11 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class TitleScreenManager : MonoBehaviour
 {
+    public enum TitleTyp
+    {
+        None,
+        OnMovie,
+        OnTitle,
+
+    }
+
+    public TitleTyp titleTyp = TitleTyp.None;
+
+
+    //オープニング用
+    [SerializeField] VideoPlayer video;
+    //オープニングムービー再生用OBJ
+    [SerializeField] GameObject movieObj;
+    //skipダイアログ
+    [SerializeField] GameObject skipDialog;
+    [SerializeField] GameObject skipYesButton;
+    [SerializeField] GameObject skipNoButton;
+    bool skipFlag;
+    int skipButtonNum;
+
+    [SerializeField] GameObject canvas;
 
     //ボタン選択用ナンバー
     [Header("ステージ数")]
@@ -28,117 +52,203 @@ public class TitleScreenManager : MonoBehaviour
 
     int countNum;
 
+    float titleGameTime = 0;
+
     // Start is called before the first frame update
-    void Start()
+    void Init()
     {
+        canvas.SetActive(false);
         exitDialogUI.SetActive(false);
         buttonNum = 0;
         exitFlag = false;
         exitYNNum = 1;
         OnSelect(buttonNum);
         countNum = 0;
+        movieObj.SetActive(true);
+        skipDialog.SetActive(false);
+        skipFlag = false;
+    }
+
+    //スタート
+    IEnumerator Start()
+    {
+        Init();
+        yield return null;
+        video.Play();
+        titleTyp = TitleTyp.OnMovie;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        float dy = Input.GetAxis("Vertical");
-        //下
-        if (dy > 0 && countNum ==0)
+        switch (titleTyp)
         {
-            countNum++;
-            if (!exitFlag)
-            {
-                if (buttonNum > 0) buttonNum--;
-                OnSelect(buttonNum);
-            }
-            else
-            {
-                if (exitYNNum < 1) exitYNNum++;
-                OnSelect(exitYNNum);
-            }
-        }//上
-        else if(dy < 0 && countNum == 0)
-        {
-            countNum++;
-            if (!exitFlag)
-            {
-                if (buttonNum < stageMax) buttonNum++;
-                OnSelect(buttonNum);
-            }
-            else
-            {
-                if (exitYNNum > 0) exitYNNum--;
-                OnSelect(exitYNNum);
-            }
-        }else if(dy == 0 && countNum != 0)
-        {
-            countNum = 0;
+            case TitleTyp.OnMovie:
+                titleGameTime += Time.deltaTime;
+                if (titleGameTime > 33.0f)
+                {
+                    movieObj.SetActive(false);
+                    canvas.SetActive(true);
+                    skipDialog.SetActive(false);
+                    titleTyp = TitleTyp.OnTitle;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    if (!skipFlag)
+                    {
+                        skipFlag = true;
+                        skipDialog.SetActive(true);
+                        video.Pause();
+                    }
+                    else
+                    {
+                        switch (skipButtonNum)
+                        {
+                            case 0:
+
+                                movieObj.SetActive(false);
+                                canvas.SetActive(true);
+                                skipDialog.SetActive(false);
+                                titleTyp = TitleTyp.OnTitle;
+                                break;
+                            case 1:
+                                skipFlag = false;
+                                skipDialog.SetActive(false);
+                                video.Play();
+                                break;
+                        }
+                    }
+                }
+
+                if (skipFlag)
+                {
+                    if (Input.GetKeyDown(KeyCode.UpArrow))
+                    {
+
+                        if (skipButtonNum < 2) skipButtonNum++;
+                        OnSkip(skipButtonNum);
+
+                    }
+                    if (Input.GetKeyDown(KeyCode.DownArrow))
+                    {
+                        if (skipButtonNum > 0) skipButtonNum--;
+                        OnSkip(skipButtonNum);
+                    }
+
+
+
+                    
+                }
+                break;
+
+
+            case TitleTyp.OnTitle:
+                float dy = Input.GetAxis("Vertical");
+                //下
+                if (dy > 0 && countNum == 0)
+                {
+                    countNum++;
+                    if (!exitFlag)
+                    {
+                        if (buttonNum > 0) buttonNum--;
+                        OnSelect(buttonNum);
+                    }
+                    else
+                    {
+                        if (exitYNNum < 1) exitYNNum++;
+                        OnSelect(exitYNNum);
+                    }
+                }//上
+                else if (dy < 0 && countNum == 0)
+                {
+                    countNum++;
+                    if (!exitFlag)
+                    {
+                        if (buttonNum < stageMax) buttonNum++;
+                        OnSelect(buttonNum);
+                    }
+                    else
+                    {
+                        if (exitYNNum > 0) exitYNNum--;
+                        OnSelect(exitYNNum);
+                    }
+                }
+                else if (dy == 0 && countNum != 0)
+                {
+                    countNum = 0;
+                }
+
+                //buttonNumのUp、Downを行う
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    if (!exitFlag)
+                    {
+                        if (buttonNum > 0) buttonNum--;
+                        OnSelect(buttonNum);
+                    }
+                    else
+                    {
+                        if (exitYNNum < 1) exitYNNum++;
+                        OnSelect(exitYNNum);
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    if (!exitFlag)
+                    {
+                        if (buttonNum < stageMax) buttonNum++;
+                        OnSelect(buttonNum);
+                    }
+                    else
+                    {
+                        if (exitYNNum > 0) exitYNNum--;
+                        OnSelect(exitYNNum);
+                    }
+                }
+                //
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                {
+                    if (!exitFlag)
+                    {
+                        switch (buttonNum)
+                        {
+                            case 0:
+                                SceneManager.LoadScene("SelectScene");
+                                return;
+                            case 1:
+                                exitDialogUI.SetActive(true);
+                                exitFlag = true;
+                                exitYNNum = 1;
+                                OnSelect(exitYNNum);
+                                return;
+                        }
+                    }
+                    else
+                    {
+                        switch (exitYNNum)
+                        {
+                            case 0:
+                                OnExit();
+                                return;
+                            case 1:
+                                exitDialogUI.SetActive(false);
+                                exitFlag = false;
+                                return;
+                        }
+                    }
+                }
+                break;
         }
 
-        //buttonNumのUp、Downを行う
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (!exitFlag)
-            {
-                if (buttonNum > 0) buttonNum--;
-                OnSelect(buttonNum);
-            }
-            else
-            {
-                if (exitYNNum < 1) exitYNNum++;
-                OnSelect(exitYNNum);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (!exitFlag)
-            {
-                if (buttonNum < stageMax) buttonNum++;
-                OnSelect(buttonNum);
-            }
-            else
-            {
-                if (exitYNNum > 0) exitYNNum--;
-                OnSelect(exitYNNum);
-            }
-        }
-        //
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
-        {
-            if (!exitFlag)
-            {
-                switch (buttonNum)
-                {
-                    case 0:
-                        SceneManager.LoadScene("SelectScene");
-                        return;
-                    case 1:
-                        exitDialogUI.SetActive(true);
-                        exitFlag = true;
-                        exitYNNum = 1;
-                        OnSelect(exitYNNum);
-                        return;
-                }
-            }
-            else
-            {
-                switch (exitYNNum)
-                {
-                    case 0:
-                        OnExit();
-                        return;
-                    case 1:
-                        exitDialogUI.SetActive(false);
-                        exitFlag = false;
-                        return;
-                }
-            }
-        }
+
+
+
+
     }
 
-    
+
     //アプリ終了関数
     private void OnExit()
     {
@@ -178,4 +288,20 @@ public class TitleScreenManager : MonoBehaviour
         }
 
     }
+
+    private void OnSkip(int num)
+    {
+        switch (num)
+        {
+            case 0:
+                skipYesButton.GetComponent<Image>().color = new Color(0, 100, 100);
+                skipNoButton.GetComponent<Image>().color = new Color(255, 255, 255);
+                return;
+            case 1:
+                skipYesButton.GetComponent<Image>().color = new Color(255, 255, 255);
+                skipNoButton.GetComponent<Image>().color = new Color(0, 100, 100);
+                return;
+        }
+    }
+
 }

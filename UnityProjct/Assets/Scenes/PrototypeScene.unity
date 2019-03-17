@@ -8548,6 +8548,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 342417032, guid: 27727a1d59af94b418a9719618086335, type: 3}
+      propertyPath: defensePower
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 256079822, guid: 27727a1d59af94b418a9719618086335, type: 3}
       propertyPath: m_IsTrigger
       value: 0
@@ -8627,10 +8631,6 @@ PrefabInstance:
     - target: {fileID: 2103660035, guid: 27727a1d59af94b418a9719618086335, type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342417032, guid: 27727a1d59af94b418a9719618086335, type: 3}
-      propertyPath: defensePower
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27727a1d59af94b418a9719618086335, type: 3}
@@ -23112,6 +23112,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 342417032, guid: 27727a1d59af94b418a9719618086335, type: 3}
+      propertyPath: defensePower
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 256079822, guid: 27727a1d59af94b418a9719618086335, type: 3}
       propertyPath: m_IsTrigger
       value: 0
@@ -23191,10 +23195,6 @@ PrefabInstance:
     - target: {fileID: 2103660035, guid: 27727a1d59af94b418a9719618086335, type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342417032, guid: 27727a1d59af94b418a9719618086335, type: 3}
-      propertyPath: defensePower
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27727a1d59af94b418a9719618086335, type: 3}
@@ -28952,7 +28952,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &975194786
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37249,6 +37249,10 @@ PrefabInstance:
       propertyPath: defensePower
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 61466078, guid: cebdcbe8bd9927246b23f1ad0ddbd7a7, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 172641915, guid: cebdcbe8bd9927246b23f1ad0ddbd7a7, type: 3}
       propertyPath: m_IsTrigger
       value: 0
@@ -37288,10 +37292,6 @@ PrefabInstance:
     - target: {fileID: 2053324374, guid: cebdcbe8bd9927246b23f1ad0ddbd7a7, type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 61466078, guid: cebdcbe8bd9927246b23f1ad0ddbd7a7, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cebdcbe8bd9927246b23f1ad0ddbd7a7, type: 3}
