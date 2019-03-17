@@ -7,7 +7,7 @@ public class Boss : MonoBehaviour
     bool gameClear;
     //-------------Unityコンポーネント関係-------------------
     new Rigidbody[] rigidbody;
-
+    [SerializeField] Animator animator;
 
     //子供オブジェクト取得用
     //GameObject[] childrenOBJ;// = new GameObject[62];
@@ -85,6 +85,8 @@ public class Boss : MonoBehaviour
         var hp = 1.0;
         hp -= (foundationHP / foundationHPMax);
         OnSliderUpdate((float)hp);
+
+        animator = gameObject.GetComponent<Animator>();
     }
 
 
@@ -97,6 +99,7 @@ public class Boss : MonoBehaviour
         if (onRemoveObjFlag)
         {
             deleteTime -= Time.deltaTime;
+            animator.SetBool("Break", true);
             //OnRemoveObj();
             if (deleteTime <= 0)
             {
