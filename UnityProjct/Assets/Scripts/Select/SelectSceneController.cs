@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class SelectSceneController : MonoBehaviour
 {
 
+    [SerializeField] SelectSceneUIManager selectSceneUIManager;
     [SerializeField] FadeLayer fadeLayer;
 
     //フェード時表示用TEXT
@@ -23,7 +24,7 @@ public class SelectSceneController : MonoBehaviour
         fadeText.SetActive(false);
         fadeChara.SetActive(false);
         yield return null;
-
+        selectSceneUIManager.OnInit();
         yield return fadeLayer.FadeInEnumerator(2);
         isPlaying = true;
     }
@@ -44,6 +45,8 @@ public class SelectSceneController : MonoBehaviour
             {
                 SceneManager.LoadScene("PrototypeScene");
             }
+
+            selectSceneUIManager.OnUpdate();
         }
 
     }
