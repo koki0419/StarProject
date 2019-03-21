@@ -40,6 +40,7 @@ public class SelectSceneUIManager : MonoBehaviour
         buttonNum[1, 1] = 3;
         buttonNum[1, 2] = 4;
 
+        SelectStageButton(buttonNum[updownNum, leftrightNum]);
     }
 
 
@@ -49,8 +50,8 @@ public class SelectSceneUIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if(updownNum > 0) updownNum--;
+            if (leftrightNum == 2) leftrightNum = 1;
 
-            Debug.Log(buttonNum[updownNum, leftrightNum]);
             SelectStageButton(buttonNum[updownNum, leftrightNum]);
         }
         //下
@@ -58,7 +59,6 @@ public class SelectSceneUIManager : MonoBehaviour
         {
             if (updownNum < 1) updownNum++;
 
-            Debug.Log(buttonNum[updownNum, leftrightNum]);
             SelectStageButton(buttonNum[updownNum, leftrightNum]);
         }
         //右
@@ -67,7 +67,6 @@ public class SelectSceneUIManager : MonoBehaviour
             if (leftrightNum < 2) leftrightNum++;
             if (updownNum == 0 && leftrightNum == 2) leftrightNum = 1;
 
-            Debug.Log(buttonNum[updownNum, leftrightNum]);
             SelectStageButton(buttonNum[updownNum, leftrightNum]);
         }
         //左
@@ -75,7 +74,6 @@ public class SelectSceneUIManager : MonoBehaviour
         {
             if (leftrightNum > 0) leftrightNum--;
 
-            Debug.Log(buttonNum[updownNum, leftrightNum]);
             SelectStageButton(buttonNum[updownNum, leftrightNum]);
         }
 
