@@ -206,17 +206,12 @@ public class GameSceneController : MonoBehaviour
         uiManager.gameClearUI.SetActive(true);
         yield return new WaitForSeconds(3.0f);
         cameraShake = false;
-        //uiManager.starUICanvas.SetActive(false);
-        //uiManager.gameClearUI.SetActive(false);
-        //yield return null;
-        //yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
+
 
         uiManager.resultUIBG.SetActive(true);
         changeScene = true;
         gameClear = false;
 
-
-        //SceneManager.LoadScene("TitleScene");
     }
 
     //スタート
@@ -230,23 +225,7 @@ public class GameSceneController : MonoBehaviour
 
         yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
 
-        SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene("SelectScene");
     }
 
-    //private void OnPawnTakeDamage(Pawn pawn, float damage)
-    //{
-    //    DamageText dmgText = GameObject.Instantiate<DamageText>(damageText);
-    //    dmgText.SetText((int)damage);
-    //    dmgText.transform.position = pawn.transform.position;
-    //    GameObject.Destroy(dmgText.gameObject, damageTextLifeTime);
-
-    //    if (pawn == Singleton.instance.playerPawn)
-    //    {
-    //        cameraEffect.ShakeCamera(shakeCameraStrength, shakeCameraPeriod);
-    //    }
-    //    else
-    //    {
-    //        cameraEffect.ShakeCamera(shakeCameraStrength / 2, shakeCameraPeriod / 2);
-    //    }
-    //}
 }
