@@ -163,10 +163,11 @@ public class BreakBoxController : MonoBehaviour
     {
         for (int i = 0; i < childrenOBJ.Length; i++)
         {
-            //Vector3 pos = new Vector3(0,0,0);
+            Vector3 pos = new Vector3(0,0,0);
 
-            prefabObj[i] = Instantiate(childrenOBJ[i],gameObject.transform);
+            prefabObj[i] = Instantiate(childrenOBJ[i]);
             prefabObj[i].transform.parent = gameObject.transform;
+            prefabObj[i].transform.localPosition = pos;
         }
     }
 }
