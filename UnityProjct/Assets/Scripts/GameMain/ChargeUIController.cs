@@ -36,22 +36,10 @@ public class ChargeUIController : MonoBehaviour
     //    //Debug.Log(hp);
     //    hpFils[hpFillNum].fillAmount = hp;
     //}
-    public void UpdateHppoint(float hp)
+    public void HppointUpdate(float hp)
     {
 
         hpFil.fillAmount = hp;
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

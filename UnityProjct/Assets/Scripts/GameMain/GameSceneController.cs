@@ -34,7 +34,7 @@ public class GameSceneController : MonoBehaviour
 
     public StarChargeController starChargeController;
 
-    public ChargePointManager chargePointManager;
+    public ChargePointManager chargePointManager = new ChargePointManager();
 
     [SerializeField] UiManager uiManager;
 
@@ -49,23 +49,21 @@ public class GameSceneController : MonoBehaviour
     //------------フラグ変数の宣言------------------
     bool isPlaying = false;
 
-    [SerializeField] bool gameClear = false;
-    public bool GameClear
+    bool isGameClear = false;
+    public bool IsGameClear
     {
-        get { return gameClear; }
-        set { gameClear = value; }
+        set { isGameClear = value; }
     }
 
-    [SerializeField] bool gameOver = false;
-    public bool GameOver
+    bool isGameOver = false;
+    public bool IsGameOver
     {
-        get { return gameOver; }
-        set { gameOver = value; }
+        set { isGameOver = value; }
     }
 
-    bool changeScene;
+    bool cnaChangeScene;
 
-    bool cameraShake;
+    bool canCameraShake;
 
     //初期化
     public void Init()
@@ -113,12 +111,12 @@ public class GameSceneController : MonoBehaviour
         starChargeController.UpdateDestroyPoint(0);
 
 
-        gameClear = false;
-        gameOver = false;
+        isGameClear = false;
+        isGameOver = false;
 
-        changeScene = false;
+        cnaChangeScene = false;
 
-        cameraShake = false;
+        canCameraShake = false;
 
     }
 
@@ -140,11 +138,10 @@ public class GameSceneController : MonoBehaviour
         cameraController.Init();
         chargePointManager.Init();
         yield return null;
-        uiManager.fadeText.SetActive(false);
-        uiManager.fadeChara.SetActive(false);
+        uiManager.FadeImageDisplay(false);
         yield return null;
 
-        yield return uiManager.fadeLayer.FadeInEnumerator(2);
+        yield return uiManager.FadeInEnumerator(2);
 
         isPlaying = true;
 
@@ -163,21 +160,21 @@ public class GameSceneController : MonoBehaviour
 
 
             //ゲームオーバー
-            if (gameOver)
+            if (isGameOver)
             {
                 StartCoroutine(OnGameOver());
             }
         }
         //ゲームクリア
-        if (gameClear)
+        if (isGameClear)
         {
             StartCoroutine(OnClear());
         }
-        if (changeScene)
+        if (cnaChangeScene)
         {
-            uiManager.OnUpdate();
+            uiManager.ButtonSelectUpdate();
         }
-        if (cameraShake)
+        if (canCameraShake)
         {
             cameraController.Shake(0.25f, 0.1f);
         }
@@ -187,7 +184,7 @@ public class GameSceneController : MonoBehaviour
     {
         if (isPlaying)//ゲームスタート
         {
-            cameraController.OnUpdate();
+            cameraController.MoveUpdate();
             chargePointManager.OnUpdate();
         }
     }
@@ -200,17 +197,14 @@ public class GameSceneController : MonoBehaviour
     IEnumerator OnClear()
     {
         isPlaying = false;
-
-        cameraShake = true;
+        canCameraShake = true;
         yield return new WaitForSeconds(0.5f);
-        uiManager.gameClearUI.SetActive(true);
+        uiManager.GameClearUIDisplay(true);
         yield return new WaitForSeconds(3.0f);
-        cameraShake = false;
-
-
-        uiManager.resultUIBG.SetActive(true);
-        changeScene = true;
-        gameClear = false;
+        canCameraShake = false;
+        uiManager.ResultUIBGUIDisplay(true);
+        cnaChangeScene = true;
+        isGameClear = false;
 
     }
 
@@ -218,12 +212,10 @@ public class GameSceneController : MonoBehaviour
     IEnumerator OnGameOver()
     {
         isPlaying = false;
-
         yield return new WaitForSeconds(0.5f);
-        uiManager.gameOvreUI.SetActive(true);
+        uiManager.GameOvreUIDisplay(true);
         yield return null;
-
-        yield return uiManager.fadeLayer.FadeOutEnumerator(Color.black, 2);
+        yield return uiManager.FadeOutEnumerator();
 
         SceneManager.LoadScene("SelectScene");
     }

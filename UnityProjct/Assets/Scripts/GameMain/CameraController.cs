@@ -19,14 +19,12 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void OnUpdate()
+    public void MoveUpdate()
     {
-            var position = transform.position;
-        //position.x = player.position.x;
+        var position = transform.position;
         position.x += camaraMove;
-            //position.y = player.position.y + camaraPos;
-            position.y =  camaraPos;
-            transform.position = position;
+        position.y = camaraPos;
+        transform.position = position;
 
     }
 

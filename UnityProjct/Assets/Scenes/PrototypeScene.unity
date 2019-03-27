@@ -1701,10 +1701,7 @@ MonoBehaviour:
   enemyController: []
   chargeUIController: {fileID: 1231812590}
   starChargeController: {fileID: 1231812595}
-  chargePointManager: {fileID: 1231812596}
   uiManager: {fileID: 1219740086}
-  gameClear: 0
-  gameOver: 0
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -27262,9 +27259,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231812589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93b22e397f7f60f40bd562c215110756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Name: 
   m_EditorClassIdentifier: 
   chargePoint: 0
@@ -27273,7 +27290,11 @@ MonoBehaviour:
   starChildCountSkip: 0
   destroyCount: 0
   playerHp: 0
+  playerHpMax: 0
   hpDownTime: 1
+  hpRecovery: 2
+  hpGageNum: 5
+  gaugeDroportion: 0
 --- !u!1 &1236049241
 GameObject:
   m_ObjectHideFlags: 0
@@ -37840,16 +37861,15 @@ MonoBehaviour:
   objState: 0
   playerBeastModeState: 0
   animatorComponent: {fileID: 149228658}
-  starEffect: {fileID: 950377389}
+  starAcquisitionEffect: {fileID: 0}
   hpRecoveryEffect: {fileID: 475564064}
   chargeEffect1: {fileID: 274169791}
   chargeEffect2: {fileID: 1064775481}
   moveSpeed: 9
   jumpSpeed: 14
   jumpgravity: 3.5
-  userChargePonitTime: 0.05
-  destroyModeChargePonitTime: 0.001
-  rotSpeed: 1.5
+  userChargePonitUp: 0.001
+  destroyModeChargePonitDown: 0.001
   foundationoffensivePower: 10
   foundationSpeedForce: 1
   offensivePower: 1
@@ -41713,7 +41733,6 @@ GameObject:
   - component: {fileID: 2145659041}
   - component: {fileID: 2145659040}
   - component: {fileID: 2145659039}
-  - component: {fileID: 2145659042}
   m_Layer: 0
   m_Name: GameOverLine
   m_TagString: Untagged
@@ -41743,7 +41762,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145659037}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -41793,18 +41812,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145659037}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2145659042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2145659037}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c86815f81e1e7d343bf10543b5b32f51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2072176342259536900
 PrefabInstance:
   m_ObjectHideFlags: 0
