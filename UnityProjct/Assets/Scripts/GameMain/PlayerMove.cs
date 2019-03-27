@@ -50,7 +50,7 @@ public class PlayerMove : MonoBehaviour
     new Rigidbody rigidbody;
     [Header("エフェクト関係")]
     //スター獲得エフェクト
-    [SerializeField] GameObject starEffect;
+    [SerializeField] GameObject starAcquisitionEffect;
     //Hp回復エフェクト
     [SerializeField] GameObject hpRecoveryEffect;
     //チャージエフェクト1
@@ -61,38 +61,28 @@ public class PlayerMove : MonoBehaviour
     bool chargeEffectFlag2 = false;
 
     //ビーストモードエフェクト
-   /* [SerializeField] GameObject beastModeEffect;
-    public GameObject BeastModeEffect
-    {
-        get { return beastModeEffect; }
-        set { beastModeEffect = value; }
-    }*/
+    /* [SerializeField] GameObject beastModeEffect;
+     public GameObject BeastModeEffect
+     {
+         get { return beastModeEffect; }
+         set { beastModeEffect = value; }
+     }*/
 
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
     Attack attack = new Attack();
-    //『ObjectState』をインスタンス
-    //ObjectState objectState = new ObjectState();
-
     //-------------数値用変数--------------------------------
     [Header("プレイヤー情報")]
     //移動速度を設定します
     [SerializeField] private float moveSpeed;
-
     //ジャンプ力
     [SerializeField] float jumpSpeed;
     //ジャンプ重力
-    [SerializeField] float jumpgravity;
-
+    [SerializeField] float jumpGravity;
     //チャージポイント使用時のユーザーゲージ上昇量
-    [SerializeField] float userChargePonitTime = 0.001f;
-
+    [SerializeField] float userChargePonitUp = 0.001f;
     //デストロイモード使用時のユーザーゲージ減少量
-    [SerializeField] float destroyModeChargePonitTime = 0.001f;
-
-    //回転速度を設定します
-    [SerializeField] private float rotSpeed;
-
+    [SerializeField] float destroyModeChargePonitDown = 0.001f;
 
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
@@ -103,11 +93,8 @@ public class PlayerMove : MonoBehaviour
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
     [SerializeField] float offensivePower;
-
     //移動量
     [SerializeField] float speedForce;
-
-
     //現在のチャージ量
     float chargeNow = 0.0f;
     //何回チャージしたか
@@ -116,79 +103,55 @@ public class PlayerMove : MonoBehaviour
     int chargeCountMax = 0;
     //回転
     private float rot = 90;
-
     //ジャンプボタンを押している時間
     float jumpPushKeyTime = 0;
-
-    //private float moveTime;
-
-    //[Range(0.0f, 100.0f)]
-    //[SerializeField] float jumpTimeLimit;
-
-    //弾の発射スピード
-    //[SerializeField] float shotSpeed = 0.5f;
-
-
-
     //ビーストモード攻撃力
     float beastAttackPower;
-
     //攻撃時Speed
     [SerializeField] float attackSpeed;
     public float AttackSpeed
     {
         get { return attackSpeed; }
     }
-
     //攻撃時パワー
     [SerializeField] float attackPower;
     public float AttackPower
     {
         get { return attackPower; }
     }
-
     //-------------フラグ用変数------------------------------
     [Header("各種フラグ")]
     //ジャンプフラグ
-    [SerializeField] bool jumpFlag;
+    [SerializeField] bool cnaJumpFlag;
     //アタックフラグ
-    [SerializeField] bool attackFlag;
-    public bool AttackFlag
+    [SerializeField] bool canAttackFlag;
+    public bool CanAttackFlag
     {
-        get { return attackFlag; }
+        get { return canAttackFlag; }
     }
-
     //地面との接触
     bool isGroundFlag;
-    //チャージUp
-    bool chargeUp = true;
-
     //☆獲得時フラグ
-    bool getStar = false;
-    public bool GetStar
+    bool isAcquisitionStar = false;
+    public bool IsAcquisitionStar
     {
-        set { getStar = value; }
+        set { isAcquisitionStar = value; }
     }
     //Hp回復フラグ
-    bool hpRecoveryFlag = false;
-    public bool HpRecoveryFlag
-    {
-        set { hpRecoveryFlag = value; }
-    }
+    bool isHpRecoveryFlag = false;
+
     //キャラクターの向き
-    bool rightDirection;
-    bool leftDirection;
+    bool isRightDirection;
+    bool isLeftDirection;
 
     //ビーストモード
-    [SerializeField] bool destroyModeFlag = false;
-    public bool DestroyModeFlag
+    [SerializeField] bool isdestroyModeFlag = false;
+    public bool IsDestroyModeFlag
     {
-        get { return destroyModeFlag; }
-        set { destroyModeFlag = value; }
+        get { return isdestroyModeFlag; }
+        set { isdestroyModeFlag = value; }
     }
 
-    //チャージ中かどうか
-    bool Oncharge = false;
 
     //初期化
     public void Init()
@@ -203,14 +166,14 @@ public class PlayerMove : MonoBehaviour
         //チャージゲージをリセットします
         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
         //----初期化-----
-        attackFlag = false;
-        jumpFlag = false;
+        canAttackFlag = false;
+        cnaJumpFlag = false;
         isGroundFlag = true;
-        getStar = false;
-        hpRecoveryFlag = false;
-        destroyModeFlag = false;
+        isAcquisitionStar = false;
+        isHpRecoveryFlag = false;
+        isdestroyModeFlag = false;
 
-        starEffect.SetActive(false);
+        starAcquisitionEffect.SetActive(false);
         hpRecoveryEffect.SetActive(false);
 
 
@@ -230,10 +193,11 @@ public class PlayerMove : MonoBehaviour
         //移動
         float dx = Input.GetAxis("Horizontal");
 
-        if (dx != 0 && !attack)
+        if (dx != 0)
         {
             animatorComponent.SetBool("walkFlag", true);
-        }else
+        }
+        else
         {
             animatorComponent.SetBool("walkFlag", false);
         }
@@ -242,11 +206,11 @@ public class PlayerMove : MonoBehaviour
             //通常時
             case ObjState.Normal:
                 {
-                    if (!attackFlag)
+                    if (!canAttackFlag)
                     {
                         if (Input.GetKeyDown(KeyCode.J) && isGroundFlag || Input.GetKeyDown(KeyCode.Joystick1Button0) && isGroundFlag)
                         {
-                            jumpFlag = true;
+                            cnaJumpFlag = true;
                             isGroundFlag = false;
                             animatorComponent.SetBool("walkFlag", false);
                         }
@@ -271,7 +235,7 @@ public class PlayerMove : MonoBehaviour
 
                         //}
                         //移動
-                        Move(dx, jumpPushKeyTime, deltaTime);
+                        CharacterMove(dx, jumpPushKeyTime, deltaTime);
                         //Debug.Log("jumpPushKeyTime" + jumpPushKeyTime);
                     }
                     else
@@ -284,7 +248,7 @@ public class PlayerMove : MonoBehaviour
                     if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
                     {
                         animatorComponent.SetBool("walkFlag", false);
-                        attackFlag = true;
+                        canAttackFlag = true;
 
                         //チャージ中
                         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.chargePointManager.ChargePoint / 10));
@@ -329,13 +293,13 @@ public class PlayerMove : MonoBehaviour
                     }
                 }
                 break;
-                //デストロイモード
+            //デストロイモード
             case ObjState.DestroyMode:
                 {
-                    if (!attackFlag)
+                    if (!canAttackFlag)
                     {
                         //移動
-                        Move(dx * (int)PlayerBeastModeState.SpeedPower, jumpPushKeyTime, deltaTime);
+                        CharacterMove(dx * (int)PlayerBeastModeState.SpeedPower, jumpPushKeyTime, deltaTime);
                     }
                     else
                     {
@@ -346,7 +310,7 @@ public class PlayerMove : MonoBehaviour
                     if (Input.GetKey(KeyCode.T) || Input.GetKeyDown(KeyCode.Joystick1Button2))
                     {
                         animatorComponent.SetBool("walkFlag", false);
-                        attackFlag = true;
+                        canAttackFlag = true;
                         //チャージエフェクトデバック---------------------------
                         chargeEffectFlag1 = false;
                         chargeEffectFlag2 = true;
@@ -486,7 +450,7 @@ public class PlayerMove : MonoBehaviour
 
         // }
 
-        if (getStar)
+        if (isAcquisitionStar)
         {
             StartCoroutine(OnGetStar());
         }
@@ -571,12 +535,21 @@ public class PlayerMove : MonoBehaviour
         {
             animatorComponent.SetBool("walkFlag", true);
             isGroundFlag = true;
-            jumpFlag = false;
+            cnaJumpFlag = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //ゲームオーバーの当たり判定
+        if (other.gameObject.name == "GameOverLine")
+        {
+            Singleton.Instance.gameSceneController.IsGameOver = true;
         }
     }
 
     //移動
-    void Move(float horizontal, float jTime, float deltaTime)
+    void CharacterMove(float horizontal, float jTime, float deltaTime)
     {
         var position = transform.position;
         position.x += horizontal * moveSpeed * deltaTime;
@@ -587,18 +560,18 @@ public class PlayerMove : MonoBehaviour
         if (horizontal > 0)
         {
             transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
-            rightDirection = true;
-            leftDirection = false;
+            isRightDirection = true;
+            isLeftDirection = false;
         }
         else if (horizontal < 0)
         {
             transform.localRotation = Quaternion.AngleAxis(-rot, new Vector3(0, 1, 0));
-            rightDirection = false;
-            leftDirection = true;
+            isRightDirection = false;
+            isLeftDirection = true;
         }
-        if (jumpFlag)
+        if (cnaJumpFlag)
         {
-            jumpFlag = false;
+            cnaJumpFlag = false;
 
 
             velocity.y += jumpSpeed;
@@ -607,7 +580,7 @@ public class PlayerMove : MonoBehaviour
         }
         if (!isGroundFlag)
         {
-            velocity.y += Physics.gravity.y * jumpgravity * deltaTime;
+            velocity.y += Physics.gravity.y * jumpGravity * deltaTime;
         }
 
         rigidbody.velocity = velocity;
@@ -619,14 +592,14 @@ public class PlayerMove : MonoBehaviour
         if (horizontal > 0)
         {
             transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
-            rightDirection = true;
-            leftDirection = false;
+            isRightDirection = true;
+            isLeftDirection = false;
         }
         else if (horizontal < 0)
         {
             transform.rotation = Quaternion.AngleAxis(-rot, new Vector3(0, 1, 0));
-            rightDirection = false;
-            leftDirection = true;
+            isRightDirection = false;
+            isLeftDirection = true;
         }
 
     }
@@ -637,7 +610,7 @@ public class PlayerMove : MonoBehaviour
         if (horizontal == 0)
         {
             var position = transform.position;
-            if (rightDirection && !leftDirection)
+            if (isRightDirection && !isLeftDirection)
             {
                 position.x += speedForce * Time.deltaTime;
             }
@@ -700,7 +673,7 @@ public class PlayerMove : MonoBehaviour
         //マックスのチャージ量
         var chargeMax = charge;
         //チャージ量の+-量
-        float chargeProportion = userChargePonitTime;
+        float chargeProportion = userChargePonitUp;
 
 
         if (charge >= 1 && charge < 2)
@@ -779,21 +752,17 @@ public class PlayerMove : MonoBehaviour
     //アタック時
     public IEnumerator OnAttack(int attackResetNum)
     {
-        //yield return new WaitForSeconds(0.5f);
         yield return null;
-        attackFlag = false;
-        //animatorComponent.SetInteger("AttackNum", attackResetNum);
-        //animatorComponent.SetBool("Ground", isGroundFlag);
-
+        canAttackFlag = false;
         objState = ObjState.Normal;
     }
     //☆獲得時
     public IEnumerator OnGetStar()
     {
-        starEffect.SetActive(true);
+        starAcquisitionEffect.SetActive(true);
         yield return new WaitForSeconds(1.5f);
-        getStar = false;
-        starEffect.SetActive(false);
+        isAcquisitionStar = false;
+        starAcquisitionEffect.SetActive(false);
     }
 
 }

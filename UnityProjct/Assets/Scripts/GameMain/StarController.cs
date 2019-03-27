@@ -63,7 +63,7 @@ public class StarController : MonoBehaviour
                 {
                     Singleton.Instance.gameSceneController.chargePointManager.ChargePoint += starPoint;
                     Singleton.Instance.gameSceneController.chargePointManager.StarChildCount += starPoint;
-                    playerMove.GetStar = true;
+                    playerMove.IsAcquisitionStar = true;
                 }
             }
             else

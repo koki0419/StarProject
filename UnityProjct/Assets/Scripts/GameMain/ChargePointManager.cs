@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargePointManager : MonoBehaviour
+public class ChargePointManager
 {
 
     //☆チャージポイント
@@ -17,7 +17,6 @@ public class ChargePointManager : MonoBehaviour
     public float ChargePointMax
     {
         get { return chargePointMax; }
-        set { chargePointMax = value; }
     }
 
 
@@ -66,8 +65,6 @@ public class ChargePointManager : MonoBehaviour
     {
         //チャージポイント
         chargePoint = 0;
-
-        
 
         playerHpMax = playerHp;
     }
@@ -175,7 +172,7 @@ public class ChargePointManager : MonoBehaviour
         }
 
         //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-        Singleton.Instance.gameSceneController.chargeUIController.UpdateHppoint(playerHp / playerHpMax);
+        Singleton.Instance.gameSceneController.chargeUIController.HppointUpdate(playerHp / playerHpMax);
     }
 
     //HPを回復します
@@ -189,7 +186,7 @@ public class ChargePointManager : MonoBehaviour
         {
             playerHp = playerHpMax;
         }
-        Singleton.Instance.gameSceneController.chargeUIController.UpdateHppoint(playerHp / playerHpMax);
+        Singleton.Instance.gameSceneController.chargeUIController.HppointUpdate(playerHp / playerHpMax);
     }
 
     //☆使用後状態を確認します
