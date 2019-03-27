@@ -27264,37 +27264,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b22e397f7f60f40bd562c215110756, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chargePoint: 0
-  chargePointMax: 51
-  starChildCount: 0
-  starChildCountSkip: 0
-  destroyCount: 0
-  playerHp: 0
-  playerHpMax: 0
-  hpDownTime: 1
-  hpRecovery: 2
-  hpGageNum: 5
-  gaugeDroportion: 0
 --- !u!1 &1236049241
 GameObject:
   m_ObjectHideFlags: 0
@@ -37861,13 +37830,13 @@ MonoBehaviour:
   objState: 0
   playerBeastModeState: 0
   animatorComponent: {fileID: 149228658}
-  starAcquisitionEffect: {fileID: 0}
+  starAcquisitionEffect: {fileID: 950377389}
   hpRecoveryEffect: {fileID: 475564064}
   chargeEffect1: {fileID: 274169791}
   chargeEffect2: {fileID: 1064775481}
   moveSpeed: 9
   jumpSpeed: 14
-  jumpgravity: 3.5
+  jumpGravity: 1
   userChargePonitUp: 0.001
   destroyModeChargePonitDown: 0.001
   foundationoffensivePower: 10
@@ -37876,9 +37845,9 @@ MonoBehaviour:
   speedForce: 50
   attackSpeed: 0
   attackPower: 0
-  jumpFlag: 0
-  attackFlag: 0
-  destroyModeFlag: 0
+  cnaJumpFlag: 0
+  canAttackFlag: 0
+  isdestroyModeFlag: 0
 --- !u!136 &1774836256
 CapsuleCollider:
   m_ObjectHideFlags: 0
