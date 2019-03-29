@@ -9,7 +9,7 @@ public class BreakBoxController : MonoBehaviour
 
 
     //子供オブジェクト取得用
-    [SerializeField] GameObject[] childrenOBJ;// = new GameObject[62];
+    [SerializeField] GameObject[] childrenOBJ = null;// = new GameObject[62];
 
     GameObject[] prefabObj;
     [SerializeField] int prefabsNum = 10;
@@ -22,7 +22,7 @@ public class BreakBoxController : MonoBehaviour
     public Substance.Game.SubstanceGraph substanceGraph;
     //-------------数値用変数--------------------------------
     //生成する星の数
-    [SerializeField] int starNum;
+    [SerializeField] int starNum = 0;
 
     //ポイントを獲得した回数
     int acquisitionPoint = 0;

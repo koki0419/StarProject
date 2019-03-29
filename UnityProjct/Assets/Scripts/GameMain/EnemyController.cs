@@ -48,7 +48,8 @@ public class EnemyController : MonoBehaviour
 
     Vector3 StartPos;
     Vector3 EndPos;
-    [SerializeField] Vector3 amountOfMovement;
+    // 
+    [SerializeField] Vector3 amountOfMovement = Vector3.zero;
 
     public float time;
     private Vector3 deltaPos;

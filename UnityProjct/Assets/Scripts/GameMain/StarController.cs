@@ -11,8 +11,6 @@ public class StarController : MonoBehaviour
     //------------クラスの宣言----------------------
     PlayerMove playerMove;
     //------------数値変数の宣言--------------------
-    float moveSpeed = 2.0f;
-
     [SerializeField]
     int starPoint = 50;
     //------------フラグ変数の宣言------------------
@@ -59,16 +57,16 @@ public class StarController : MonoBehaviour
             //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
             if (starPoint == 1)
             {
-                if (!playerMove.DestroyModeFlag && Singleton.Instance.gameSceneController.chargePointManager.ChargePoint < Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax)
-                {
-                    Singleton.Instance.gameSceneController.chargePointManager.ChargePoint += starPoint;
-                    Singleton.Instance.gameSceneController.chargePointManager.StarChildCount += starPoint;
-                    playerMove.IsAcquisitionStar = true;
-                }
+                //if (!playerMove.DestroyModeFlag && Singleton.Instance.gameSceneController.chargePointManager.ChargePoint < Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax)
+                //{
+                //    Singleton.Instance.gameSceneController.chargePointManager.ChargePoint += starPoint;
+                //    Singleton.Instance.gameSceneController.chargePointManager.StarChildCount += starPoint;
+                //    playerMove.IsAcquisitionStar = true;
+                //}
             }
             else
             {
-                Singleton.Instance.gameSceneController.chargePointManager.StarChildCountSkip += starPoint;
+                Singleton.Instance.gameSceneController.ChargePointManager.StarChildCountSkip += starPoint;
             }
             Destroy(this.gameObject);
         }

@@ -8,21 +8,21 @@ public class GameSceneController : MonoBehaviour
 {
     //---------Unityコンポーネント宣言--------------
 
-    [SerializeField] GameObject playerObj;
+    [SerializeField] GameObject playerObj = null;
 
-    [SerializeField] GameObject starObj;
+    [SerializeField] GameObject starObj = null;
 
-    [SerializeField] GameObject enemyObj;
+    [SerializeField] GameObject enemyObj = null;
 
     //☆子供オブジェクト取得用
     GameObject[] starChildrenOBJ;
     GameObject[] enemyChildrenOBJ;
     //------------クラスの宣言----------------------
     public PlayerMove playerMove;
-    
-    [SerializeField] BreakBoxController[] breakBoxController;
 
-    [SerializeField] Boss[] boss;
+    [SerializeField] BreakBoxController[] breakBoxController = null;
+
+    [SerializeField] Boss[] boss = null;
 
     [SerializeField] StarController[] starControllers;
 
@@ -34,9 +34,18 @@ public class GameSceneController : MonoBehaviour
 
     public StarChargeController starChargeController;
 
-    public ChargePointManager chargePointManager = new ChargePointManager();
 
-    [SerializeField] UiManager uiManager;
+    // 変数を直接参照させないでプロパティ文法でアクセサを経由させる
+    public ChargePointManager ChargePointManager
+    {
+        get { return chargePointManager; }
+        //private set { chargePointManager = value; }
+    }
+    // 変数本体でInspectorにはこちらが表示される
+    [SerializeField] ChargePointManager chargePointManager = null;
+
+
+    [SerializeField] UiManager uiManager = null;
 
     //------------数値変数の宣言--------------------
 
@@ -202,9 +211,11 @@ public class GameSceneController : MonoBehaviour
         uiManager.GameClearUIDisplay(true);
         yield return new WaitForSeconds(3.0f);
         canCameraShake = false;
-        uiManager.ResultUIBGUIDisplay(true);
+        SceneManager.LoadScene("ResultScene");
+        /*uiManager.ResultUIBGUIDisplay(true);
         cnaChangeScene = true;
         isGameClear = false;
+        */
 
     }
 
