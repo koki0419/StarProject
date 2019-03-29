@@ -672,7 +672,6 @@ GameObject:
   - component: {fileID: 807839845}
   - component: {fileID: 807839844}
   - component: {fileID: 807839843}
-  - component: {fileID: 807839847}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -766,24 +765,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &807839847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 807839842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15547db5ac70c5c4cb780bf59cad6f8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stageButton:
-  - {fileID: 805652054}
-  - {fileID: 2108431044}
-  - {fileID: 2138155387}
-  - {fileID: 1944661945}
-  - {fileID: 1266937887}
 --- !u!1 &873770780
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,7 +1020,7 @@ GameObject:
   - component: {fileID: 1301524554}
   - component: {fileID: 1301524555}
   m_Layer: 0
-  m_Name: SceneManager
+  m_Name: Scene Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1071,10 +1052,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9fbb17b14eff414598dcf8336475e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectSceneUIManager: {fileID: 807839847}
   fadeLayer: {fileID: 1214932479}
   fadeText: {fileID: 412463831}
   fadeChara: {fileID: 2066228528}
+  stageButton:
+  - {fileID: 805652054}
+  - {fileID: 2108431044}
+  - {fileID: 2138155387}
+  - {fileID: 1944661945}
+  - {fileID: 1266937887}
 --- !u!1 &1314050569
 GameObject:
   m_ObjectHideFlags: 0

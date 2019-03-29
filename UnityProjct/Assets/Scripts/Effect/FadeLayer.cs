@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class FadeLayer : MonoBehaviour
 {
-    [SerializeField] private Image image;
+    [SerializeField] private Image image = null;
 
     public void ForceColor(Color color)
     {

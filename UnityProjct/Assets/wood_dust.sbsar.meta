@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8631f146e0c7a7b469cd5b3558fdd5d3
+guid: b68444e05d74a22479e8f2674da97965
 ScriptedImporter:
   fileIDToRecycleName:
     2100000: New_Graph
@@ -75,5 +75,5 @@ ScriptedImporter:
       textureHeight: 2048
       textureFormat: 0
       bGenerateOnLoad: 1
-    material: {instanceID: 0}
+    material: {fileID: 2100000, guid: b68444e05d74a22479e8f2674da97965, type: 3}
     generatedTextures: []
