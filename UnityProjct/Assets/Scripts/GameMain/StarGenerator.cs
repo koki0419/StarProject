@@ -6,10 +6,10 @@ public class StarGenerator : MonoBehaviour
 {
     //---------Unityコンポーネント宣言--------------
     [SerializeField]
-    GameObject playerObj;
+    GameObject playerObj = null;
     //------------クラスの宣言----------------------
     [SerializeField]
-    PlayerMove playerMove;
+    PlayerMove playerMove = null;
     //------------数値変数の宣言--------------------
     //------------フラグ変数の宣言------------------
     public void Init()

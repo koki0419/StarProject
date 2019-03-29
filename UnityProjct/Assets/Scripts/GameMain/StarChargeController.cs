@@ -20,9 +20,9 @@ public class StarChargeController : MonoBehaviour
 
     [Header("チャージ用☆UI")]
     //大きい☆UIを取得します →5個
-    [SerializeField] StarState[] starChargeUI;
+    [SerializeField] StarState[] starChargeUI = null;
     //小さい☆UIを取得します →9個
-    [SerializeField] StarState[] starChildrenUI;
+    [SerializeField] StarState[] starChildrenUI = null;
 
 
     //☆獲得ポイント
@@ -38,15 +38,11 @@ public class StarChargeController : MonoBehaviour
         set { starCount = value; }
         get { return starCount; }
     }
-    //チャージ済み☆の数
-    int chargeStar = 0;
-
 
     public void Init()
     {
         starChargeMaxFlag = false;
         starCount = 0;
-        chargeStar = 0;
 
         for (int i = 0; i < starChargeUI.Length; i++)
         {

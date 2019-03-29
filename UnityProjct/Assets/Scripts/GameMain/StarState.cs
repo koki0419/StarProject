@@ -18,13 +18,13 @@ public class StarState : MonoBehaviour
     public Star star = Star.None;
 
     [Header("☆の状態画像")]
-    [SerializeField] Sprite dontUseStarSprite;//使っていない
-    [SerializeField] Sprite useStarSprite;//使っている
-    [SerializeField] Sprite usedStarSprite;//使い終わった
-    [SerializeField] Sprite chageStarSprite;//チャージ中（大きい☆用）
-    [SerializeField] Sprite notAvailableStarSprite;//使用禁止（大きい☆用）
+    [SerializeField] Sprite dontUseStarSprite = null;//使っていない
+    [SerializeField] Sprite useStarSprite = null;//使っている
+    [SerializeField] Sprite usedStarSprite = null;//使い終わった
+    [SerializeField] Sprite chageStarSprite = null;//チャージ中（大きい☆用）
+    [SerializeField] Sprite notAvailableStarSprite = null;//使用禁止（大きい☆用）
 
-    [SerializeField] Image starImage; 
+    [SerializeField] Image starImage = null;
 
 
     public void UpdateStarSprite(int starState)

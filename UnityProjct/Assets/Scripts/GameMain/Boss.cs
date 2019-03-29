@@ -31,7 +31,7 @@ public class Boss : MonoBehaviour
 
     //防御力
     [SerializeField]
-    float defensePower;
+    float defensePower = 0;
 
     //Hp
     [SerializeField]
@@ -59,17 +59,12 @@ public class Boss : MonoBehaviour
         set { gravityDirection = GravityDirection; }
     }
 
-    [SerializeField]
-    bool onMove;
-
-
     public void Init()
     {
         foundationHPMax = foundationHP;
         //『PlayerMove』を取得します
         playerMove = Singleton.Instance.gameSceneController.playerMove;
-        //破壊したときの動き
-        onMove = false;
+
         //オブジェクトを削除するかどうか
         onRemoveObjFlag = false;
         //ポイントを獲得した回数
