@@ -9,10 +9,10 @@ public class UiManager : MonoBehaviour
     //FadeLayerクラスを取得
     public FadeLayer fadeLayer;
     //ゲームオーバー時表示UI
-    [SerializeField] GameObject gameOvreUI;
+    [SerializeField] GameObject gameOvreUI = null;
 
     //ゲームクリア時表示用UI
-    [SerializeField] GameObject gameClearUI;
+    [SerializeField] GameObject gameClearUI = null;
 
     //フェード時表示用TEXT
     public GameObject fadeText;

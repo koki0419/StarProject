@@ -1292,7 +1292,7 @@ GameObject:
   - component: {fileID: 1301524554}
   - component: {fileID: 1301524555}
   m_Layer: 0
-  m_Name: ScreenManager
+  m_Name: Scene Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1321,7 +1321,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1301524553}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9fe58fbb33cc3a4685ecb9c3ed9c501, type: 3}
+  m_Script: {fileID: 11500000, guid: 07c4da29f9357194baffb7efe5250280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   titleTyp: 0

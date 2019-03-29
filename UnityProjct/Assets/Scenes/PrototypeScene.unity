@@ -912,7 +912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &111622952
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1701,6 +1701,13 @@ MonoBehaviour:
   enemyController: []
   chargeUIController: {fileID: 1231812590}
   starChargeController: {fileID: 1231812595}
+  chargePointManager:
+    chargePoint: 0
+    chargePointMax: 51
+    starChildCount: 0
+    starChildCountSkip: 0
+    destroyCount: 0
+    playerHp: 0
   uiManager: {fileID: 1219740086}
 --- !u!4 &185138400
 Transform:
@@ -16100,7 +16107,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 621, y: 411}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &564963484
 MonoBehaviour:
@@ -16122,7 +16129,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: b91f75d4672e9b9448505f315e4c0a0b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16152,11 +16159,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: b91f75d4672e9b9448505f315e4c0a0b, type: 3}
-  useStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224,
+  dontUseStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  useStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09,
     type: 3}
   starImage: {fileID: 564963484}
 --- !u!1001 &570380389
@@ -16911,7 +16918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &646481988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25184,7 +25191,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 621, y: 411}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1010755418
 MonoBehaviour:
@@ -25206,7 +25213,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9c973cd53c69d134cadcdd803ecef726, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -25236,11 +25243,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 9c973cd53c69d134cadcdd803ecef726, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8,
+  dontUseStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319,
     type: 3}
   starImage: {fileID: 1010755418}
 --- !u!4 &1016312719 stripped
@@ -27111,7 +27118,6 @@ GameObject:
   - component: {fileID: 1231812591}
   - component: {fileID: 1231812590}
   - component: {fileID: 1231812595}
-  - component: {fileID: 1231812596}
   m_Layer: 5
   m_Name: StarUICanvas
   m_TagString: Untagged
@@ -27212,6 +27218,7 @@ RectTransform:
   - {fileID: 2031528143}
   - {fileID: 488014630}
   - {fileID: 621549273}
+  - {fileID: 1561817200}
   m_Father: {fileID: 1219740085}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -27249,21 +27256,9 @@ MonoBehaviour:
   - {fileID: 1236049245}
   - {fileID: 823017105}
   - {fileID: 1025296046}
-  chargeFill: {fileID: 748086642}
+  chargeFill: {fileID: 1561817201}
   destroyModeFill: {fileID: 1934947726}
   starCount: 0
---- !u!114 &1231812596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1231812589}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93b22e397f7f60f40bd562c215110756, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1236049241
 GameObject:
   m_ObjectHideFlags: 0
@@ -29702,8 +29697,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -649, y: 336}
-  m_SizeDelta: {x: 621, y: 411}
+  m_AnchoredPosition: {x: -594, y: 300}
+  m_SizeDelta: {x: 711, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1388081801
 MonoBehaviour:
@@ -29725,7 +29720,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 5ecf1162ff09ac845a273bbe2166b4d6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4e935a087ce9e164b9ab1491555c6006, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -29953,7 +29948,6 @@ MonoBehaviour:
   lnitialVelocity: 0
   gravityMove: 0
   gravityDirection: {x: 0, y: 0, z: 0}
-  onMove: 0
 --- !u!95 &1399226576
 Animator:
   serializedVersion: 3
@@ -36019,7 +36013,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 621, y: 411}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1540725092
 MonoBehaviour:
@@ -36041,7 +36035,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: b38f6a6beb5a41842b2162f9abe162cb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -36071,11 +36065,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: b38f6a6beb5a41842b2162f9abe162cb, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae,
+  dontUseStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  useStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67,
     type: 3}
   starImage: {fileID: 1540725092}
 --- !u!1 &1551239923 stripped
@@ -36109,6 +36103,80 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1359887900}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1561817199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1561817200}
+  - component: {fileID: 1561817202}
+  - component: {fileID: 1561817201}
+  m_Layer: 5
+  m_Name: NewchageUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1561817200
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561817199}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1231812594}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -602, y: 298}
+  m_SizeDelta: {x: 700, y: 476}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1561817201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561817199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: a9b5460aa87d89e459b7235474eb1050, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!222 &1561817202
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561817199}
+  m_CullTransparentMesh: 0
 --- !u!4 &1564452437 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2708746674337277248, guid: 2eba3bc082ece324f86cf6b40a242ce9,
@@ -37530,7 +37598,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 621, y: 411}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1762116200
 MonoBehaviour:
@@ -37552,7 +37620,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 763ac9895e138324080e944264b7d838, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -37582,11 +37650,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 763ac9895e138324080e944264b7d838, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac,
+  dontUseStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102,
     type: 3}
   starImage: {fileID: 1762116200}
 --- !u!1 &1763496727 stripped
@@ -37838,7 +37906,6 @@ MonoBehaviour:
   jumpSpeed: 14
   jumpGravity: 1
   userChargePonitUp: 0.001
-  destroyModeChargePonitDown: 0.001
   foundationoffensivePower: 10
   foundationSpeedForce: 1
   offensivePower: 1
@@ -37934,7 +38001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1788986236
 RectTransform:
   m_ObjectHideFlags: 0
@@ -41452,7 +41519,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 621, y: 411}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2133849425
 MonoBehaviour:
@@ -41474,7 +41541,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9872aa87089cf7a4686d82cdbe84ee59, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -41504,11 +41571,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 9872aa87089cf7a4686d82cdbe84ee59, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b,
+  dontUseStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733,
     type: 3}
   starImage: {fileID: 2133849425}
 --- !u!1001 &2143635489

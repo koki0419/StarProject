@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class ChargePointManager
 {
 
@@ -45,14 +47,6 @@ public class ChargePointManager
     [SerializeField] float playerHp;
 
     float playerHpMax;
-
-    //HPの減少時間
-    [SerializeField] float hpDownTime = 1;
-    //HPの回復量
-    float hpRecovery = 2;
-
-    //Hpゲージの数
-    int hpGageNum = 5;
 
     //ゲージダウン割合
     float gaugeDroportion;
@@ -110,51 +104,52 @@ public class ChargePointManager
                 starChildCount = 0;
             }
         }
-        //ダメージを受ける//デストロイモード
-        if (Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag)
-        {
-            HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
-        }
-        else
-        {
-            HpDamage(hpDownTime);
-        }
 
-        if (Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag)
-        {
-            if (chargePoint > 0)
-            {
-                //HPを回復します
-                //HpRecovery(hpRecovery);
-                chargePoint -= gaugeDroportion;
+        ////ダメージを受ける//デストロイモード
+        //if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
+        //{
+        //    HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
+        //}
+        //else
+        //{
+        //    HpDamage(hpDownTime);
+        //}
 
-                if (destroyCount >= 0)
-                {
-                    destroyCount -= gaugeDroportion;
-                }
-                else
-                {
+        //if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
+        //{
+        //    if (chargePoint > 0)
+        //    {
+        //        //HPを回復します
+        //        //HpRecovery(hpRecovery);
+        //        chargePoint -= gaugeDroportion;
 
-                    destroyCount = 10;
-                }
-                Singleton.Instance.gameSceneController.starChargeController.ReMoveStarUI(DestroyMode(chargePoint));
-                Singleton.Instance.gameSceneController.starChargeController.UpdateDestroyPoint(destroyCount / 10);
+        //        if (destroyCount >= 0)
+        //        {
+        //            destroyCount -= gaugeDroportion;
+        //        }
+        //        else
+        //        {
+
+        //            destroyCount = 10;
+        //        }
+        //        Singleton.Instance.gameSceneController.starChargeController.ReMoveStarUI(DestroyMode(chargePoint));
+        //        Singleton.Instance.gameSceneController.starChargeController.UpdateDestroyPoint(destroyCount / 10);
 
 
-                if (chargePoint <= 0)
-                {
-                    chargePoint = 0;
-                    Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag = false;
-                    if (chargePointMax >= 10)
-                    {
-                        chargePointMax -= 10;
-                    }
-                    // playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
-                    Singleton.Instance.gameSceneController.starChargeController.BanStar(BanStarCheck(chargePointMax));
-                }
-                //playerMove.HpRecoveryFlag = true;
-            }
-        }
+        //        if (chargePoint <= 0)
+        //        {
+        //            chargePoint = 0;
+        //            Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag = false;
+        //            if (chargePointMax >= 10)
+        //            {
+        //                chargePointMax -= 10;
+        //            }
+        //            // playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
+        //            Singleton.Instance.gameSceneController.starChargeController.BanStar(BanStarCheck(chargePointMax));
+        //        }
+        //        //playerMove.HpRecoveryFlag = true;
+        //    }
+        //}
     }
 
 

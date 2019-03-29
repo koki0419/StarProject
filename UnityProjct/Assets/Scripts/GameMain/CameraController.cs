@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
 {
 
     //プレイヤーのTransformを取得
-    [SerializeField] Transform player;
+    [SerializeField] Transform player = null;
     [SerializeField] float camaraPos = 1.5f;
     [Header("カメラ移動速度")]
     [SerializeField] float camaraMove = 1.5f;

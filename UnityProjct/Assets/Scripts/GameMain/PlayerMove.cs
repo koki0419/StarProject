@@ -50,14 +50,14 @@ public class PlayerMove : MonoBehaviour
     new Rigidbody rigidbody;
     [Header("エフェクト関係")]
     //スター獲得エフェクト
-    [SerializeField] GameObject starAcquisitionEffect;
+    [SerializeField] GameObject starAcquisitionEffect = null;
     //Hp回復エフェクト
-    [SerializeField] GameObject hpRecoveryEffect;
+    [SerializeField] GameObject hpRecoveryEffect = null;
     //チャージエフェクト1
-    [SerializeField] GameObject chargeEffect1;
+    [SerializeField] GameObject chargeEffect1 = null;
     bool chargeEffectFlag1 = false;
     //チャージエフェクト2
-    [SerializeField] GameObject chargeEffect2;
+    [SerializeField] GameObject chargeEffect2 = null;
     bool chargeEffectFlag2 = false;
 
     //ビーストモードエフェクト
@@ -74,27 +74,25 @@ public class PlayerMove : MonoBehaviour
     //-------------数値用変数--------------------------------
     [Header("プレイヤー情報")]
     //移動速度を設定します
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float moveSpeed = 0;
     //ジャンプ力
-    [SerializeField] float jumpSpeed;
+    [SerializeField] float jumpSpeed = 0;
     //ジャンプ重力
-    [SerializeField] float jumpGravity;
+    [SerializeField] float jumpGravity = 0;
     //チャージポイント使用時のユーザーゲージ上昇量
     [SerializeField] float userChargePonitUp = 0.001f;
-    //デストロイモード使用時のユーザーゲージ減少量
-    [SerializeField] float destroyModeChargePonitDown = 0.001f;
 
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
-    [SerializeField] float foundationoffensivePower;
+    [SerializeField] float foundationoffensivePower = 0;
     //初期移動量
-    [SerializeField] float foundationSpeedForce;
+    [SerializeField] float foundationSpeedForce = 0;
 
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
-    [SerializeField] float offensivePower;
+    [SerializeField] float offensivePower = 0;
     //移動量
-    [SerializeField] float speedForce;
+    [SerializeField] float speedForce = 0;
     //現在のチャージ量
     float chargeNow = 0.0f;
     //何回チャージしたか
@@ -137,8 +135,6 @@ public class PlayerMove : MonoBehaviour
     {
         set { isAcquisitionStar = value; }
     }
-    //Hp回復フラグ
-    bool isHpRecoveryFlag = false;
 
     //キャラクターの向き
     bool isRightDirection;
@@ -170,7 +166,6 @@ public class PlayerMove : MonoBehaviour
         cnaJumpFlag = false;
         isGroundFlag = true;
         isAcquisitionStar = false;
-        isHpRecoveryFlag = false;
         isdestroyModeFlag = false;
 
         starAcquisitionEffect.SetActive(false);
@@ -251,7 +246,7 @@ public class PlayerMove : MonoBehaviour
                         canAttackFlag = true;
 
                         //チャージ中
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.chargePointManager.ChargePoint / 10));
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
 
                         //チャージエフェクトデバック---------------------------
                         if (chargeCount < 3)
@@ -723,8 +718,8 @@ public class PlayerMove : MonoBehaviour
 
     float OnChargeEffect()
     {
-        var chargeMax = Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax;
-        var chargeNow = Singleton.Instance.gameSceneController.chargePointManager.ChargePoint;
+        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.ChargePointMax;
+        var chargeNow = Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint;
 
         var charge = chargeNow / chargeMax;
 
