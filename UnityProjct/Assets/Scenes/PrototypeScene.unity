@@ -16107,7 +16107,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &564963484
 MonoBehaviour:
@@ -16159,11 +16159,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: b91f75d4672e9b9448505f315e4c0a0b, type: 3}
-  useStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: b2ceb7ce5394e394c9d4f354e31f1224,
+  dontUseStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  useStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: aaa1ce23828bf1c428ba67109b882d09,
     type: 3}
   starImage: {fileID: 564963484}
 --- !u!1001 &570380389
@@ -25191,7 +25191,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1010755418
 MonoBehaviour:
@@ -25243,11 +25243,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 9c973cd53c69d134cadcdd803ecef726, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 21616f160bf231f4c9baf26f8a76f4f8,
+  dontUseStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 08b4872aabf69ea46807b660e7d4c319,
     type: 3}
   starImage: {fileID: 1010755418}
 --- !u!4 &1016312719 stripped
@@ -27256,7 +27256,7 @@ MonoBehaviour:
   - {fileID: 1236049245}
   - {fileID: 823017105}
   - {fileID: 1025296046}
-  chargeFill: {fileID: 748086642}
+  chargeFill: {fileID: 1561817201}
   destroyModeFill: {fileID: 1934947726}
   starCount: 0
 --- !u!1 &1236049241
@@ -29697,8 +29697,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -649, y: 336}
-  m_SizeDelta: {x: 2018, y: 1393}
+  m_AnchoredPosition: {x: -594, y: 300}
+  m_SizeDelta: {x: 711, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1388081801
 MonoBehaviour:
@@ -36013,7 +36013,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1540725092
 MonoBehaviour:
@@ -36065,11 +36065,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: b38f6a6beb5a41842b2162f9abe162cb, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 198b336ffebd16c4d874fa2d12213aae,
+  dontUseStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  useStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: e82b6db05da073349867d287e695be67,
     type: 3}
   starImage: {fileID: 1540725092}
 --- !u!1 &1551239923 stripped
@@ -36137,8 +36137,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -658, y: 338}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_AnchoredPosition: {x: -602, y: 298}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1561817201
 MonoBehaviour:
@@ -37598,7 +37598,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1762116200
 MonoBehaviour:
@@ -37650,11 +37650,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 763ac9895e138324080e944264b7d838, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 97f5cf63a7b7695448b2c568992058ac,
+  dontUseStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 1feb0c3444e243242992949d265d9102,
     type: 3}
   starImage: {fileID: 1762116200}
 --- !u!1 &1763496727 stripped
@@ -41519,7 +41519,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2048, y: 1393}
+  m_SizeDelta: {x: 700, y: 476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2133849425
 MonoBehaviour:
@@ -41571,11 +41571,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   star: 0
-  dontUseStarSprite: {fileID: 21300000, guid: 9872aa87089cf7a4686d82cdbe84ee59, type: 3}
-  useStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  usedStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  chageStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b, type: 3}
-  notAvailableStarSprite: {fileID: 21300000, guid: 013a2cb13cdf8034fb9de8b61a700b9b,
+  dontUseStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  useStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  usedStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  chageStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733, type: 3}
+  notAvailableStarSprite: {fileID: 21300000, guid: 1fcf85bc05662864b94c6bb68e181733,
     type: 3}
   starImage: {fileID: 2133849425}
 --- !u!1001 &2143635489
