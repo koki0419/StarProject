@@ -111,7 +111,7 @@ public class ChargePointManager
             }
         }
         //ダメージを受ける//デストロイモード
-        if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
+        if (Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag)
         {
             HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
         }
@@ -120,7 +120,7 @@ public class ChargePointManager
             HpDamage(hpDownTime);
         }
 
-        if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
+        if (Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag)
         {
             if (chargePoint > 0)
             {
@@ -144,7 +144,7 @@ public class ChargePointManager
                 if (chargePoint <= 0)
                 {
                     chargePoint = 0;
-                    Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag = false;
+                    Singleton.Instance.gameSceneController.playerMove.IsDestroyModeFlag = false;
                     if (chargePointMax >= 10)
                     {
                         chargePointMax -= 10;

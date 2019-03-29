@@ -59,7 +59,7 @@ public class StarController : MonoBehaviour
             //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
             if (starPoint == 1)
             {
-                if (!playerMove.DestroyModeFlag && Singleton.Instance.gameSceneController.chargePointManager.ChargePoint < Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax)
+                if (!playerMove.IsDestroyModeFlag && Singleton.Instance.gameSceneController.chargePointManager.ChargePoint < Singleton.Instance.gameSceneController.chargePointManager.ChargePointMax)
                 {
                     Singleton.Instance.gameSceneController.chargePointManager.ChargePoint += starPoint;
                     Singleton.Instance.gameSceneController.chargePointManager.StarChildCount += starPoint;
