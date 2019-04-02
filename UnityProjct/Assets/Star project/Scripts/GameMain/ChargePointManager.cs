@@ -105,51 +105,6 @@ public class ChargePointManager
             }
         }
 
-        ////ダメージを受ける//デストロイモード
-        //if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
-        //{
-        //    HpDamage(hpDownTime * (int)PlayerMove.PlayerBeastModeState.PhysicalFitnessCost);
-        //}
-        //else
-        //{
-        //    HpDamage(hpDownTime);
-        //}
-
-        //if (Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag)
-        //{
-        //    if (chargePoint > 0)
-        //    {
-        //        //HPを回復します
-        //        //HpRecovery(hpRecovery);
-        //        chargePoint -= gaugeDroportion;
-
-        //        if (destroyCount >= 0)
-        //        {
-        //            destroyCount -= gaugeDroportion;
-        //        }
-        //        else
-        //        {
-
-        //            destroyCount = 10;
-        //        }
-        //        Singleton.Instance.gameSceneController.starChargeController.ReMoveStarUI(DestroyMode(chargePoint));
-        //        Singleton.Instance.gameSceneController.starChargeController.UpdateDestroyPoint(destroyCount / 10);
-
-
-        //        if (chargePoint <= 0)
-        //        {
-        //            chargePoint = 0;
-        //            Singleton.Instance.gameSceneController.playerMove.DestroyModeFlag = false;
-        //            if (chargePointMax >= 10)
-        //            {
-        //                chargePointMax -= 10;
-        //            }
-        //            // playerMove.BeastModeEffect.SetActive(playerMove.DestroyModeFlag);
-        //            Singleton.Instance.gameSceneController.starChargeController.BanStar(BanStarCheck(chargePointMax));
-        //        }
-        //        //playerMove.HpRecoveryFlag = true;
-        //    }
-        //}
     }
 
 
@@ -165,23 +120,6 @@ public class ChargePointManager
         {
             playerHp = 0;
         }
-
-        //chargeUIController.UpdateHppoint(updateHPs[hpNum] / 100, hpNum);
-        Singleton.Instance.gameSceneController.chargeUIController.HppointUpdate(playerHp / playerHpMax);
-    }
-
-    //HPを回復します
-    void HpRecovery(float recovery)
-    {
-        if (playerHp < playerHpMax)
-        {
-            playerHp += recovery;
-        }
-        else
-        {
-            playerHp = playerHpMax;
-        }
-        Singleton.Instance.gameSceneController.chargeUIController.HppointUpdate(playerHp / playerHpMax);
     }
 
     //☆使用後状態を確認します
