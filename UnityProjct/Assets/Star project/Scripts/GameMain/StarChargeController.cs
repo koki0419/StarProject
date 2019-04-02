@@ -26,9 +26,7 @@ public class StarChargeController : MonoBehaviour
 
 
     //☆獲得ポイント
-    public Image chargeFill;
-    //ビーストモード
-    public Image destroyModeFill;
+    [SerializeField]private Image chargeFill;
     //小さい☆UIが10個溜まったフラグ
     bool starChargeMaxFlag = false;
     //現在の大きい☆の数
@@ -104,7 +102,7 @@ public class StarChargeController : MonoBehaviour
         }
     }
 
-    //使用禁止
+    //☆使用禁止
     public void BanStar(int starNum)
     {
         Debug.Log("starNum" + starNum);
@@ -116,10 +114,4 @@ public class StarChargeController : MonoBehaviour
     {
         chargeFill.fillAmount = percentage;
     }
-    //チャージポイントのupdete
-    public void UpdateDestroyPoint(float percentage)
-    {
-        destroyModeFill.fillAmount = percentage;
-    }
-
 }
