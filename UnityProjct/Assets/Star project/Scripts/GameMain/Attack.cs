@@ -9,16 +9,21 @@ public class Attack
     public enum PlayerAttackIndex
     {
         None,
-        AttackNormal = 1001,
-        AttackUp = 1010,
-        AttackDown = 1011,
+        AttackNormal = 1010,
+        AttackDown = 1001,
+        AttackUp = 1011,
 
     }
 
     public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
 
 
-
+    /// <summary>
+    /// 上下左右のどのコマンドが入ったかを返します
+    /// </summary>
+    /// <param name="direction">入力情報</param>
+    /// <param name="obj">対象キャラ</param>
+    /// <returns></returns>
     public int OnAttack(Vector2 direction, GameObject obj)
     {
         int animationName;
@@ -43,8 +48,6 @@ public class Attack
         // 角度
         float degree = radian * Mathf.Rad2Deg;
 
-        //Debug.Log("x = " + x);
-        //Debug.Log("degree = " + degree);
         if (firing.x == 0 && firing.y == 0)
         {
 
