@@ -8,14 +8,10 @@ public class StarChargeController : MonoBehaviour
     //大きい☆使用状態
     public enum Star
     {
-        None,
-        DontUse = 1001,
-        Use = 1010,
-        Used = 1011,
+        None = 0, //☆取得していないとき
+        Normal = 1010,//☆獲得状態
         Chage = 1100,//チャージ中（大きい☆用）
-        NotAvailable = 9999,//使用禁止（大きい☆用）
     }
-
     public Star star = Star.None;
 
     [Header("チャージ用☆UI")]
@@ -26,87 +22,88 @@ public class StarChargeController : MonoBehaviour
 
 
     //☆獲得ポイント
-    [SerializeField]private Image chargeFill;
+    [SerializeField] private Image chargeFill;
     //小さい☆UIが10個溜まったフラグ
     bool starChargeMaxFlag = false;
     //現在の大きい☆の数
-    [SerializeField]int starCount = 0;
+    [SerializeField] int bigStarCount = 0;
     public int StarCount
     {
-        set { starCount = value; }
-        get { return starCount; }
+        set { bigStarCount = value; }
+        get { return bigStarCount; }
     }
 
     public void Init()
     {
         starChargeMaxFlag = false;
-        starCount = 0;
+        bigStarCount = 0;
 
         for (int i = 0; i < starChargeUI.Length; i++)
         {
-            starChargeUI[i].UpdateStarSprite((int)Star.DontUse);
+            starChargeUI[i].UpdateStarSprite((int)Star.None);
         }
         for (int i = 0; i < starChildrenUI.Length; i++)
         {
-            starChildrenUI[i].UpdateStarSprite((int)Star.DontUse);
+            starChildrenUI[i].UpdateStarSprite((int)Star.None);
         }
     }
 
     //大きい☆UIの更新
-    public void UpdateStarUI(int starNum)
+    public void UpdateBigStarUI(int starNum)
     {
         for (int i = 0; i < starNum; i++)
         {
-            starChargeUI[i].UpdateStarSprite((int)Star.Use);
+            starChargeUI[i].UpdateStarSprite((int)Star.Normal);
         }
     }
     //大きい☆UIの更新
-    public void ReMoveStarUI(int starNum)
+    public void ReMoveBigStarUI(int starNum)
     {
-            starChargeUI[starNum-1].UpdateStarSprite((int)Star.DontUse);
-
+        starChargeUI[starNum - 1].UpdateStarSprite((int)Star.None);
     }
 
     //小さい☆UIの更新
-    public void UpdateChildrenUI(int starNum)
+    /// <summary>
+    /// 小さい☆を光らせます
+    /// 1～10のstarNumを使用します
+    /// </summary>
+    /// <param name="starNum"></param>
+    public void UpdateChildrenStarUI(int starNum)
     {
-
+        //星が10こかどうか判断して10個なら大きい☆を光らせる
+        //10個以下なら小さい星を光らせる
         if (starNum == 10) starChargeMaxFlag = true;
         if (!starChargeMaxFlag)
         {
-            for (int i = 0; i < starNum % 10; i++)
+            for (int i = 0; i < starNum; i++)
             {
-                starChildrenUI[i].UpdateStarSprite((int)Star.Use);
+                starChildrenUI[i].UpdateStarSprite((int)Star.Normal);
             }
         }
         else
         {
+            //9個の小さい☆を獲得していない状態に戻します
             for (int i = 0; i < starNum - 1; i++)
             {
-                starChildrenUI[i].UpdateStarSprite((int)Star.DontUse);
+                starChildrenUI[i].UpdateStarSprite((int)Star.None);
             }
             starChargeMaxFlag = false;
-
-            UpdateStarUI(++starCount);
+            if (bigStarCount < 5)
+            {
+                UpdateBigStarUI(++bigStarCount);
+            }
         }
 
     }
 
 
     //チャージ時
-    public void ChargeStar(int starNum)
+    public void ChargeGigStar(int starNum)
     {
         for (int i = 0; i < starNum; i++)
         {
             starChargeUI[i].UpdateStarSprite((int)Star.Chage);
         }
-    }
-
-    //☆使用禁止
-    public void BanStar(int starNum)
-    {
-        Debug.Log("starNum" + starNum);
-        starChargeUI[starNum-1].UpdateStarSprite((int)Star.NotAvailable);
     }
 
     //チャージポイントのupdete

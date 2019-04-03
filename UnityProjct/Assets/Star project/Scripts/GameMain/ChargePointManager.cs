@@ -15,7 +15,7 @@ public class ChargePointManager
         set { chargePoint = value; }
     }
     //☆チャージポイント最大値+1で入力
-    [SerializeField] float chargePointMax = 51;
+    float chargePointMax = 50;
     public float ChargePointMax
     {
         get { return chargePointMax; }
@@ -23,18 +23,16 @@ public class ChargePointManager
 
 
     //小さい☆の獲得状況
-    [SerializeField] int starChildCount = 0;
-    public float StarChildCount
+    int starChildCount = 0;
+    public int StarChildCount
     {
         get { return starChildCount; }
-        set { starChildCount = (int)value; }
+        set { starChildCount = value; }
     }
     //小さい☆の獲得状況スキップ
-    [SerializeField] int starChildCountSkip = 0;
-    public float StarChildCountSkip
+    public int starChildCountSkip
     {
-        get { return starChildCountSkip; }
-        set { starChildCountSkip = (int)value; }
+       set; get;
     }
 
     [SerializeField] float destroyCount = 0;
@@ -43,24 +41,23 @@ public class ChargePointManager
         get { return destroyCount; }
         set { destroyCount = (int)value; }
     }
-    //プレイヤーHP
-    [SerializeField] float playerHp;
-
-    float playerHpMax;
 
     //ゲージダウン割合
     float gaugeDroportion;
 
-
-
+    //一気に沢山の星を獲得したかどうか
+    public bool isSkipStar
+    {
+        set;private get;
+    }
 
     // Start is called before the first frame update
     public void Init()
     {
         //チャージポイント
         chargePoint = 0;
-
-        playerHpMax = playerHp;
+        starChildCountSkip = 0;
+        isSkipStar = false;
     }
 
     // Update is called once per frame
@@ -75,50 +72,39 @@ public class ChargePointManager
         {
             chargePoint = chargePointMax;
         }
-        if ((starChildCountSkip + chargePoint) >= chargePointMax)
+        //一気に大量の☆を獲得したとき☆獲得数が現在の獲得数と足したときに最大獲得数を超えないか確認
+        //越えなければ、現在の獲得数にプラスする
+        if (chargePoint < ChargePointMax)
         {
-            starChildCountSkip = (int)chargePointMax - (int)chargePoint;
-            chargePoint += starChildCountSkip;
-        }
-
-        if (starChildCountSkip != 0)
-        {
-            for (int i = 0; i < starChildCountSkip; i++)
+            if (isSkipStar)
             {
-                starChildCount++;
-               Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenUI(starChildCount);
+                isSkipStar = false;
+                chargePoint += starChildCountSkip;
+                if (chargePoint >= ChargePointMax)
+                {
+                    chargePoint = ChargePointMax;
+                }
+
+                for (int i = starChildCountSkip; i > 0; i--)
+                {
+                    starChildCount++;
+                    starChildCountSkip--;
+                        Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenStarUI(starChildCount);
+                    if (starChildCount == 10)
+                    {
+                        starChildCount = 0;
+                    }
+                }
+            }
+            else
+            {
+                Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenStarUI(starChildCount);
                 //☆獲得10個になったら初期化
                 if (starChildCount == 10)
                 {
                     starChildCount = 0;
                 }
             }
-        }
-        //chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
-        if (chargePoint <= chargePointMax)
-        {
-            Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenUI(starChildCount);
-            //☆獲得10個になったら初期化
-            if (starChildCount == 10)
-            {
-                starChildCount = 0;
-            }
-        }
-
-    }
-
-
-    //ダメージを受けます
-    void HpDamage(float damage)
-    {
-
-        if (playerHp > 0)
-        {
-            playerHp -= damage;
-        }
-        else
-        {
-            playerHp = 0;
         }
     }
 

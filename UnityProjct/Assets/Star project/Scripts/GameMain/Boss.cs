@@ -79,7 +79,7 @@ public class Boss : MonoBehaviour
 
         var hp = 1.0;
         hp -= (foundationHP / foundationHPMax);
-        OnSliderUpdate((float)hp);
+        //OnSliderUpdate((float)hp);
 
         animator = gameObject.GetComponent<Animator>();
     }
@@ -112,12 +112,12 @@ public class Boss : MonoBehaviour
         }
     }
 
-    public void OnSliderUpdate(float value) //******************************
-    {
-        substanceGraph.SetInputFloat("dust_Level", value);//******************************
-        substanceGraph.QueueForRender();    //******************************
-        substanceGraph.RenderAsync();       //******************************
-    }                                       //******************************
+    //public void OnSliderUpdate(float value) //******************************
+    //{
+    //    substanceGraph.SetInputFloat("dust_Level", value);//******************************
+    //    substanceGraph.QueueForRender();    //******************************
+    //    substanceGraph.RenderAsync();       //******************************
+    //}                                       //******************************
                                             //*******************************************************************************
 
     private void OnTriggerEnter(Collider other)
@@ -128,7 +128,7 @@ public class Boss : MonoBehaviour
             Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
             var hp = 1.0;
             hp -= (foundationHP / foundationHPMax);
-            OnSliderUpdate((float)hp);
+           // OnSliderUpdate((float)hp);
             if (foundationHP <= 0)
             {
                 //for (int i = 0; transform.childCount > i; i++)
