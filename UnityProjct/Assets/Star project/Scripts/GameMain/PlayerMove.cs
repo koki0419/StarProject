@@ -27,22 +27,6 @@ public class PlayerMove : MonoBehaviour
     }
     public ObjState objState = ObjState.None;
 
-
-
-    //ビーストモード消費ポイント
-    public enum PlayerBeastModeState
-    {
-        None,
-        AttacPower = 2,     //攻撃力2倍
-        SpeedPower = 2,     //スピード2倍
-        StarCost = 1,       //☆消費
-        Resilience = 0,        //回復力
-        PhysicalFitnessCost = 2,//体力消費
-
-    }
-
-    public PlayerBeastModeState playerBeastModeState = PlayerBeastModeState.None;
-
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
     public Animator animatorComponent;
@@ -51,8 +35,6 @@ public class PlayerMove : MonoBehaviour
     [Header("エフェクト関係")]
     //スター獲得エフェクト
     [SerializeField] GameObject starAcquisitionEffect = null;
-    //Hp回復エフェクト
-    [SerializeField] GameObject hpRecoveryEffect = null;
     //チャージエフェクト1
     [SerializeField] GameObject chargeEffect1 = null;
     bool chargeEffectFlag1 = false;
@@ -60,13 +42,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] GameObject chargeEffect2 = null;
     bool chargeEffectFlag2 = false;
 
-    //ビーストモードエフェクト
-    /* [SerializeField] GameObject beastModeEffect;
-     public GameObject BeastModeEffect
-     {
-         get { return beastModeEffect; }
-         set { beastModeEffect = value; }
-     }*/
 
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
@@ -103,8 +78,6 @@ public class PlayerMove : MonoBehaviour
     private float rot = 90;
     //ジャンプボタンを押している時間
     float jumpPushKeyTime = 0;
-    //ビーストモード攻撃力
-    float beastAttackPower;
     //攻撃時Speed
     [SerializeField] float attackSpeed;
     public float AttackSpeed
@@ -140,13 +113,6 @@ public class PlayerMove : MonoBehaviour
     bool isRightDirection;
     bool isLeftDirection;
 
-    //ビーストモード
-    [SerializeField] bool isdestroyModeFlag = false;
-    public bool IsDestroyModeFlag
-    {
-        get { return isdestroyModeFlag; }
-        set { isdestroyModeFlag = value; }
-    }
 
 
     //初期化
@@ -166,10 +132,8 @@ public class PlayerMove : MonoBehaviour
         cnaJumpFlag = false;
         isGroundFlag = true;
         isAcquisitionStar = false;
-        isdestroyModeFlag = false;
 
         starAcquisitionEffect.SetActive(false);
-        hpRecoveryEffect.SetActive(false);
 
 
         //デバック用//エフェクト
@@ -177,7 +141,6 @@ public class PlayerMove : MonoBehaviour
         chargeEffectFlag2 = false;
         chargeEffect1.SetActive(chargeEffectFlag1);
         chargeEffect2.SetActive(chargeEffectFlag2);
-        //beastModeEffect.SetActive(destroyModeFlag);
     }
 
     // Update is called once per frame
@@ -209,29 +172,8 @@ public class PlayerMove : MonoBehaviour
                             isGroundFlag = false;
                             animatorComponent.SetBool("walkFlag", false);
                         }
-                        //else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button0))
-                        //{
-                        //    jumpPushKeyTime += Time.deltaTime;
-                        //    if(jumpPushKeyTime > jumpTimeLimit && isGroundFlag)
-                        //    {
-                        //        isGroundFlag = false;
-                        //        jumpFlag = true;
-                        //    }
-                        //}
-                        //else if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.Joystick1Button0))
-                        //{
-                        //    if (jumpPushKeyTime < jumpTimeLimit && isGroundFlag)
-                        //    {
-                        //        isGroundFlag = false;
-                        //        jumpFlag = true;
-                        //    }
-                        //    jumpPushKeyTime = 0.0f;
-                        //    //jumpFlag = true;
-
-                        //}
                         //移動
                         CharacterMove(dx, jumpPushKeyTime, deltaTime);
-                        //Debug.Log("jumpPushKeyTime" + jumpPushKeyTime);
                     }
                     else
                     {
@@ -245,47 +187,7 @@ public class PlayerMove : MonoBehaviour
                         animatorComponent.SetBool("walkFlag", false);
                         canAttackFlag = true;
                         objState = ObjState.OnCharge;
-                        //チャージ中
-                        //Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
-
-                        ////チャージエフェクトデバック---------------------------
-                        //if (chargeCount < 3)
-                        //{
-                        //    chargeEffectFlag1 = true;
-                        //    chargeEffectFlag2 = false;
-                        //}
-                        //else
-                        //{
-                        //    chargeEffectFlag1 = false;
-                        //    chargeEffectFlag2 = true;
-                        //}
-
-                        //chargeEffect1.SetActive(chargeEffectFlag1);
-                        //chargeEffect2.SetActive(chargeEffectFlag2);
-
                     }
-                    ////else if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                    ////{
-                    ////    チャージ終了（チャージゲージを0に戻す）
-                    ////    attackPower = chargeCount * offensivePower + foundationoffensivePower;
-                    ////    attackSpeed = chargeCount * speedForce + foundationSpeedForce;
-
-                    ////    チャージゲージをリセットします
-                    ////    Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
-                    ////    チャージ中☆を戻します
-                    ////    Singleton.Instance.gameSceneController.starChargeController.UpdateBigStarUI(chargeCount);
-                    ////    chargeCount = 0;
-                    ////    chargeNow = 0.0f;
-
-                    ////    OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                    ////    chargeEffect1.SetActive(false);
-                    ////    chargeEffect2.SetActive(false);
-
-                    ////    rigidbody.isKinematic = false;
-
-
-                    ////    objState = ObjState.Attack;
-                    ////}
                 }
                 break;
             case ObjState.Attack:
@@ -328,8 +230,6 @@ public class PlayerMove : MonoBehaviour
                         //チャージ終了（チャージゲージを0に戻す）
                         attackPower = chargeCount * offensivePower + foundationoffensivePower;
                         attackSpeed = chargeCount * speedForce + foundationSpeedForce;
-
-                        //Singleton.Instance.gameSceneController.chargeUIController.UseUpdateChargePoint(0);
                         //チャージゲージをリセットします
                         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
                         //チャージ中☆を戻します
@@ -354,76 +254,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-        //if (hpRecoveryFlag)
-        //{
-        //    hpRecoveryEffect.SetActive(true);
-        //}
-        //else
-        //{
-        //    hpRecoveryEffect.SetActive(false);
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    if (!chargeEffectFlag1)
-        //    {
-        //        chargeEffectFlag1 = true;
-        //        chargeEffectFlag2 = false;
-        //    }
-        //    else
-        //    {
-        //        chargeEffectFlag1 = false;
-        //        chargeEffectFlag2 = true;
-        //    }
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Joystick1Button3))
-        //{
-        //    //Debug.Log("ChargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
-        //    //Debug.Log("ChargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
-
-        //    if (!destroyModeFlag && Singleton.Instance.gameSceneController.ChargePoint == Singleton.Instance.gameSceneController.ChargePointMax && Singleton.Instance.gameSceneController.ChargePoint != 0)
-        //    {
-        //        Singleton.Instance.gameSceneController.DestroyCount = 10;
-        //        destroyModeFlag = true;
-        //        beastAttackPower = Singleton.Instance.gameSceneController.ChargePointMax;
-        //        //Debug.Log("chargePoint" + Singleton.Instance.gameSceneController.ChargePoint);
-        //        //Debug.Log("chargePointMax" + Singleton.Instance.gameSceneController.ChargePointMax);
-        //        //Debug.Log("StarChildCount" + Singleton.Instance.gameSceneController.StarChildCount);
-        //    }
-        //    else
-        //    {
-        //        destroyModeFlag = false;
-        //        if (Singleton.Instance.gameSceneController.ChargePoint < 10)
-        //        {
-        //            Singleton.Instance.gameSceneController.ChargePoint = 0;
-        //        }
-        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 20)
-        //        {
-        //            Singleton.Instance.gameSceneController.ChargePoint = 10;
-        //        }
-        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 30)
-        //        {
-        //            Singleton.Instance.gameSceneController.ChargePoint = 20;
-        //        }
-        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 40)
-        //        {
-        //            Singleton.Instance.gameSceneController.ChargePoint = 30;
-        //        }
-        //        else if (Singleton.Instance.gameSceneController.ChargePoint < 50)
-        //        {
-        //            Singleton.Instance.gameSceneController.ChargePoint = 40;
-        //        }
-
-
-
-
-        //        Singleton.Instance.gameSceneController.starChargeController.BanStar(Singleton.Instance.gameSceneController.BanStarCheck(Singleton.Instance.gameSceneController.ChargePointMax));
-        //        //Singleton.Instance.gameSceneController.ChargePointMax -= 10;
-        //    }
-        //    beastModeEffect.SetActive(destroyModeFlag);
-
-        //}
     }
 
 
@@ -528,44 +358,6 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
-    //攻撃
-    //void OnAttack(float charge, Vector2 direction)
-    //{
-
-    //    charge *= 100.0f;
-    //    float usedPoint = charge;
-    //    string attackName;
-
-    //    if (charge >= 80)
-    //    {
-    //        usedPoint = (float)PlayerAttackState.Attack5;
-    //        attackName = "BigBang";//ビックバン
-    //    }
-    //    else if (charge >= 60)
-    //    {
-    //        usedPoint = (float)PlayerAttackState.Attack4;
-    //        attackName = "LastSupper";//最後の晩餐
-    //    }
-    //    else if (charge >= 40)
-    //    {
-    //        usedPoint = (float)PlayerAttackState.Attack3;
-    //        attackName = "Explosion";// 爆発
-    //    }
-    //    else if (charge >= 20)
-    //    {
-    //        usedPoint = (float)PlayerAttackState.Attack2;
-    //        attackName = "Dynamite";// ダイナマイト
-    //    }
-    //    else
-    //    {
-    //        usedPoint = (float)PlayerAttackState.Attack1;
-    //        attackName = "Bullet01";// 通常攻撃
-    //    }
-
-    //    //Singleton.Instance.gameSceneController.ChargePoint -= usedPoint;
-
-    //    attack.OnAttackBullet(attackName, this.gameObject, shotSpeed, new Vector2(direction.x, direction.y));
-    //}
 
     //狙い(チャージ)
     float OnCharge(float charge)
