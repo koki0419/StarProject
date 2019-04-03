@@ -7,10 +7,10 @@ public class PlayerMove : MonoBehaviour
     public enum PlayerAttackIndex
     {
         None,
-        AttackNormal = 1001,
-        AttackUp = 1010,
-        AttackDown = 1011,
-
+        AttackNormal = 1000,
+        ChargeAttackNormal = 1010,
+        ChargeAttackDown = 1001,
+        ChargeAttackUp = 1011,
     }
 
     public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
@@ -102,6 +102,8 @@ public class PlayerMove : MonoBehaviour
     }
     //地面との接触
     bool isGroundFlag;
+    //チャージ中かどうか
+    bool isChargeFlag;
     //☆獲得時フラグ
     bool isAcquisitionStar = false;
     public bool IsAcquisitionStar
@@ -151,13 +153,13 @@ public class PlayerMove : MonoBehaviour
         //移動
         float dx = Input.GetAxis("Horizontal");
 
-        if (dx != 0)
+        if (dx != 0 && !isChargeFlag)
         {
-            animatorComponent.SetBool("walkFlag", true);
+            animatorComponent.SetBool("isDash", true);
         }
         else
         {
-            animatorComponent.SetBool("walkFlag", false);
+            animatorComponent.SetBool("isDash", false);
         }
         switch (objState)
         {
@@ -170,7 +172,8 @@ public class PlayerMove : MonoBehaviour
                         {
                             cnaJumpFlag = true;
                             isGroundFlag = false;
-                            animatorComponent.SetBool("walkFlag", false);
+                            animatorComponent.SetBool("isDash", false);
+                            animatorComponent.SetBool("isJump",true);
                         }
                         //移動
                         CharacterMove(dx, jumpPushKeyTime, deltaTime);
@@ -184,21 +187,18 @@ public class PlayerMove : MonoBehaviour
                     //チャージ
                     if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
                     {
-                        animatorComponent.SetBool("walkFlag", false);
+                        animatorComponent.SetBool("isDash", false);
+                        animatorComponent.SetInteger("setPunchNum", 0);
                         canAttackFlag = true;
+                        isChargeFlag = true;
                         objState = ObjState.OnCharge;
                     }
                 }
                 break;
-            case ObjState.Attack:
-                {
-                    MoveAttack(attackSpeed / 10, dy);
-                    StartCoroutine(OnAttack(0));
-                }
-                break;
-
             case ObjState.OnCharge:
                 {
+                    animatorComponent.SetTrigger("isCharge");
+
                     DirectionMove(dx);
                     rigidbody.isKinematic = true;
                     //通常時
@@ -208,6 +208,7 @@ public class PlayerMove : MonoBehaviour
                         //チャージ中
                         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
 
+                        Debug.Log(chargeCount);
                         //チャージエフェクトデバック---------------------------
                         if (chargeCount < 3)
                         {
@@ -234,20 +235,37 @@ public class PlayerMove : MonoBehaviour
                         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
                         //チャージ中☆を戻します
                         Singleton.Instance.gameSceneController.starChargeController.UpdateBigStarUI(chargeCount);
-                        chargeCount = 0;
-                        chargeNow = 0.0f;
+                        //攻撃アニメーション
+                        //チャージ回数が0なら通常パンチ
+                        //チャージしたなら入力角度を計算して上下左右を判断して攻撃
+                        if(chargeCount <= 1)
+                        {
+                            OnAttackMotion(1000);
+                        }
+                        else
+                        {
+                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+                        }
 
-                        //attackFlag = true;
-                        OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
                         chargeEffect1.SetActive(false);
                         chargeEffect2.SetActive(false);
 
                         rigidbody.isKinematic = false;
 
+                        chargeCount = 0;
+                        chargeNow = 0.0f;
+
                         objState = ObjState.Attack;
                     }
                     break;
                 }
+            case ObjState.Attack:
+                {
+                    MoveAttack(attackSpeed / 10, dy);
+                    StartCoroutine(OnAttack(0));
+                    isChargeFlag = false;
+                }
+                break;
         }
 
         if (isAcquisitionStar)
@@ -263,7 +281,8 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
-            animatorComponent.SetBool("walkFlag", true);
+            animatorComponent.SetBool("isJump", false);
+            animatorComponent.SetBool("isDash", true);
             isGroundFlag = true;
             cnaJumpFlag = false;
         }
@@ -306,7 +325,7 @@ public class PlayerMove : MonoBehaviour
 
             velocity.y += jumpSpeed;
 
-            animatorComponent.SetBool("walkFlag", true);
+           // animatorComponent.SetBool("walkFlag", true);
         }
         if (!isGroundFlag)
         {
@@ -353,13 +372,13 @@ public class PlayerMove : MonoBehaviour
         else if (horizontal >= 1)
         {
             var velocity = rigidbody.velocity;
-            velocity.y = speedForce; // * Time.deltaTime;
+            velocity.y = speedForce * Time.deltaTime;
             rigidbody.velocity = velocity;
         }
 
     }
 
-    //狙い(チャージ)
+    //チャージ時のチャージ量
     float OnCharge(float charge)
     {
         //マックスのチャージ量
@@ -426,18 +445,25 @@ public class PlayerMove : MonoBehaviour
     //アタック
     void OnAttackMotion(int attackNum)
     {
-        //animatorComponent.SetInteger("AttackNum", attackNum);
         switch (attackNum)
         {
             case (int)PlayerAttackIndex.AttackNormal:
-                animatorComponent.SetBool("punchFlag", true);
+                animatorComponent.SetTrigger("isPunch");
+                animatorComponent.SetInteger("setPunchNum", 1000);
                 break;
-            case (int)PlayerAttackIndex.AttackDown:
-                animatorComponent.SetBool("punchFlag", true);
+            case (int)PlayerAttackIndex.ChargeAttackNormal:
+                animatorComponent.SetTrigger("isPunch");
+                animatorComponent.SetInteger("setPunchNum",1010);
                 break;
-            case (int)PlayerAttackIndex.AttackUp:
-                animatorComponent.SetBool("punchFlag", true);
+            case (int)PlayerAttackIndex.ChargeAttackDown:
+                animatorComponent.SetTrigger("isPunch");
+                animatorComponent.SetInteger("setPunchNum", 1001);
                 break;
+            case (int)PlayerAttackIndex.ChargeAttackUp:
+                animatorComponent.SetTrigger("isPunch");
+                animatorComponent.SetInteger("setPunchNum", 1011);
+                break;
+                
         }
     }
 
