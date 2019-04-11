@@ -32,7 +32,7 @@ public class ChargePointManager
     //小さい☆の獲得状況スキップ
     public int starChildCountSkip
     {
-       set; get;
+        set; get;
     }
 
     [SerializeField] float destroyCount = 0;
@@ -48,7 +48,7 @@ public class ChargePointManager
     //一気に沢山の星を獲得したかどうか
     public bool isSkipStar
     {
-        set;private get;
+        set; private get;
     }
 
     // Start is called before the first frame update
@@ -89,21 +89,13 @@ public class ChargePointManager
                 {
                     starChildCount++;
                     starChildCountSkip--;
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenStarUI(starChildCount);
-                    if (starChildCount == 10)
-                    {
-                        starChildCount = 0;
-                    }
+                    Singleton.Instance.gameSceneController.starChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
+
                 }
             }
             else
             {
-                Singleton.Instance.gameSceneController.starChargeController.UpdateChildrenStarUI(starChildCount);
-                //☆獲得10個になったら初期化
-                if (starChildCount == 10)
-                {
-                    starChildCount = 0;
-                }
+                Singleton.Instance.gameSceneController.starChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
             }
         }
     }
