@@ -1271,7 +1271,6 @@ MonoBehaviour:
   - {fileID: 1399226575}
   starControllers: []
   enemyController: []
-  chargeUIController: {fileID: 0}
   starChargeController: {fileID: 1231812595}
   chargePointManager:
     chargePoint: 0
@@ -9238,6 +9237,26 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1606674137}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &496515851 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7975123415778761832, guid: 78e1fa8281a88af428736f491f04eae8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1019390358}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &496515853
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496515851}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 11.474773
+  m_Height: 35.521324
+  m_Direction: 1
+  m_Center: {x: -5.49231, y: -0.0000005765625, z: 1.3599542}
 --- !u!1 &501073925 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100052, guid: 8bafc5476eeb6754b99f571f06b061c5,
@@ -17896,6 +17915,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7917692023441832337, guid: 78e1fa8281a88af428736f491f04eae8,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7917692023441832337, guid: 78e1fa8281a88af428736f491f04eae8,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78e1fa8281a88af428736f491f04eae8, type: 3}
 --- !u!4 &1023224548 stripped
@@ -22651,7 +22680,7 @@ MonoBehaviour:
   foundationSpeedForce: 1
   offensivePower: 1
   speedForce: 50
-  attackSpeed: 0
+  attackSpeed: 50
   attackPower: 0
   cnaJumpFlag: 0
   canAttackFlag: 0

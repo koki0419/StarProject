@@ -30,8 +30,6 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] EnemyController[] enemyController;
 
-    public ChargeUIController chargeUIController;
-
     public StarChargeController starChargeController;
 
 
