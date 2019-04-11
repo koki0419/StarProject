@@ -463,7 +463,7 @@ public class PlayerMove : MonoBehaviour
     //アタック時
     public IEnumerator OnAttack(int attackResetNum)
     {
-        yield return null;
+        yield return new WaitForSeconds(1.5f); ;
         canAttackFlag = false;
         objState = ObjState.Normal;
     }
