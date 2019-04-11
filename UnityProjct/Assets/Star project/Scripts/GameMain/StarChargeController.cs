@@ -17,10 +17,6 @@ public class StarChargeController : MonoBehaviour
     [Header("チャージ用☆UI")]
     //大きい☆UIを取得します →5個
     [SerializeField] StarState[] starChargeUI = null;
-    //小さい☆UIを取得します →9個
-    [SerializeField] StarState[] starChildrenUI = null;
-
-
     //☆獲得ポイント
     [SerializeField] private Image chargeFill;
     //小さい☆UIが10個溜まったフラグ
@@ -32,6 +28,12 @@ public class StarChargeController : MonoBehaviour
         set { bigStarCount = value; }
         get { return bigStarCount; }
     }
+    //小さい☆獲得表示UI(1/10)
+    [SerializeField] private GameObject AcquisitionSpriteStarCount0;
+    //小さい☆獲得表示UI(10/10)
+    [SerializeField] private GameObject AcquisitionSpriteStarCount1;
+    //小さい☆の獲得数画像
+    [SerializeField] private Sprite[] smallStarAcquisitionSprite;
 
     public void Init()
     {
@@ -42,10 +44,10 @@ public class StarChargeController : MonoBehaviour
         {
             starChargeUI[i].UpdateStarSprite((int)Star.None);
         }
-        for (int i = 0; i < starChildrenUI.Length; i++)
-        {
-            starChildrenUI[i].UpdateStarSprite((int)Star.None);
-        }
+
+        //小さい☆獲得UIの画像を0に設定します（1/10、10/10両方とも）
+        AcquisitionSpriteStarCount0.GetComponent<Image>().sprite = smallStarAcquisitionSprite[0];
+        AcquisitionSpriteStarCount1.GetComponent<Image>().sprite = smallStarAcquisitionSprite[0];
     }
 
     //大きい☆UIの更新
@@ -62,41 +64,6 @@ public class StarChargeController : MonoBehaviour
         starChargeUI[starNum - 1].UpdateStarSprite((int)Star.None);
     }
 
-    //小さい☆UIの更新
-    /// <summary>
-    /// 小さい☆を光らせます
-    /// 1～10のstarNumを使用します
-    /// </summary>
-    /// <param name="starNum"></param>
-    public void UpdateChildrenStarUI(int starNum)
-    {
-        //星が10こかどうか判断して10個なら大きい☆を光らせる
-        //10個以下なら小さい星を光らせる
-        if (starNum == 10) starChargeMaxFlag = true;
-        if (!starChargeMaxFlag)
-        {
-            for (int i = 0; i < starNum; i++)
-            {
-                starChildrenUI[i].UpdateStarSprite((int)Star.Normal);
-            }
-        }
-        else
-        {
-            //9個の小さい☆を獲得していない状態に戻します
-            for (int i = 0; i < starNum - 1; i++)
-            {
-                starChildrenUI[i].UpdateStarSprite((int)Star.None);
-            }
-            starChargeMaxFlag = false;
-            if (bigStarCount < 5)
-            {
-                UpdateBigStarUI(++bigStarCount);
-            }
-        }
-
-    }
-
-
     //チャージ時
     public void ChargeGigStar(int starNum)
     {
@@ -110,5 +77,30 @@ public class StarChargeController : MonoBehaviour
     public void UpdateChargePoint(float percentage)
     {
         chargeFill.fillAmount = percentage;
+    }
+    /// <summary>
+    /// 小さい☆の獲得状況を表示します
+    /// ☆に合わせて0～9の画像を切り替えて表示します
+    /// </summary>
+    /// <param name="smollSratCount">小さい☆獲得数</param>
+    public void UpdateDisplayAcquisitionSpriteStar(int smollSratCount)
+    {
+        if (smollSratCount < 10)
+        {
+            //1/10の桁
+            var starCount0 = smollSratCount % 10;
+            AcquisitionSpriteStarCount0.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount0];
+            AcquisitionSpriteStarCount1.GetComponent<Image>().sprite = smallStarAcquisitionSprite[0];
+        }
+        else
+        {
+            //1/10の桁
+            var starCount0 = smollSratCount % 10;
+            //10/10の桁
+            var starCount1 = smollSratCount/10 % 10;
+            AcquisitionSpriteStarCount0.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount0];
+            AcquisitionSpriteStarCount1.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount1];
+        }
+        UpdateBigStarUI(smollSratCount/10);
     }
 }
