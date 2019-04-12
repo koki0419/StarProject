@@ -9,6 +9,12 @@ namespace StarProject.Title
 {
     public class SceneController : MonoBehaviour
     {
+        [SerializeField]
+        Color normalColor;
+        [SerializeField]
+        Color selectedColor;
+
+
         public enum TitleTyp
         {
             None,
@@ -101,6 +107,7 @@ namespace StarProject.Title
                         if (!skipFlag)
                         {
                             skipFlag = true;
+                            canvas.SetActive(true);
                             skipDialog.SetActive(true);
                             video.Pause();
                         }
@@ -111,12 +118,12 @@ namespace StarProject.Title
                                 case 0:
 
                                     movieObj.SetActive(false);
-                                    canvas.SetActive(true);
                                     skipDialog.SetActive(false);
                                     titleTyp = TitleTyp.OnTitle;
                                     break;
                                 case 1:
                                     skipFlag = false;
+                                    canvas.SetActive(false);
                                     skipDialog.SetActive(false);
                                     video.Play();
                                     break;
@@ -183,7 +190,7 @@ namespace StarProject.Title
                     }
 
                     //buttonNumのUp、Downを行う
-                    if (Input.GetKeyDown(KeyCode.UpArrow))
+                    if (Input.GetKeyDown(KeyCode.LeftArrow))
                     {
                         if (!exitFlag)
                         {
@@ -196,7 +203,7 @@ namespace StarProject.Title
                             OnSelect(exitYNNum);
                         }
                     }
-                    if (Input.GetKeyDown(KeyCode.DownArrow))
+                    if (Input.GetKeyDown(KeyCode.RightArrow))
                     {
                         if (!exitFlag)
                         {
@@ -265,12 +272,12 @@ namespace StarProject.Title
                 switch (num)
                 {
                     case 0:
-                        selectButton.GetComponent<Image>().color = new Color(0, 100, 100);
-                        exitButton.GetComponent<Image>().color = new Color(255, 255, 255);
+                        selectButton.GetComponent<Image>().color = selectedColor;
+                        exitButton.GetComponent<Image>().color = normalColor;
                         return;
                     case 1:
-                        selectButton.GetComponent<Image>().color = new Color(255, 255, 255);
-                        exitButton.GetComponent<Image>().color = new Color(0, 100, 100);
+                        selectButton.GetComponent<Image>().color = normalColor;
+                        exitButton.GetComponent<Image>().color = selectedColor;
                         return;
                 }
             }
