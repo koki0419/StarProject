@@ -224,7 +224,7 @@ namespace StarProject.Title
                             switch (buttonNum)
                             {
                                 case 0:
-                                    SceneManager.LoadScene("SelectScene");
+                                    SceneManager.LoadScene("PrototypeScene");
                                     return;
                                 case 1:
                                     exitDialogUI.SetActive(true);

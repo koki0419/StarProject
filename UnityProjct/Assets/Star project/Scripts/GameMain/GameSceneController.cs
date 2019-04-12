@@ -225,7 +225,7 @@ public class GameSceneController : MonoBehaviour
         yield return null;
         yield return uiManager.FadeOutEnumerator();
 
-        SceneManager.LoadScene("SelectScene");
+        SceneManager.LoadScene("TitleScene");
     }
 
 }

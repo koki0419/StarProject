@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 1d5053613b1ef8a48ae6b2b0a599967a
+guid: 5ec60952fdbba0d408de0546be1f58ca
 TextureImporter:
   fileIDToRecycleName:
-    21300000: StarProject_UI_Namber_0_9_0
-    21300002: StarProject_UI_Namber_0_9_1
-    21300004: StarProject_UI_Namber_0_9_2
-    21300006: StarProject_UI_Namber_0_9_3
-    21300008: StarProject_UI_Namber_0_9_4
-    21300010: StarProject_UI_Namber_0_9_5
-    21300012: StarProject_UI_Namber_0_9_6
-    21300014: StarProject_UI_Namber_0_9_7
-    21300016: StarProject_UI_Namber_0_9_8
-    21300018: StarProject_UI_Namber_0_9_9
+    21300000: StarProject_UI_Namber2_0_9_0
+    21300002: StarProject_UI_Namber2_0_9_1
+    21300004: StarProject_UI_Namber2_0_9_2
+    21300006: StarProject_UI_Namber2_0_9_3
+    21300008: StarProject_UI_Namber2_0_9_4
+    21300010: StarProject_UI_Namber2_0_9_5
+    21300012: StarProject_UI_Namber2_0_9_6
+    21300014: StarProject_UI_Namber2_0_9_7
+    21300016: StarProject_UI_Namber2_0_9_8
+    21300018: StarProject_UI_Namber2_0_9_9
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_0
+      name: StarProject_UI_Namber2_0_9_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,13 +130,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 16000e5d0ba49ea459d147d3e255bfe8
+      spriteID: aa6dbb7bf36b72643b49965412030d18
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_1
+      name: StarProject_UI_Namber2_0_9_1
       rect:
         serializedVersion: 2
         x: 80
@@ -150,13 +150,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 897901d1b84f0074db0f997496cf2828
+      spriteID: 7fac15e27b8a49c4e9049b611cc5d6ad
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_2
+      name: StarProject_UI_Namber2_0_9_2
       rect:
         serializedVersion: 2
         x: 160
@@ -170,13 +170,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bb7e26472a45e744696dfb33d65f3969
+      spriteID: 01eef1d4c42e00347946a486d2e36439
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_3
+      name: StarProject_UI_Namber2_0_9_3
       rect:
         serializedVersion: 2
         x: 240
@@ -190,13 +190,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0773200e7f46b464796ff40559ab6091
+      spriteID: ed13403a4c05f454bad4acbc508d9900
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_4
+      name: StarProject_UI_Namber2_0_9_4
       rect:
         serializedVersion: 2
         x: 320
@@ -210,13 +210,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fafbed94eb1b42f478ceb026f5fdf6d7
+      spriteID: 8823d37362774004ca9090f03f94c81c
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_5
+      name: StarProject_UI_Namber2_0_9_5
       rect:
         serializedVersion: 2
         x: 400
@@ -230,13 +230,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 93767b17f5388fe4bab9d354e673193b
+      spriteID: c649c55c460f56448b1a3ce1f04b9dae
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_6
+      name: StarProject_UI_Namber2_0_9_6
       rect:
         serializedVersion: 2
         x: 480
@@ -250,13 +250,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cae275a16311bf24a897b65330dcffbc
+      spriteID: 25a5395d452e6b84c87e00853719a1c8
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_7
+      name: StarProject_UI_Namber2_0_9_7
       rect:
         serializedVersion: 2
         x: 560
@@ -270,13 +270,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b9fd525cdb2ac4469c5221aa05a78b6
+      spriteID: 490c4a3b3dc133740a79b11663da0f43
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_8
+      name: StarProject_UI_Namber2_0_9_8
       rect:
         serializedVersion: 2
         x: 640
@@ -290,13 +290,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c0b657fcf4f69848a026f129d6342a6
+      spriteID: 8db80d179a0fc6b4684a194c7d2ec035
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: StarProject_UI_Namber_0_9_9
+      name: StarProject_UI_Namber2_0_9_9
       rect:
         serializedVersion: 2
         x: 720
@@ -310,7 +310,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bd80904e0b74e5b41aa3253df76e2ec9
+      spriteID: 745b627c3e6782549b96ddc3a1d3c2cf
       vertices: []
       indices: 
       edges: []
@@ -318,7 +318,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 0fb6251847f0b224e98082793969dc29
+    spriteID: bbe49b35e3314944a8b91919729c8395
     vertices: []
     indices: 
     edges: []
