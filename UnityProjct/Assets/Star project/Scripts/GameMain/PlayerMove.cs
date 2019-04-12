@@ -115,7 +115,8 @@ public class PlayerMove : MonoBehaviour
     bool isRightDirection;
     bool isLeftDirection;
 
-
+    bool isUpAttack;
+    bool isAttack;
 
     //初期化
     public void Init()
@@ -142,6 +143,9 @@ public class PlayerMove : MonoBehaviour
         chargeEffectFlag2 = false;
         chargeEffect1.SetActive(chargeEffectFlag1);
         chargeEffect2.SetActive(chargeEffectFlag2);
+
+        isUpAttack = false;
+        isAttack = false;
     }
 
     // Update is called once per frame
@@ -234,7 +238,7 @@ public class PlayerMove : MonoBehaviour
                         //攻撃アニメーション
                         //チャージ回数が1回までなら通常パンチ
                         //チャージしたなら入力角度を計算して上下左右を判断して攻撃
-                        if(chargeCount <= 1)
+                        if (chargeCount <= 1)
                         {
                             OnAttackMotion(1000);
                         }
@@ -250,16 +254,20 @@ public class PlayerMove : MonoBehaviour
 
                         chargeCount = 0;
                         chargeNow = 0.0f;
-
+                        isAttack = true;
                         objState = ObjState.Attack;
                     }
                     break;
                 }
             case ObjState.Attack:
                 {
-                    MoveAttack(attackSpeed / 10, dy);
-                    StartCoroutine(OnAttack(0));
-                    isChargeFlag = false;
+                    if (isAttack)
+                    {
+                        MoveAttack(attackSpeed / 10);
+                        isUpAttack = false;
+                        isAttack = false;
+                        StartCoroutine(OnAttack(0));
+                    }
                 }
                 break;
         }
@@ -349,30 +357,34 @@ public class PlayerMove : MonoBehaviour
     }
 
     //攻撃時の移動
-    void MoveAttack(float speedForce, float horizontal)
+    void MoveAttack(float speedForce)
     {
-        if (horizontal == 0)
+        if (!isUpAttack)
         {
             var position = transform.position;
             //右向きの時
             if (isRightDirection && !isLeftDirection)
             {
-                position.x += speedForce * Time.deltaTime;
+                //position.x += speedForce * Time.deltaTime;
+                var rig = rigidbody;
+                rig.AddForce(Vector3.right * speedForce, ForceMode.Impulse);
             }
             //左向きの時
             else
             {
-                position.x -= speedForce * Time.deltaTime;
+                //position.x -= speedForce * Time.deltaTime;
+                var rig = rigidbody;
+                rig.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
             }
             transform.position = position;
         }
-        else if (horizontal >= 1)
+        else
         {
-            var velocity = rigidbody.velocity;
-            velocity.y = speedForce * Time.deltaTime;
-            rigidbody.velocity = velocity;
+            var rig = rigidbody;
+            rig.AddForce(Vector3.up* speedForce, ForceMode.Impulse);
+            isGroundFlag = false;
         }
-
+        isChargeFlag = false;
     }
 
     //チャージ時のチャージ量
@@ -455,16 +467,18 @@ public class PlayerMove : MonoBehaviour
                 break;
             case (int)PlayerAttackIndex.ChargeAttackUp:
                 CharacterAnimation("chargepunchUp");
+                isUpAttack = true;
                 break;
-                
+
         }
     }
 
     //アタック時
     public IEnumerator OnAttack(int attackResetNum)
     {
-        yield return new WaitForSeconds(1.5f); ;
+        yield return new WaitForSeconds(2.0f);
         canAttackFlag = false;
+        //isAttack = false;
         objState = ObjState.Normal;
     }
     /// <summary>
