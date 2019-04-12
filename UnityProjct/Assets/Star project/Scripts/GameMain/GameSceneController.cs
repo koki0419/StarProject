@@ -12,15 +12,15 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] GameObject starObj = null;
 
-    [SerializeField] GameObject enemyObj = null;
+    //[SerializeField] GameObject enemyObj = null;
 
     //☆子供オブジェクト取得用
     GameObject[] starChildrenOBJ;
-    GameObject[] enemyChildrenOBJ;
+    //GameObject[] enemyChildrenOBJ;
     //------------クラスの宣言----------------------
     public PlayerMove playerMove;
 
-    [SerializeField] BreakBoxController[] breakBoxController = null;
+    [SerializeField] ObstacleManager[] obstacleManager = null;
 
     [SerializeField] Boss[] boss = null;
 
@@ -72,15 +72,20 @@ public class GameSceneController : MonoBehaviour
 
     bool canCameraShake;
 
+    public bool isGetStar
+    {
+        get; set;
+    }
+
     //初期化
     public void Init()
     {
         //プレー中かどうか
         isPlaying = false;
         //gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost / 100;//StarCostを『0.01』にする
-        for (int i = 0; i < breakBoxController.Length; i++)
+        for (int i = 0; i < obstacleManager.Length; i++)
         {
-            breakBoxController[i].Init();
+            obstacleManager[i].Init();
         }
 
         for (int i = 0; i < boss.Length; i++)
@@ -102,21 +107,18 @@ public class GameSceneController : MonoBehaviour
         }
 
         //エネミー子供オブジェクト取得
-        enemyChildrenOBJ = new GameObject[enemyObj.transform.childCount];
-        enemyController = new EnemyController[enemyObj.transform.childCount];
-        //エネミー子供オブジェクト初期化
-        for (int i = 0; enemyObj.transform.childCount > i; i++)
-        {
-            enemyChildrenOBJ[i] = enemyObj.transform.GetChild(i).gameObject;
-            enemyController[i] = enemyChildrenOBJ[i].GetComponent<EnemyController>();
-            enemyController[i].Init(playerObj);
-        }
-
-        //chargeUIController.UpdateChargePoint(chargePoint / chargePointMax);
-        //☆画像の初期化
-        //starChargeController.UpdateChildrenStarUI(0);
+        //enemyChildrenOBJ = new GameObject[enemyObj.transform.childCount];
+        //enemyController = new EnemyController[enemyObj.transform.childCount];
+        ////エネミー子供オブジェクト初期化
+        //for (int i = 0; enemyObj.transform.childCount > i; i++)
+        //{
+        //    enemyChildrenOBJ[i] = enemyObj.transform.GetChild(i).gameObject;
+        //    enemyController[i] = enemyChildrenOBJ[i].GetComponent<EnemyController>();
+        //    enemyController[i].Init(playerObj);
+        //}
 
 
+        isGetStar = false;
         isGameClear = false;
         isGameOver = false;
 
@@ -163,8 +165,6 @@ public class GameSceneController : MonoBehaviour
 
             playerMove.OnUpdate(deltaTime);//PlayerのUpdate
 
-
-
             //ゲームオーバー
             if (isGameOver)
             {
@@ -191,7 +191,11 @@ public class GameSceneController : MonoBehaviour
         if (isPlaying)//ゲームスタート
         {
             cameraController.MoveUpdate();
-            chargePointManager.OnUpdate();
+            if (isGetStar)
+            {
+                isGetStar = false;
+                chargePointManager.OnUpdate();
+            }
         }
     }
 
@@ -216,7 +220,7 @@ public class GameSceneController : MonoBehaviour
 
     }
 
-    //スタート
+    //ゲームオーバー
     IEnumerator OnGameOver()
     {
         isPlaying = false;

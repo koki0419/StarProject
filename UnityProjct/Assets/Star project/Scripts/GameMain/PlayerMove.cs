@@ -20,8 +20,10 @@ public class PlayerMove : MonoBehaviour
     {
         None,
         Normal,
-        Attack,
-        DestroyMode,
+        AttackJab,
+        AttackUp,
+        AttackDown,
+        ChargeAttack,
         OnCharge,
 
     }
@@ -76,10 +78,8 @@ public class PlayerMove : MonoBehaviour
     int chargeCountMax = 0;
     //回転
     private float rot = 90;
-    //ジャンプボタンを押している時間
-    float jumpPushKeyTime = 0;
     //攻撃時Speed
-    [SerializeField] float attackSpeed;
+    float attackSpeed;
     public float AttackSpeed
     {
         get { return attackSpeed; }
@@ -116,6 +116,7 @@ public class PlayerMove : MonoBehaviour
     bool isLeftDirection;
 
     bool isUpAttack;
+    bool isDownAttack;
     bool isAttack;
 
     //初期化
@@ -145,133 +146,35 @@ public class PlayerMove : MonoBehaviour
         chargeEffect2.SetActive(chargeEffectFlag2);
 
         isUpAttack = false;
+        isDownAttack = false;
         isAttack = false;
     }
 
     // Update is called once per frame
     public void OnUpdate(float deltaTime)
     {
-        float dy = Input.GetAxis("Vertical");
-
-        //移動
-        float dx = Input.GetAxis("Horizontal");
-
         switch (objState)
         {
             //通常時
             case ObjState.Normal:
-                {
-                    if (!canAttackFlag)
-                    {
-                        if (Input.GetKeyDown(KeyCode.J) && isGroundFlag || Input.GetKeyDown(KeyCode.Joystick1Button0) && isGroundFlag)
-                        {
-                            CharacterAnimation("jump");
-                            cnaJumpFlag = false;
-                            isGroundFlag = false;
-                        }
-                        //アニメーション
-                        if (dx != 0 && !isChargeFlag && isGroundFlag)
-                        {
-                            CharacterAnimation("dash");
-                        }
-                        else if (!isChargeFlag && isGroundFlag)
-                        {
-                            CharacterAnimation("idol");
-                        }
-
-                        //移動
-                        CharacterMove(dx, jumpPushKeyTime, deltaTime);
-                    }
-                    else
-                    {
-                        DirectionMove(dx);
-                        rigidbody.isKinematic = true;
-                    }
-
-                    //チャージ
-                    if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
-                    {
-                        CharacterAnimation("charge");
-                        canAttackFlag = true;
-                        isChargeFlag = true;
-                        objState = ObjState.OnCharge;
-                    }
-                }
+                NormalModeUpdate(deltaTime);
                 break;
             case ObjState.OnCharge:
-                {
-                    DirectionMove(dx);
-                    rigidbody.isKinematic = true;
-                    //通常時
-                    //チャージ
-                    if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
-                    {
-                        //チャージ中
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
-
-                        //チャージエフェクトデバック---------------------------
-                        if (chargeCount < 3)
-                        {
-                            chargeEffectFlag1 = true;
-                            chargeEffectFlag2 = false;
-                        }
-                        else
-                        {
-                            chargeEffectFlag1 = false;
-                            chargeEffectFlag2 = true;
-                        }
-
-                        chargeEffect1.SetActive(chargeEffectFlag1);
-                        chargeEffect2.SetActive(chargeEffectFlag2);
-
-                    }
-                    if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
-                    {
-
-                        //チャージ終了（チャージゲージを0に戻す）
-                        attackPower = chargeCount * offensivePower + foundationoffensivePower;
-                        attackSpeed = chargeCount * speedForce + foundationSpeedForce;
-                        //チャージゲージをリセットします
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
-                        //チャージ中☆を戻します
-                        Singleton.Instance.gameSceneController.starChargeController.UpdateBigStarUI(chargeCount);
-                        //攻撃アニメーション
-                        //チャージ回数が1回までなら通常パンチ
-                        //チャージしたなら入力角度を計算して上下左右を判断して攻撃
-                        if (chargeCount <= 1)
-                        {
-                            OnAttackMotion(1000);
-                        }
-                        else
-                        {
-                            OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
-                        }
-
-                        chargeEffect1.SetActive(false);
-                        chargeEffect2.SetActive(false);
-
-                        rigidbody.isKinematic = false;
-
-                        chargeCount = 0;
-                        chargeNow = 0.0f;
-                        isAttack = true;
-                        objState = ObjState.Attack;
-                    }
-                    break;
-                }
-            case ObjState.Attack:
-                {
-                    if (isAttack)
-                    {
-                        MoveAttack(attackSpeed / 10);
-                        isUpAttack = false;
-                        isAttack = false;
-                        StartCoroutine(OnAttack(0));
-                    }
-                }
+                ChargeUpdate();
+                break;
+            case ObjState.AttackJab:
+                AttackUpdate(0.5f);
+                break;
+            case ObjState.ChargeAttack:
+                AttackUpdate(2.0f);
+                break;
+            case ObjState.AttackUp:
+                AttackUpdate(1.0f);
+                break;
+            case ObjState.AttackDown:
+                AttackUpdate(1.5f);
                 break;
         }
-
         if (isAcquisitionStar)
         {
             StartCoroutine(OnGetStar());
@@ -299,8 +202,12 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    //移動
-    void CharacterMove(float horizontal, float jTime, float deltaTime)
+    /// <summary>
+    /// キャラクターの移動です
+    /// </summary>
+    /// <param name="horizontal">横移動のキー入力値</param>
+    /// <param name="deltaTime">GameSceneManagerから受け取ります</param>
+    void CharacterMove(float horizontal, float deltaTime)
     {
         var position = transform.position;
         position.x += horizontal * moveSpeed * deltaTime;
@@ -340,6 +247,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="horizontal">左右キー入力値</param>
     void DirectionMove(float horizontal)
     {
+        rigidbody.isKinematic = true;
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -359,30 +267,33 @@ public class PlayerMove : MonoBehaviour
     //攻撃時の移動
     void MoveAttack(float speedForce)
     {
-        if (!isUpAttack)
+        if (!isUpAttack && !isDownAttack)
         {
             var position = transform.position;
             //右向きの時
             if (isRightDirection && !isLeftDirection)
             {
-                //position.x += speedForce * Time.deltaTime;
                 var rig = rigidbody;
                 rig.AddForce(Vector3.right * speedForce, ForceMode.Impulse);
             }
             //左向きの時
             else
             {
-                //position.x -= speedForce * Time.deltaTime;
                 var rig = rigidbody;
                 rig.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
             }
             transform.position = position;
         }
-        else
+        else if (isUpAttack)
         {
             var rig = rigidbody;
-            rig.AddForce(Vector3.up* speedForce, ForceMode.Impulse);
+            rig.AddForce(Vector3.up * speedForce, ForceMode.Impulse);
             isGroundFlag = false;
+        }
+        else if (isDownAttack)
+        {
+            var rig = rigidbody;
+            rig.AddForce(Vector3.down * speedForce, ForceMode.Impulse);
         }
         isChargeFlag = false;
     }
@@ -436,7 +347,7 @@ public class PlayerMove : MonoBehaviour
             }
         }
 
-        Singleton.Instance.gameSceneController.starChargeController.ChargeGigStar(chargeCount);
+       // Singleton.Instance.gameSceneController.starChargeController.ChargeGigStar(chargeCount);
         return chargeNow;
     }
 
@@ -458,15 +369,20 @@ public class PlayerMove : MonoBehaviour
         {
             case (int)PlayerAttackIndex.AttackNormal:
                 CharacterAnimation("punch");
+                objState = ObjState.AttackJab;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackNormal:
                 CharacterAnimation("chargepunch");
+                objState = ObjState.ChargeAttack;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackDown:
                 CharacterAnimation("chargepunchDown");
+                objState = ObjState.AttackDown;
+                isDownAttack = true;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackUp:
                 CharacterAnimation("chargepunchUp");
+                objState = ObjState.AttackUp;
                 isUpAttack = true;
                 break;
 
@@ -474,9 +390,9 @@ public class PlayerMove : MonoBehaviour
     }
 
     //アタック時
-    public IEnumerator OnAttack(int attackResetNum)
+    public IEnumerator OnAttack(int attackResetNum, float animationTime)
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(animationTime);
         canAttackFlag = false;
         //isAttack = false;
         objState = ObjState.Normal;
@@ -537,5 +453,122 @@ public class PlayerMove : MonoBehaviour
                 break;
         }
     }
+    /// <summary>
+    /// 通常状態でのキャラクターの処理
+    /// </summary>
+    /// <param name="dx">横移動キー入力値</param>
+    /// <param name="deltaTime">deltaTimeをGameSceneManagerからもらう</param>
+    void NormalModeUpdate(float deltaTime)
+    {
+        //移動
+        float dx = Input.GetAxis("Horizontal");
+        if (Input.GetKeyDown(KeyCode.J) && isGroundFlag || Input.GetKeyDown(KeyCode.Joystick1Button0) && isGroundFlag)
+        {
+            CharacterAnimation("jump");
+            cnaJumpFlag = false;
+            isGroundFlag = false;
+        }
+        //アニメーション
+        if (dx != 0 && !isChargeFlag && isGroundFlag)
+        {
+            CharacterAnimation("dash");
+        }
+        else if (!isChargeFlag && isGroundFlag)
+        {
+            CharacterAnimation("idol");
+        }
 
+        //移動
+        CharacterMove(dx, deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+        {
+            CharacterAnimation("charge");
+            canAttackFlag = true;
+            isChargeFlag = true;
+            objState = ObjState.OnCharge;
+        }
+    }
+    /// <summary>
+    /// キャラクターのチャージ時に呼び出します
+    /// </summary>
+    /// <param name="dx">横移動キー入力値</param>
+    /// <param name="dy">上下移動キー入力値</param>
+    void ChargeUpdate()
+    {
+        float dy = Input.GetAxis("Vertical");
+        //移動
+        float dx = Input.GetAxis("Horizontal");
+        DirectionMove(dx);
+        rigidbody.isKinematic = true;
+
+        //通常時
+        //チャージ
+        if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
+        {
+            //チャージ中
+            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
+
+            Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
+            //チャージエフェクトデバック---------------------------
+            if (chargeCount < 3)
+            {
+                chargeEffectFlag1 = true;
+                chargeEffectFlag2 = false;
+            }
+            else
+            {
+                chargeEffectFlag1 = false;
+                chargeEffectFlag2 = true;
+            }
+
+            chargeEffect1.SetActive(chargeEffectFlag1);
+            chargeEffect2.SetActive(chargeEffectFlag2);
+
+        }
+        if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+        {
+
+            //チャージ終了（チャージゲージを0に戻す）
+            attackPower = chargeCount * offensivePower + foundationoffensivePower;
+            attackSpeed = chargeCount * speedForce + foundationSpeedForce;
+            //チャージゲージをリセットします
+            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+            //チャージ中☆を戻します
+            Singleton.Instance.gameSceneController.starChargeController.UpdateBigStarUI(chargeCount);
+            //攻撃アニメーション
+            //チャージ回数が1回までなら通常パンチ
+            //チャージしたなら入力角度を計算して上下左右を判断して攻撃
+            if (chargeCount <= 1)
+            {
+                OnAttackMotion(1000);
+            }
+            else
+            {
+                OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
+            }
+
+            chargeEffect1.SetActive(false);
+            chargeEffect2.SetActive(false);
+
+            rigidbody.isKinematic = false;
+
+            chargeCount = 0;
+            chargeNow = 0.0f;
+            isAttack = true;
+
+        }
+    }
+
+    void AttackUpdate(float animationTime)
+    {
+        if (isAttack)
+        {
+            MoveAttack(attackSpeed / 10);
+            isUpAttack = false;
+            isDownAttack = false;
+            isAttack = false;
+            StartCoroutine(OnAttack(0, animationTime));
+        }
+    }
 }

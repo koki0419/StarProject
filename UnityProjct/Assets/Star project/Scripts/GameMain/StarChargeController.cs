@@ -58,14 +58,9 @@ public class StarChargeController : MonoBehaviour
             starChargeUI[i].UpdateStarSprite((int)Star.Normal);
         }
     }
-    //大きい☆UIの更新
-    public void ReMoveBigStarUI(int starNum)
-    {
-        starChargeUI[starNum - 1].UpdateStarSprite((int)Star.None);
-    }
 
     //チャージ時
-    public void ChargeGigStar(int starNum)
+    public void ChargeBigStar(int starNum)
     {
         for (int i = 0; i < starNum; i++)
         {
@@ -97,10 +92,10 @@ public class StarChargeController : MonoBehaviour
             //1/10の桁
             var starCount0 = smollSratCount % 10;
             //10/10の桁
-            var starCount1 = smollSratCount/10 % 10;
+            var starCount1 = smollSratCount / 10 % 10;
             AcquisitionSpriteStarCount0.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount0];
             AcquisitionSpriteStarCount1.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount1];
         }
-        UpdateBigStarUI(smollSratCount/10);
+        UpdateBigStarUI(smollSratCount / 10);
     }
 }
