@@ -25,6 +25,7 @@ public class StarController : MonoBehaviour
     {
         if (other.name == "Player")
         {
+            Singleton.Instance.gameSceneController.isGetStar = true;
             if (starPoint == 0 && starPoint == 1)
             {
                 playerMove.IsAcquisitionStar = true;

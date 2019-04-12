@@ -15,9 +15,6 @@ public class Boss : MonoBehaviour
 
     //『PlayerMove』を取得します
     PlayerMove playerMove;
-
-
-    public Substance.Game.SubstanceGraph substanceGraph;
     //-------------数値用変数--------------------------------
     //生成する星の数
     [SerializeField]
@@ -50,14 +47,6 @@ public class Boss : MonoBehaviour
     //重力加速度
     [SerializeField]
     float gravityMove;
-    //力の働く方向
-    [SerializeField]
-    Vector3 gravityDirection;
-    public Vector3 GravityDirection
-    {
-        get { return gravityDirection; }
-        set { gravityDirection = GravityDirection; }
-    }
 
     public void Init()
     {
@@ -112,13 +101,6 @@ public class Boss : MonoBehaviour
         }
     }
 
-    //public void OnSliderUpdate(float value) //******************************
-    //{
-    //    substanceGraph.SetInputFloat("dust_Level", value);//******************************
-    //    substanceGraph.QueueForRender();    //******************************
-    //    substanceGraph.RenderAsync();       //******************************
-    //}                                       //******************************
-                                            //*******************************************************************************
 
     private void OnTriggerEnter(Collider other)
     {
@@ -128,29 +110,13 @@ public class Boss : MonoBehaviour
             Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
             var hp = 1.0;
             hp -= (foundationHP / foundationHPMax);
-           // OnSliderUpdate((float)hp);
             if (foundationHP <= 0)
             {
-                //for (int i = 0; transform.childCount > i; i++)
-                //{
-                //    childrenOBJ[i].GetComponent<Rigidbody>().isKinematic = false;
-                //}
-                //Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
                 acquisitionPoint++;
                 onRemoveObjFlag = true;
             }
         }
     }
-
-    //オブジェクトを小さくして消します
-    //void OnRemoveObj()
-    //{
-    //    for (int i = 0; i < childrenOBJ.Length; i++)
-    //    {
-    //        childrenOBJ[i].transform.localScale -= new Vector3(0.01f, 0.0f, 0.01f);
-
-    //    }
-    //}
 
 
     //ダメージ量
