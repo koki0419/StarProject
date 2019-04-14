@@ -68,14 +68,14 @@ public class GameSceneController : MonoBehaviour
         set { isGameOver = value; }
     }
 
-    bool cnaChangeScene;
-
     bool canCameraShake;
 
     public bool isGetStar
     {
         get; set;
     }
+
+    bool isPause;
 
     //初期化
     public void Init()
@@ -121,8 +121,7 @@ public class GameSceneController : MonoBehaviour
         isGetStar = false;
         isGameClear = false;
         isGameOver = false;
-
-        cnaChangeScene = false;
+        isPause = false;
 
         canCameraShake = false;
 
@@ -170,16 +169,34 @@ public class GameSceneController : MonoBehaviour
             {
                 StartCoroutine(OnGameOver());
             }
+           
+        }
+        //ポーズ
+        if(isPlaying && !isPause)
+        {
+            if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                isPause = true;
+                isPlaying = false;
+                uiManager.PauseDiaLogDisplay(isPause);
+            }
+        }
+        else if(!isPlaying && isPause)
+        {
+            uiManager.ButtonSelectUpdate();
+            if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                isPause = false;
+                isPlaying = true;
+                uiManager.PauseDiaLogDisplay(isPause);
+            }
         }
         //ゲームクリア
         if (isGameClear)
         {
             StartCoroutine(OnClear());
         }
-        if (cnaChangeScene)
-        {
-            uiManager.ButtonSelectUpdate();
-        }
+
         if (canCameraShake)
         {
             cameraController.Shake(0.25f, 0.1f);

@@ -14,17 +14,28 @@ public class UiManager : MonoBehaviour
     //ゲームクリア時表示用UI
     [SerializeField] GameObject gameClearUI = null;
 
+    //ポーズ時表示用UI
+    [SerializeField] GameObject pauseDiaLog = null;
+
     //フェード時表示用TEXT
     public GameObject fadeText;
 
     //フェード時表示用マスコットキャラ
     public GameObject fadeChara;
+    //ポーズ時表示するリトライボタン(セレクト時)
+    [SerializeField] Sprite pauseSelectRetrySprite;
+    //ポーズ時表示するリトライボタン(非セレクト時)
+    [SerializeField] Sprite pauseNotSelectRetrySprite;
+    //ポーズ時表示するタイトルボタン(セレクト時)
+    [SerializeField] Sprite pauseSelectTitleSprite;
+    //ポーズ時表示するタイトルボタン(非セレクト時)
+    [SerializeField] Sprite pauseNotSelectTitleSprite;
 
     //リザルト時表示用UI
     public GameObject resultUIBG;
     //リザルト時ボタン
-    public GameObject retryButton;
-    public GameObject titleButton;
+    public GameObject pauseRetryButton;
+    public GameObject pauseTitleButton;
 
 
     //star関係canvas
@@ -44,24 +55,26 @@ public class UiManager : MonoBehaviour
         GameClearUIDisplay(false);
         ResultUIBGUIDisplay(false);
         ButtonSelect(0);
+        PauseDiaLogDisplay(false);
     }
 
     // Update is called once per frame
     public void ButtonSelectUpdate()
     {
         //buttonNumのUp、Downを行う
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (buttonSelectNum < buttonSelectNumMax) buttonSelectNum++;
             ButtonSelect(buttonSelectNum);
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (buttonSelectNum > 0) buttonSelectNum--;
             ButtonSelect(buttonSelectNum);
         }
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            PauseDiaLogDisplay(false);
             switch (buttonSelectNum)
             {
                 case 0:
@@ -86,12 +99,12 @@ public class UiManager : MonoBehaviour
         switch (buttonSelectNum)
         {
             case 0:
-                retryButton.GetComponent<Image>().color = new Color(0, 100, 100);
-                titleButton.GetComponent<Image>().color = new Color(255, 255, 255);
+                pauseRetryButton.GetComponent<Image>().sprite = pauseSelectRetrySprite;
+                pauseTitleButton.GetComponent<Image>().sprite = pauseNotSelectTitleSprite;
                 return;
             case 1:
-                retryButton.GetComponent<Image>().color = new Color(255, 255, 255);
-                titleButton.GetComponent<Image>().color = new Color(0, 100, 100);
+                pauseRetryButton.GetComponent<Image>().sprite = pauseNotSelectRetrySprite;
+                pauseTitleButton.GetComponent<Image>().sprite = pauseSelectTitleSprite;
                 return;
         }
     }
@@ -101,13 +114,12 @@ public class UiManager : MonoBehaviour
     {
         yield return FadeOutEnumerator();
 
-        SceneManager.LoadScene("SelectScene");
+        SceneManager.LoadScene("TitleScene");
     }
     //リトライ
     IEnumerator OnRetry()
     {
         yield return FadeOutEnumerator();
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     /// <summary>
@@ -173,6 +185,22 @@ public class UiManager : MonoBehaviour
     public void StarUICanvasDisplay(bool isDisplay)
     {
         starUICanvas.SetActive(isDisplay);
+    }
+    /// <summary>
+    /// ポーズダイアログを表示非表示します
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void PauseDiaLogDisplay(bool isDisplay)
+    {
+        pauseDiaLog.SetActive(isDisplay);
+        if (isDisplay)
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
     }
 
 }

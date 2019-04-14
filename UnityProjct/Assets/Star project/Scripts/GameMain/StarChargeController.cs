@@ -35,6 +35,11 @@ public class StarChargeController : MonoBehaviour
     //小さい☆の獲得数画像
     [SerializeField] private Sprite[] smallStarAcquisitionSprite;
 
+    //小さい☆獲得UI1/10のアニメーション
+    [SerializeField] Animator AcquisitionStarCount_1_10Animator;
+    //小さい☆獲得UI10/10のアニメーション
+    [SerializeField] Animator AcquisitionStarCount_10_10Animator;
+
     public void Init()
     {
         starChargeMaxFlag = false;
@@ -95,6 +100,15 @@ public class StarChargeController : MonoBehaviour
             var starCount1 = smollSratCount / 10 % 10;
             AcquisitionSpriteStarCount0.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount0];
             AcquisitionSpriteStarCount1.GetComponent<Image>().sprite = smallStarAcquisitionSprite[starCount1];
+        }
+       if(smollSratCount % 10 == 0)
+        {
+            AcquisitionStarCount_1_10Animator.SetTrigger("isUpdate");
+            AcquisitionStarCount_10_10Animator.SetTrigger("isUpdate");
+        }
+        else
+        {
+            AcquisitionStarCount_1_10Animator.SetTrigger("isUpdate");
         }
         UpdateBigStarUI(smollSratCount / 10);
     }
