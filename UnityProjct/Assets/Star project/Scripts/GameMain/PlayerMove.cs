@@ -72,6 +72,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float speedForce = 0;
     //現在のチャージ量
     float chargeNow = 0.0f;
+    //現在のチャージ量
+    float chargeNowHand = 0.0f;
     //何回チャージしたか
     int chargeCount = 0;
     //チャージ上限
@@ -298,6 +300,27 @@ public class PlayerMove : MonoBehaviour
         isChargeFlag = false;
     }
 
+    /// <summary>
+    /// attack時の手の大きさを大きくする
+    /// </summary>
+    /// <param name="charge"></param>
+    /// <returns></returns>
+    void ChargeAttackHand(float charge)
+    {
+        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.ChargePointMax;
+        var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+        //チャージ量の+-量
+        float chargeProportion = userChargePonitUp*10;
+
+        if (chargeNowHand <= charge)
+        {
+            chargeNowHand += chargeProportion;
+        }
+
+        charaHand.SetBlendShapeWeight(0, chargeNowHand/ chargeMax*100);
+        //gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+
+    }
     //チャージ時のチャージ量
     float OnCharge(float charge)
     {
@@ -335,7 +358,6 @@ public class PlayerMove : MonoBehaviour
 
         if (charge != 0 && chargeNow <= chargeMax && chargeCount < charge)
         {
-
             chargeNow += chargeProportion;
             if (chargeNow >= 1)
             {
@@ -346,23 +368,14 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
-
-       // Singleton.Instance.gameSceneController.starChargeController.ChargeGigStar(chargeCount);
         return chargeNow;
     }
 
 
-    float OnChargeEffect()
-    {
-        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.ChargePointMax;
-        var chargeNow = Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint;
-
-        var charge = chargeNow / chargeMax;
-
-        return charge;
-    }
-
-    //アタック
+    /// <summary>
+    /// 攻撃の種類を選択します
+    /// </summary>
+    /// <param name="attackNum"></param>
     void OnAttackMotion(int attackNum)
     {
         switch (attackNum)
@@ -394,7 +407,9 @@ public class PlayerMove : MonoBehaviour
     {
         yield return new WaitForSeconds(animationTime);
         canAttackFlag = false;
-        //isAttack = false;
+        //var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+        //charaHand.SetBlendShapeWeight(0, 0);
+        chargeNowHand = 0.0f;
         objState = ObjState.Normal;
     }
     /// <summary>
@@ -508,8 +523,8 @@ public class PlayerMove : MonoBehaviour
         {
             //チャージ中
             Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
-
             Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
+            ChargeAttackHand(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint);
             //チャージエフェクトデバック---------------------------
             if (chargeCount < 3)
             {
@@ -555,6 +570,7 @@ public class PlayerMove : MonoBehaviour
 
             chargeCount = 0;
             chargeNow = 0.0f;
+
             isAttack = true;
 
         }
