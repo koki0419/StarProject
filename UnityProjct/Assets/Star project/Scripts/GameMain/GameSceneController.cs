@@ -46,13 +46,9 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] UiManager uiManager = null;
 
     //------------数値変数の宣言--------------------
-
-
-    //*****************************
-    //デバックポイント
-    //[SerializeField] int debugPoint;
-
-
+    //現在のステージ番号 // リザルトでリトライやNextステージで使用します
+    //タイトルでstageNumを1に設定します。その後はリザルトシーンのみでしか使用しません
+    static public int stageNum;
     //------------フラグ変数の宣言------------------
     bool isPlaying = false;
 

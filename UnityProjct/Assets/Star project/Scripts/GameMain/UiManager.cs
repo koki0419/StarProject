@@ -81,7 +81,7 @@ public class UiManager : MonoBehaviour
             if (buttonSelectNum < buttonSelectNumMax) buttonSelectNum++;
             PauseButtonSelect(buttonSelectNum);
         }
-        else if (dx == 0 && countNum != 0)
+        else if (dy == 0 && countNum != 0)
         {
             countNum = 0;
         }
