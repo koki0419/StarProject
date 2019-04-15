@@ -89,7 +89,7 @@ namespace StarProject.Title
         // Update is called once per frame
         void Update()
         {
-
+            float dx = Input.GetAxis("Horizontal");
             switch (titleTyp)
             {
                 case TitleTyp.OnMovie:
@@ -102,7 +102,7 @@ namespace StarProject.Title
                         titleTyp = TitleTyp.OnTitle;
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Return))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
                     {
                         if (!skipFlag)
                         {
@@ -116,7 +116,6 @@ namespace StarProject.Title
                             switch (skipButtonNum)
                             {
                                 case 0:
-
                                     movieObj.SetActive(false);
                                     skipDialog.SetActive(false);
                                     titleTyp = TitleTyp.OnTitle;
@@ -133,30 +132,30 @@ namespace StarProject.Title
 
                     if (skipFlag)
                     {
-                        if (Input.GetKeyDown(KeyCode.UpArrow))
+                        //左
+                        if (dx < 0 && countNum == 0)
                         {
-
-                            if (skipButtonNum < 2) skipButtonNum++;
-                            OnSkip(skipButtonNum);
-
-                        }
-                        if (Input.GetKeyDown(KeyCode.DownArrow))
-                        {
+                            countNum++;
                             if (skipButtonNum > 0) skipButtonNum--;
                             OnSkip(skipButtonNum);
+                        }//右
+                        else if (dx > 0 && countNum == 0)
+                        {
+                            countNum++;
+                            if (skipButtonNum < 2) skipButtonNum++;
+                            OnSkip(skipButtonNum);
                         }
-
-
-
-
+                        else if (dx == 0 && countNum != 0)
+                        {
+                            countNum = 0;
+                        }
                     }
                     break;
 
 
                 case TitleTyp.OnTitle:
-                    float dy = Input.GetAxis("Vertical");
-                    //下
-                    if (dy > 0 && countNum == 0)
+                    //左
+                    if (dx < 0 && countNum == 0)
                     {
                         countNum++;
                         if (!exitFlag)
@@ -166,11 +165,11 @@ namespace StarProject.Title
                         }
                         else
                         {
-                            if (exitYNNum < 1) exitYNNum++;
+                            if (exitYNNum > 0) exitYNNum--;
                             OnSelect(exitYNNum);
                         }
-                    }//上
-                    else if (dy < 0 && countNum == 0)
+                    }//右
+                    else if (dx > 0 && countNum == 0)
                     {
                         countNum++;
                         if (!exitFlag)
@@ -180,43 +179,15 @@ namespace StarProject.Title
                         }
                         else
                         {
-                            if (exitYNNum > 0) exitYNNum--;
+                            if (exitYNNum < 1) exitYNNum++;
                             OnSelect(exitYNNum);
                         }
                     }
-                    else if (dy == 0 && countNum != 0)
+                    else if (dx == 0 && countNum != 0)
                     {
                         countNum = 0;
                     }
 
-                    //buttonNumのUp、Downを行う
-                    if (Input.GetKeyDown(KeyCode.LeftArrow))
-                    {
-                        if (!exitFlag)
-                        {
-                            if (buttonNum > 0) buttonNum--;
-                            OnSelect(buttonNum);
-                        }
-                        else
-                        {
-                            if (exitYNNum < 1) exitYNNum++;
-                            OnSelect(exitYNNum);
-                        }
-                    }
-                    if (Input.GetKeyDown(KeyCode.RightArrow))
-                    {
-                        if (!exitFlag)
-                        {
-                            if (buttonNum < stageMax) buttonNum++;
-                            OnSelect(buttonNum);
-                        }
-                        else
-                        {
-                            if (exitYNNum > 0) exitYNNum--;
-                            OnSelect(exitYNNum);
-                        }
-                    }
-                    //
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
                     {
                         if (!exitFlag)
@@ -286,12 +257,12 @@ namespace StarProject.Title
                 switch (num)
                 {
                     case 0:
-                        yesButton.GetComponent<Image>().color = new Color(0, 100, 100);
-                        noButton.GetComponent<Image>().color = new Color(255, 255, 255);
+                        yesButton.GetComponent<Image>().color = selectedColor;
+                        noButton.GetComponent<Image>().color = normalColor;
                         return;
                     case 1:
-                        yesButton.GetComponent<Image>().color = new Color(255, 255, 255);
-                        noButton.GetComponent<Image>().color = new Color(0, 100, 100);
+                        yesButton.GetComponent<Image>().color = normalColor;
+                        noButton.GetComponent<Image>().color = selectedColor;
                         return;
                 }
             }

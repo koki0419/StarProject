@@ -183,7 +183,7 @@ public class GameSceneController : MonoBehaviour
         }
         else if(!isPlaying && isPause)
         {
-            uiManager.ButtonSelectUpdate();
+            uiManager.PauseButtonSelectUpdate();
             if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
             {
                 isPause = false;
