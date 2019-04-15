@@ -195,6 +195,7 @@ namespace StarProject.Title
                             switch (buttonNum)
                             {
                                 case 0:
+                                    GameSceneController.stageNum = 1;
                                     SceneManager.LoadScene("PrototypeScene");
                                     return;
                                 case 1:
@@ -221,11 +222,6 @@ namespace StarProject.Title
                     }
                     break;
             }
-
-
-
-
-
         }
 
 
