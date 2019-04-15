@@ -31,6 +31,8 @@ public class UiManager : MonoBehaviour
     //ポーズ時表示するタイトルボタン(非セレクト時)
     [SerializeField] Sprite pauseNotSelectTitleSprite;
 
+    int countNum;
+
     //リザルト時表示用UI
     public GameObject resultUIBG;
     //リザルト時ボタン
@@ -54,25 +56,37 @@ public class UiManager : MonoBehaviour
         GameOvreUIDisplay(false);
         GameClearUIDisplay(false);
         ResultUIBGUIDisplay(false);
-        ButtonSelect(0);
+        PauseButtonSelect(0);
         PauseDiaLogDisplay(false);
+
+        countNum = 0;
     }
 
     // Update is called once per frame
-    public void ButtonSelectUpdate()
+    public void PauseButtonSelectUpdate()
     {
+        float dx = Input.GetAxis("Horizontal");
+        float dy = Input.GetAxis("Vertical");
         //buttonNumのUp、Downを行う
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        //上
+        if (dy > 0 && countNum == 0)
         {
-            if (buttonSelectNum < buttonSelectNumMax) buttonSelectNum++;
-            ButtonSelect(buttonSelectNum);
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
+            countNum++;
             if (buttonSelectNum > 0) buttonSelectNum--;
-            ButtonSelect(buttonSelectNum);
+            PauseButtonSelect(buttonSelectNum);
+        }//下
+        else if (dy < 0 && countNum == 0)
+        {
+            countNum++;
+            if (buttonSelectNum < buttonSelectNumMax) buttonSelectNum++;
+            PauseButtonSelect(buttonSelectNum);
         }
-        if (Input.GetKeyDown(KeyCode.Return))
+        else if (dx == 0 && countNum != 0)
+        {
+            countNum = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
         {
             PauseDiaLogDisplay(false);
             switch (buttonSelectNum)
@@ -93,7 +107,7 @@ public class UiManager : MonoBehaviour
     /// 選択したボタンの色を変更します
     /// </summary>
     /// <param name="buttonSelectNum"><選択したボタンの番号/param>
-    private void ButtonSelect(int buttonSelectNum)
+    private void PauseButtonSelect(int buttonSelectNum)
     {
 
         switch (buttonSelectNum)
