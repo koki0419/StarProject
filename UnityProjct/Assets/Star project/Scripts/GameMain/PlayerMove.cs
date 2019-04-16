@@ -211,6 +211,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="deltaTime">GameSceneManagerから受け取ります</param>
     void CharacterMove(float horizontal, float deltaTime)
     {
+        // TODO: 画面端に居るときはx軸を+方向には行けなくする
         var position = transform.position;
         position.x += horizontal * moveSpeed * deltaTime;
         transform.position = position;
