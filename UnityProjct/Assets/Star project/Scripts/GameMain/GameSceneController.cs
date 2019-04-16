@@ -6,6 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class GameSceneController : MonoBehaviour
 {
+    public enum GameMainState
+    {
+        None,
+        Play,
+        Pause,
+        GameClear,
+        GameOver,
+    }
+    public GameMainState gameMainState = GameMainState.None;
     //---------Unityコンポーネント宣言--------------
 
     [SerializeField] GameObject playerObj = null;
@@ -58,10 +67,9 @@ public class GameSceneController : MonoBehaviour
         set { isGameClear = value; }
     }
 
-    bool isGameOver = false;
-    public bool IsGameOver
+    public bool isGameOver
     {
-        set { isGameOver = value; }
+        set;get;
     }
 
     bool canCameraShake;
@@ -147,6 +155,7 @@ public class GameSceneController : MonoBehaviour
         yield return uiManager.FadeInEnumerator(2);
 
         isPlaying = true;
+        gameMainState = GameMainState.Play;
 
     }
 
@@ -154,44 +163,60 @@ public class GameSceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPlaying)//ゲームスタート
+        switch (gameMainState)
         {
-            float deltaTime = Time.deltaTime;
+            case GameMainState.Play:
+                GamePlay();
+                break;
+            case GameMainState.Pause:
+                GamePause();
+                break;
+            case GameMainState.GameClear:
+                GameClear();
+                break;
+            case GameMainState.GameOver:
+                GameOver();
+                break;
+        }
+        //if (isPlaying)//ゲームスタート
+        //{
+        //    float deltaTime = Time.deltaTime;
 
-            playerMove.OnUpdate(deltaTime);//PlayerのUpdate
+        //    playerMove.OnUpdate(deltaTime);//PlayerのUpdate
 
-            //ゲームオーバー
-            if (isGameOver)
-            {
-                StartCoroutine(OnGameOver());
-            }
-           
-        }
-        //ポーズ
-        if(isPlaying && !isPause)
-        {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                isPause = true;
-                isPlaying = false;
-                uiManager.PauseDiaLogDisplay(isPause);
-            }
-        }
-        else if(!isPlaying && isPause)
-        {
-            uiManager.PauseButtonSelectUpdate();
-            if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                isPause = false;
-                isPlaying = true;
-                uiManager.PauseDiaLogDisplay(isPause);
-            }
-        }
-        //ゲームクリア
-        if (isGameClear)
-        {
-            StartCoroutine(OnClear());
-        }
+        //    //ゲームオーバー 済み
+        //    if (isGameOver)
+        //    {
+        //        StartCoroutine(OnGameOver());
+        //        uiManager.GameOverButtonSelectUpdate();
+        //    }
+
+        //}
+        ////ポーズ 済み
+        //if (isPlaying && !isPause)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        //    {
+        //        isPause = true;
+        //        isPlaying = false;
+        //        uiManager.PauseDiaLogDisplay(isPause);
+        //    }
+        //}
+        //else if (!isPlaying && isPause)
+        //{
+        //    uiManager.PauseButtonSelectUpdate();
+        //    if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        //    {
+        //        isPause = false;
+        //        isPlaying = true;
+        //        uiManager.PauseDiaLogDisplay(isPause);
+        //    }
+        //}
+        ////ゲームクリア
+        //if (isGameClear)
+        //{
+        //    StartCoroutine(OnClear());
+        //}
 
         if (canCameraShake)
         {
@@ -201,7 +226,7 @@ public class GameSceneController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isPlaying)//ゲームスタート
+        if (gameMainState == GameMainState.Play)//ゲームスタート
         {
             cameraController.MoveUpdate();
             if (isGetStar)
@@ -226,10 +251,6 @@ public class GameSceneController : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         canCameraShake = false;
         SceneManager.LoadScene("ResultScene");
-        /*uiManager.ResultUIBGUIDisplay(true);
-        cnaChangeScene = true;
-        isGameClear = false;
-        */
 
     }
 
@@ -239,10 +260,52 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
         yield return new WaitForSeconds(0.5f);
         uiManager.GameOvreUIDisplay(true);
-        yield return null;
-        yield return uiManager.FadeOutEnumerator();
-
-        SceneManager.LoadScene("TitleScene");
+        yield return new WaitForSeconds(1.5f);
+        uiManager.GameOverDiaLogDisplay(true);
     }
 
+    void GamePlay()
+    {
+        float deltaTime = Time.deltaTime;
+
+        playerMove.OnUpdate(deltaTime);//PlayerのUpdate
+
+        //ゲームオーバー
+        if (isGameOver)
+        {
+            gameMainState = GameMainState.GameOver;
+        }
+        //ゲームクリア
+        if (isGameClear)
+        {
+            gameMainState = GameMainState.GameClear;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            uiManager.PauseDiaLogDisplay(true);
+            gameMainState = GameMainState.Pause;
+        }
+    }
+
+    void GamePause()
+    {
+        uiManager.PauseButtonSelectUpdate();
+        if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            uiManager.PauseDiaLogDisplay(false);
+            gameMainState = GameMainState.Play;
+        }
+    }
+
+    void GameClear()
+    {
+        StartCoroutine(OnClear());
+    }
+
+    void GameOver()
+    {
+        StartCoroutine(OnGameOver());
+        uiManager.GameOverButtonSelectUpdate();
+    }
 }

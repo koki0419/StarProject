@@ -200,7 +200,7 @@ public class PlayerMove : MonoBehaviour
         //ゲームオーバーの当たり判定
         if (other.gameObject.name == "GameOverLine")
         {
-            Singleton.Instance.gameSceneController.IsGameOver = true;
+            Singleton.Instance.gameSceneController.isGameOver = true;
         }
     }
 
