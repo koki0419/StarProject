@@ -18,9 +18,9 @@ TagManager:
   - Block
   - Player
   - GameOverObj
-  - 
-  - 
-  - 
+  - SceneRestrictionBar
+  - Obstacls
+  - BreakObstacls
   - 
   - 
   - 

@@ -104,6 +104,10 @@ public class ObstacleManager : MonoBehaviour
                 {
                     Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
                 }
+                //壊れたときにキャラクターと当たり判定を持たなくします
+                //レイヤーの変更
+                //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
+                gameObject.layer = LayerMask.NameToLayer("BreakObstacls");
                 acquisitionPoint++;
                 breakEffect.SetActive(true);
                 onRemoveObjFlag = true;
