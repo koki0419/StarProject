@@ -260,7 +260,7 @@ public class GameSceneController : MonoBehaviour
         isPlaying = false;
         yield return new WaitForSeconds(0.5f);
         uiManager.GameOvreUIDisplay(true);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         uiManager.GameOverDiaLogDisplay(true);
     }
 
