@@ -19,13 +19,13 @@ public class PlayerMove : MonoBehaviour
     public enum ObjState
     {
         None,
-        Normal,
-        AttackJab,
-        AttackUp,
-        AttackDown,
-        ChargeAttack,
-        OnCharge,
-
+        Normal,//通常状態
+        AttackJab,//ジャブ攻撃状態
+        AttackUp,//上攻撃状態
+        AttackDown,//下攻撃状態
+        ChargeAttack,//チャージ攻撃状態
+        OnCharge,//チャージ中状態
+        CharacterGameOver,//ゲームオーバー状態
     }
     public ObjState objState = ObjState.None;
 
@@ -176,6 +176,9 @@ public class PlayerMove : MonoBehaviour
             case ObjState.AttackDown:
                 AttackUpdate(1.5f);
                 break;
+            case ObjState.CharacterGameOver:
+                CharacterGameOver();
+                break;
         }
         if (isAcquisitionStar)
         {
@@ -193,16 +196,13 @@ public class PlayerMove : MonoBehaviour
             isGroundFlag = true;
             cnaJumpFlag = true;
         }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
         //ゲームオーバーの当たり判定
-        if (other.gameObject.name == "GameOverLine")
+        if (collision.gameObject.name == "GameOverLine")
         {
-            Singleton.Instance.gameSceneController.isGameOver = true;
+            objState = ObjState.CharacterGameOver;
         }
     }
+
 
     /// <summary>
     /// キャラクターの移動です
@@ -250,7 +250,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="horizontal">左右キー入力値</param>
     void DirectionMove(float horizontal)
     {
-        rigidbody.isKinematic = true;
+        //rigidbody.velocity = Vector3.zero.normalized;
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -268,6 +268,11 @@ public class PlayerMove : MonoBehaviour
     }
 
     //攻撃時の移動
+    /// <summary>
+    /// チャージ攻撃時のキャラクターの移動
+    /// 上下左右の動きを管理しています
+    /// </summary>
+    /// <param name="speedForce">チャージ攻撃時の移動量</param>
     void MoveAttack(float speedForce)
     {
         if (!isUpAttack && !isDownAttack)
@@ -319,10 +324,15 @@ public class PlayerMove : MonoBehaviour
         }
 
         charaHand.SetBlendShapeWeight(0, chargeNowHand/ chargeMax*100);
-        //gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
 
     }
     //チャージ時のチャージ量
+    /// <summary>
+    /// チャージ時のチャージ量
+    /// 何回チャージできるのか（Fillを何回0～1にできるのか）を返します
+    /// </summary>
+    /// <param name="charge"></param>
+    /// <returns></returns>
     float OnCharge(float charge)
     {
         //マックスのチャージ量
@@ -391,15 +401,16 @@ public class PlayerMove : MonoBehaviour
                 break;
             case (int)PlayerAttackIndex.ChargeAttackDown:
                 CharacterAnimation("chargepunchDown");
+                FreezePositionCancel();
                 objState = ObjState.AttackDown;
                 isDownAttack = true;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackUp:
                 CharacterAnimation("chargepunchUp");
                 objState = ObjState.AttackUp;
+                FreezePositionCancel();
                 isUpAttack = true;
                 break;
-
         }
     }
 
@@ -411,6 +422,7 @@ public class PlayerMove : MonoBehaviour
         //var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
         //charaHand.SetBlendShapeWeight(0, 0);
         chargeNowHand = 0.0f;
+        FreezePositionCancel();
         objState = ObjState.Normal;
     }
     /// <summary>
@@ -467,6 +479,11 @@ public class PlayerMove : MonoBehaviour
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1001);
                 break;
+            case "GameOver":
+                animatorComponent.SetBool("isDash", false);
+                animatorComponent.SetBool("isJump", false);
+                animatorComponent.SetTrigger("isGameOver");
+                break;
         }
     }
     /// <summary>
@@ -499,6 +516,7 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
         {
+            FreezePositionSet();
             CharacterAnimation("charge");
             canAttackFlag = true;
             isChargeFlag = true;
@@ -516,8 +534,9 @@ public class PlayerMove : MonoBehaviour
         //移動
         float dx = Input.GetAxis("Horizontal");
         DirectionMove(dx);
-        rigidbody.isKinematic = true;
 
+        var pos = transform.position;
+        transform.position = pos;
         //通常時
         //チャージ
         if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Joystick1Button2))
@@ -567,7 +586,7 @@ public class PlayerMove : MonoBehaviour
             chargeEffect1.SetActive(false);
             chargeEffect2.SetActive(false);
 
-            rigidbody.isKinematic = false;
+            //rigidbody.isKinematic = false;
 
             chargeCount = 0;
             chargeNow = 0.0f;
@@ -576,7 +595,10 @@ public class PlayerMove : MonoBehaviour
 
         }
     }
-
+    /// <summary>
+    /// 攻撃時のキャラクター更新
+    /// </summary>
+    /// <param name="animationTime">アニメーション時間</param>
     void AttackUpdate(float animationTime)
     {
         if (isAttack)
@@ -587,5 +609,36 @@ public class PlayerMove : MonoBehaviour
             isAttack = false;
             StartCoroutine(OnAttack(0, animationTime));
         }
+    }
+
+    void CharacterGameOver()
+    {
+       StartCoroutine(GameOverIEnumerator());
+    }
+
+    IEnumerator GameOverIEnumerator()
+    {
+        chargeEffect1.SetActive(false);
+        chargeEffect2.SetActive(false);
+        CharacterAnimation("GameOver");
+
+        yield return new WaitForSeconds(1.5f);
+        Singleton.Instance.gameSceneController.isGameOver = true;
+    }
+    /// <summary>
+    /// 初期状態に戻します
+    /// </summary>
+    void FreezePositionCancel()
+    {
+        rigidbody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+    }
+    /// <summary>
+    /// チャージ時動かないようにする
+    /// チャージ攻撃横移動のみこれ使う
+    /// 落下しなくなる
+    /// </summary>
+    void FreezePositionSet()
+    {
+        rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
 }
