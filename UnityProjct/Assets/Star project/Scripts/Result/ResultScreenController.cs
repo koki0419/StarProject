@@ -34,6 +34,7 @@ namespace StarProject.Result
 
         float resultAnimationTime;
         float resultAnimationTimeMax = 10.0f;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -60,21 +61,21 @@ namespace StarProject.Result
 
         void ResultAnimation()
         {
-            resultAnimationTime += Time.deltaTime;
-            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button0))
-            {
-                Time.timeScale = 10.5f;
-            }
-            else
-            {
-                Time.timeScale = 1.0f;
-            }
+            //resultAnimationTime += Time.deltaTime;
+            //if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button0))
+            //{
+            //    Time.timeScale = 10.5f;
+            //}
+            //else
+            //{
+            //    Time.timeScale = 1.0f;
+            //}
 
-            if (resultAnimationTime >= resultAnimationTimeMax)
-            {
-                NextStageDiaLogDisplay(true);
-                resultState = ResultState.ResultSerect;
-            }
+            //if (resultAnimationTime >= resultAnimationTimeMax)
+            //{
+            //    NextStageDiaLogDisplay(true);
+            //    resultState = ResultState.ResultSerect;
+            //}
         }
         //次のステージに挑戦するかダイアログを表示非表示
         void NextStageDiaLogDisplay(bool isDisplay)
