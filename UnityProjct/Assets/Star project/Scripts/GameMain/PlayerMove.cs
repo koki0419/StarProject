@@ -39,11 +39,12 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] GameObject starAcquisitionEffect = null;
     //チャージエフェクト1
     [SerializeField] GameObject chargeEffect1 = null;
-    bool chargeEffectFlag1 = false;
     //チャージエフェクト2
     [SerializeField] GameObject chargeEffect2 = null;
-    bool chargeEffectFlag2 = false;
-
+    //砂煙エフェクト
+    [SerializeField] GameObject sandEffect = null;
+    //パンチエフェクト
+    [SerializeField] GameObject punchEffect = null;
 
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
@@ -138,14 +139,12 @@ public class PlayerMove : MonoBehaviour
         isGroundFlag = true;
         isAcquisitionStar = false;
 
+
+        SandEffectPlay(false);
+        PunchEffectPlay(false);
+
         starAcquisitionEffect.SetActive(false);
-
-
-        //デバック用//エフェクト
-        chargeEffectFlag1 = false;
-        chargeEffectFlag2 = false;
-        chargeEffect1.SetActive(chargeEffectFlag1);
-        chargeEffect2.SetActive(chargeEffectFlag2);
+        ChargeEffectPlay(false, false);
 
         isUpAttack = false;
         isDownAttack = false;
@@ -423,6 +422,7 @@ public class PlayerMove : MonoBehaviour
         //charaHand.SetBlendShapeWeight(0, 0);
         chargeNowHand = 0.0f;
         FreezePositionCancel();
+        PunchEffectPlay(false);
         objState = ObjState.Normal;
     }
     /// <summary>
@@ -505,10 +505,12 @@ public class PlayerMove : MonoBehaviour
         if (dx != 0 && !isChargeFlag && isGroundFlag)
         {
             CharacterAnimation("dash");
+            SandEffectPlay(true);
         }
         else if (!isChargeFlag && isGroundFlag)
         {
             CharacterAnimation("idol");
+            SandEffectPlay(false);
         }
 
         //移動
@@ -548,17 +550,12 @@ public class PlayerMove : MonoBehaviour
             //チャージエフェクトデバック---------------------------
             if (chargeCount < 3)
             {
-                chargeEffectFlag1 = true;
-                chargeEffectFlag2 = false;
+                ChargeEffectPlay(true, false);
             }
             else
             {
-                chargeEffectFlag1 = false;
-                chargeEffectFlag2 = true;
+                ChargeEffectPlay(false, true);
             }
-
-            chargeEffect1.SetActive(chargeEffectFlag1);
-            chargeEffect2.SetActive(chargeEffectFlag2);
 
         }
         if (Input.GetKeyUp(KeyCode.T) || Input.GetKeyUp(KeyCode.Joystick1Button2))
@@ -583,10 +580,9 @@ public class PlayerMove : MonoBehaviour
                 OnAttackMotion(attack.OnAttack(new Vector2(dx, dy), this.gameObject));
             }
 
-            chargeEffect1.SetActive(false);
-            chargeEffect2.SetActive(false);
+            ChargeEffectPlay(false, false);
 
-            //rigidbody.isKinematic = false;
+            PunchEffectPlay(true);
 
             chargeCount = 0;
             chargeNow = 0.0f;
@@ -618,8 +614,7 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator GameOverIEnumerator()
     {
-        chargeEffect1.SetActive(false);
-        chargeEffect2.SetActive(false);
+        ChargeEffectPlay(false, false);
         CharacterAnimation("GameOver");
 
         yield return new WaitForSeconds(1.5f);
@@ -640,5 +635,27 @@ public class PlayerMove : MonoBehaviour
     void FreezePositionSet()
     {
         rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+    }
+
+    void SandEffectPlay(bool isPlay)
+    {
+        sandEffect.SetActive(isPlay);
+    }
+
+    void PunchEffectPlay(bool isPlay)
+    {
+        punchEffect.SetActive(isPlay);
+    }
+    /// <summary>
+    /// チャージ時のエフェクト表示非表示
+    /// チャージエフェクトは2種類あってどちらか使用中の時はどちらか使用しないのでまとめました。
+    /// 2種類のエフェクトだが使い方は1通りです。
+    /// </summary>
+    /// <param name="effect1_isPlay">1段階目のチャージエフェクト表示非表示</param>
+    /// <param name="effect2_isPlay">2段階目のチャージエフェクト表示非表示</param>
+    void ChargeEffectPlay(bool effect1_isPlay,bool effect2_isPlay)
+    {
+        chargeEffect1.SetActive(effect1_isPlay);
+        chargeEffect2.SetActive(effect2_isPlay);
     }
 }
