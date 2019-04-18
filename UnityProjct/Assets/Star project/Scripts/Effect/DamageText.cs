@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 
 using StarProject.Result;
@@ -11,6 +12,8 @@ public class DamageText : MonoBehaviour
     float startLife = 2.0f;
 
     int a = 0;
+
+
 
     public void SetText(int damage)
     {
