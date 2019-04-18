@@ -123,7 +123,7 @@ public class PlayerMove : MonoBehaviour
     bool isAttack;
 
     //初期化
-    public void Init()
+     public void Init()
     {
         //プレイヤーの状態を通常状態に設定します
         objState = ObjState.Normal;
@@ -184,11 +184,68 @@ public class PlayerMove : MonoBehaviour
             StartCoroutine(OnGetStar());
         }
     }
+     void Start()
+    {
+        //プレイヤーの状態を通常状態に設定します
+        objState = ObjState.Normal;
+        //右向きに指定
+        transform.rotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+        //Rigidbodyを取得します
+        rigidbody = gameObject.GetComponent<Rigidbody>();
+        //チャージゲージをリセットします
+        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+        //----初期化-----
+        canAttackFlag = false;
+        cnaJumpFlag = true;
+        isGroundFlag = true;
+        isAcquisitionStar = false;
 
 
-    //--------------関数-----------------------------
-    //地面との当たり判定
-    private void OnCollisionEnter(Collision collision)
+        SandEffectPlay(false);
+        PunchEffectPlay(false);
+
+        starAcquisitionEffect.SetActive(false);
+        ChargeEffectPlay(false, false);
+
+        isUpAttack = false;
+        isDownAttack = false;
+        isAttack = false;
+    }
+    void Update()
+    {
+        switch (objState)
+        {
+            //通常時
+            case ObjState.Normal:
+                NormalModeUpdate(Time.deltaTime);
+                break;
+            case ObjState.OnCharge:
+                ChargeUpdate();
+                break;
+            case ObjState.AttackJab:
+                AttackUpdate(0.5f);
+                break;
+            case ObjState.ChargeAttack:
+                AttackUpdate(2.0f);
+                break;
+            case ObjState.AttackUp:
+                AttackUpdate(1.0f);
+                break;
+            case ObjState.AttackDown:
+                AttackUpdate(1.5f);
+                break;
+            case ObjState.CharacterGameOver:
+                CharacterGameOver();
+                break;
+        }
+        if (isAcquisitionStar)
+        {
+            StartCoroutine(OnGetStar());
+        }
+    }
+        //--------------関数-----------------------------
+        //地面との当たり判定
+        private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Ground")
         {
