@@ -3,6 +3,7 @@ using TMPro;
 
 
 using StarProject.Result;
+
 public class DamageText : MonoBehaviour
 {
     public TextMeshPro text;
