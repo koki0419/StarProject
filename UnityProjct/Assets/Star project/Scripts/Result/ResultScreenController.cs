@@ -36,7 +36,7 @@ namespace StarProject.Result
         float resultAnimationTimeMax = 10.0f;
 
         //総ダメージの表示
-        static public int all_damage;
+        static public int all_damage = 0;
 
         // Start is called before the first frame update
         void Start()

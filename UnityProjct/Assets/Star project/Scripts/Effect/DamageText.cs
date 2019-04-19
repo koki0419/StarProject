@@ -11,7 +11,7 @@ public class DamageText : MonoBehaviour
 
     float startLife = 2.0f;
 
-    int a = 0;
+    static public int a = 0;
 
 
 
