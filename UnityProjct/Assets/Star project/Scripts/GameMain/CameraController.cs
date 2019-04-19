@@ -27,22 +27,6 @@ public class CameraController : MonoBehaviour
         transform.position = position;
 
     }
-    void Start()
-    {
-        var position = transform.position;
-        position.x = player.position.x;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        var position = transform.position;
-        position.x += camaraMove;
-        position.y = camaraPos;
-        transform.position = position;
-
-    }
 
 
     public void Shake(float duration, float magnitude)
