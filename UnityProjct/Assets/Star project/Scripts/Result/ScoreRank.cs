@@ -8,38 +8,47 @@ using StarProject.Result;
 public class ScoreRank : MonoBehaviour
 {
 
-    //
-    public Image image_1;
-    public Image image_2;
-    public Image image_3;
+    //スコアランクの画像
+    public GameObject image_1;
+    public GameObject image_2;
+    public GameObject image_3;
 
+    //ランクを判断する変数
     public int damageimage = 0;
-
-    private Sprite sprite;
 
     // Start is called before the first frame update
     void Start()
     {
-        Score.all_damageText = damageimage;
+        //スコアをランク判断用の変数に代入
+        Score.scorerank = damageimage;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+        //高ランク
         if(damageimage >= 7700)
         {
-            sprite = Resources.Load<Sprite>("Result_Rank01");
+            image_1.SetActive(true);
+            image_2.SetActive(false);
+            image_3.SetActive(false);
         }
+
+        //中ランク
         if(damageimage >= 3600)
         {
-            sprite = Resources.Load<Sprite>("Result_Rank02");
-
+            image_1.SetActive(false);
+            image_2.SetActive(true);
+            image_3.SetActive(false);
         }
+        
+        //低ランク
         if (damageimage >= 0)
         {
-            sprite = Resources.Load<Sprite>("Result_Rank03");
-
+            image_1.SetActive(false);
+            image_2.SetActive(false);
+            image_3.SetActive(true);
         }
 
     }
