@@ -178,45 +178,6 @@ public class GameSceneController : MonoBehaviour
                 GameOver();
                 break;
         }
-        //if (isPlaying)//ゲームスタート
-        //{
-        //    float deltaTime = Time.deltaTime;
-
-        //    playerMove.OnUpdate(deltaTime);//PlayerのUpdate
-
-        //    //ゲームオーバー 済み
-        //    if (isGameOver)
-        //    {
-        //        StartCoroutine(OnGameOver());
-        //        uiManager.GameOverButtonSelectUpdate();
-        //    }
-
-        //}
-        ////ポーズ 済み
-        //if (isPlaying && !isPause)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
-        //    {
-        //        isPause = true;
-        //        isPlaying = false;
-        //        uiManager.PauseDiaLogDisplay(isPause);
-        //    }
-        //}
-        //else if (!isPlaying && isPause)
-        //{
-        //    uiManager.PauseButtonSelectUpdate();
-        //    if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
-        //    {
-        //        isPause = false;
-        //        isPlaying = true;
-        //        uiManager.PauseDiaLogDisplay(isPause);
-        //    }
-        //}
-        ////ゲームクリア
-        //if (isGameClear)
-        //{
-        //    StartCoroutine(OnClear());
-        //}
 
         if (canCameraShake)
         {
@@ -281,7 +242,7 @@ public class GameSceneController : MonoBehaviour
             gameMainState = GameMainState.GameClear;
         }
 
-        if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Pause") || Input.GetKeyDown(KeyCode.Escape))
         {
             uiManager.PauseDiaLogDisplay(true);
             gameMainState = GameMainState.Pause;
@@ -291,7 +252,7 @@ public class GameSceneController : MonoBehaviour
     void GamePause()
     {
         uiManager.PauseButtonSelectUpdate();
-        if (Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Pause") || Input.GetKeyDown(KeyCode.Escape))
         {
             uiManager.PauseDiaLogDisplay(false);
             gameMainState = GameMainState.Play;

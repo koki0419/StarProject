@@ -6,68 +6,71 @@ public class Player : MonoBehaviour
 {
 
     [SerializeField] float moveSpeed;
+    [SerializeField] float airUpMoveSpeed;
+    [SerializeField] float airDownMoveSpeed;
     [SerializeField] float jumpSpeed;
-    [SerializeField] float gravity;
+    [SerializeField] float dragPower;
 
-    private Vector3 charaMove;
+    [SerializeField] float inputMoveKey;
     bool isGround;
     new Rigidbody rigidbody;
-    CharacterController characterController;
 
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
-        characterController = GetComponent<CharacterController>();
-        charaMove = Vector3.zero;
-        isGround = true;
+        dragPower = rigidbody.drag;
+        isGround = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-       float horizontal = Input.GetAxis("Horizontal");
+        float horizontal = Input.GetAxis("Horizontal");
 
-        charaMove.x = horizontal * moveSpeed;
+        var force = new Vector3(horizontal * moveSpeed, 0.0f, 0.0f);
 
-        if (characterController.isGrounded)
+        if (Input.GetButtonDown("Jump") && isGround)
         {
-            if (Input.GetButtonDown("Jump"))
+            // Debug.Log("Jump");
+            rigidbody.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
+        }
+        if (!isGround)
+        {
+            force = new Vector3(horizontal * airUpMoveSpeed, 0.0f, 0.0f);
+            rigidbody.AddForce(force, ForceMode.Force);
+            var velocity = rigidbody.velocity;
+            // 下降中
+            if (velocity.y < 0)
             {
-                charaMove.y = jumpSpeed;
+                rigidbody.drag = 0;
+                force = new Vector3(horizontal * airDownMoveSpeed, 0.0f, 0.0f);
+                rigidbody.AddForce(force, ForceMode.Force);
             }
-            charaMove.y += 0;
         }
-        else
-        {
-            charaMove.y += Physics.gravity.y * gravity * Time.deltaTime;
-        }
-        characterController.Move(charaMove * Time.deltaTime);
-        Debug.Log("charaMove : " + charaMove);
+        Debug.Log("force" + force);
+        Debug.Log("horizontal" + horizontal);
+        rigidbody.AddForce(force, ForceMode.Force);
     }
 
-    //private void FixedUpdate()
-    //{
-    //    float horizontal = Input.GetAxis("Horizontal");
-    //    //Debug.Log("horizontal  = " + horizontal);
-    //    charaMove.x = horizontal * moveSpeed;
-    //    if (characterController.isGrounded)
-    //    {
-    //        if (Input.GetButtonDown("Jump"))
-    //        {
-    //            charaMove.y -= Physics.gravity.y * gravity * Time.fixedDeltaTime;
-    //            Debug.Log("Jump");
-    //        }
-    //        charaMove.y = 0;
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("horizontal  = ");
-    //        charaMove.y += Physics.gravity.y * gravity * Time.fixedDeltaTime;
-    //    }
-    //    characterController.Move(charaMove * Time.fixedDeltaTime);
-    //    Debug.Log("isGrounded" + characterController.isGrounded);
-    //}
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.name == "Box001")
+        {
+            Debug.Log("ジャンプ");
+            isGround = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Box001")
+        {
+            Debug.Log("着地");
+            isGround = true;
+            rigidbody.drag = dragPower;
+        }
+    }
 
 }

@@ -140,7 +140,7 @@ public class UiManager : MonoBehaviour
             countNum = 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
         {
             PauseDiaLogDisplay(false);
             switch (buttonSelectNum)
@@ -226,7 +226,7 @@ public class UiManager : MonoBehaviour
             countNum = 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
         {
             PauseDiaLogDisplay(false);
             switch (gameOverButtonSelectNum)
