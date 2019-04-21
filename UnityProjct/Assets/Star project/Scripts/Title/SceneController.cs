@@ -102,7 +102,7 @@ namespace StarProject.Title
                         titleTyp = TitleTyp.OnTitle;
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                     {
                         if (!skipFlag)
                         {
@@ -188,7 +188,7 @@ namespace StarProject.Title
                         countNum = 0;
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                     {
                         if (!exitFlag)
                         {
