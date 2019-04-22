@@ -30,6 +30,8 @@ public class ObstacleManager : MonoBehaviour
     //HpMax
     float foundationHPMax;
 
+    int breakSeNum = 4;
+
     //-------------フラグ用変数------------------------------
     bool onRemoveObjFlag = false;
 
@@ -75,6 +77,7 @@ public class ObstacleManager : MonoBehaviour
             deleteTime -= Time.deltaTime;
             if (deleteTime <= 0)
             {
+
                 foreach (Transform child in gameObject.transform)
                 {
                     Destroy(child.gameObject);
@@ -100,6 +103,8 @@ public class ObstacleManager : MonoBehaviour
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
+                Singleton.Instance.soundManager.StopObstaclesSe();
+                Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
                 if (starNum != 0)
                 {
                     Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);

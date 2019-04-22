@@ -107,6 +107,13 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float chargeAttackTime;
     [SerializeField] private float chargeAttackUpTime;
     [SerializeField] private float chargeAttackDownTime;
+
+    [Header("キャラクターSEの種類番号")]
+    [SerializeField] private int dashSeNum;
+    [SerializeField] private int jumpSeNum;
+    [SerializeField] private int chargeSeNum;
+    [SerializeField] private int punchSeNum;
+    [SerializeField] private int getStarSeNum;
     //-------------フラグ用変数------------------------------
     [Header("各種フラグ")]
     //ジャンプフラグ
@@ -229,6 +236,9 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.Log("ジャンプ");
             isGround = false;
+            Singleton.Instance.soundManager.StopPlayerSe();
+            //ジャンプ音再生
+            Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
         }
     }
 
@@ -244,7 +254,6 @@ public class PlayerMove : MonoBehaviour
 
         if (!isGround)
         {
-            Debug.Log("imakoko");
             force = new Vector3(horizontal * airUpMoveSpeed, 0.0f, 0.0f);
             rigidbody.AddForce(force, ForceMode.Force);
             var velocity = rigidbody.velocity;
@@ -468,6 +477,7 @@ public class PlayerMove : MonoBehaviour
     public IEnumerator OnGetStar()
     {
         starAcquisitionEffect.SetActive(true);
+        Singleton.Instance.soundManager.PlayPlayerSe(getStarSeNum);
         yield return new WaitForSeconds(1.5f);
         isAcquisitionStar = false;
         starAcquisitionEffect.SetActive(false);
@@ -545,6 +555,7 @@ public class PlayerMove : MonoBehaviour
         if (dx != 0 && !isChargeFlag && isGround)
         {
             CharacterAnimation("dash");
+            Singleton.Instance.soundManager.PlayPlayerSe(dashSeNum);
             SandEffectPlay(true);
         }
         else if (!isChargeFlag && isGround)
@@ -565,6 +576,9 @@ public class PlayerMove : MonoBehaviour
             CharacterAnimation("charge");
             canAttackFlag = true;
             isChargeFlag = true;
+            //チャージSE再生
+            Singleton.Instance.soundManager.StopPlayerSe();
+            Singleton.Instance.soundManager.PlayPlayerSe(chargeSeNum);
             objState = ObjState.OnCharge;
         }
     }
@@ -585,6 +599,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKey(KeyCode.T) || Input.GetButton("Charge"))
         {
             Debug.Log("チャージ中");
+
             //チャージ中
             Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
             Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
@@ -650,6 +665,8 @@ public class PlayerMove : MonoBehaviour
         if (isAttack)
         {
             isAttack = false;
+            Singleton.Instance.soundManager.StopPlayerSe();
+            Singleton.Instance.soundManager.PlayPlayerSe(punchSeNum);
             StartCoroutine(OnAttack(0, animationTime));
         }
     }

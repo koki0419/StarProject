@@ -8,6 +8,7 @@ public class Singleton : SingletonMonoBehaviour<Singleton>
     public StarGenerator starGenerator;
     public GameSceneController gameSceneController;
     public CameraController cameraController;
+    public SoundManager soundManager;
 
 
     //public GameObject damageTextUI;
