@@ -104,7 +104,7 @@ public class BreakBoxController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
+        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canAttackFlag)
         {
             //Hpをへらす
             foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);

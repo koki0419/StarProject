@@ -21,11 +21,10 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] GameObject starObj = null;
 
-    //[SerializeField] GameObject enemyObj = null;
+    [SerializeField] GameObject safeHitGigMoaiObj;
 
     //☆子供オブジェクト取得用
     GameObject[] starChildrenOBJ;
-    //GameObject[] enemyChildrenOBJ;
     //------------クラスの宣言----------------------
     public PlayerMove playerMove;
 
@@ -40,18 +39,13 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] EnemyController[] enemyController;
 
     public StarChargeController starChargeController;
-
-
     // 変数を直接参照させないでプロパティ文法でアクセサを経由させる
     public ChargePointManager ChargePointManager
     {
         get { return chargePointManager; }
-        //private set { chargePointManager = value; }
     }
     // 変数本体でInspectorにはこちらが表示される
     [SerializeField] ChargePointManager chargePointManager = null;
-
-
     [SerializeField] UiManager uiManager = null;
 
     //------------数値変数の宣言--------------------
@@ -59,19 +53,16 @@ public class GameSceneController : MonoBehaviour
     //タイトルでstageNumを1に設定します。その後はリザルトシーンのみでしか使用しません
     static public int stageNum;
     //------------フラグ変数の宣言------------------
-    bool isPlaying = false;
-
-    bool isGameClear = false;
-    public bool IsGameClear
+    public bool isGameClear
     {
-        set { isGameClear = value; }
+        set;private get;
     }
 
     public bool isGameOver
     {
         set;get;
     }
-
+    //カメラを振動出せるかどうか
     bool canCameraShake;
 
     public bool isGetStar
@@ -79,13 +70,15 @@ public class GameSceneController : MonoBehaviour
         get; set;
     }
 
-    bool isPause;
+    public bool isMoveCamera
+    {
+        get;set;
+    }
 
+    bool isOperation;
     //初期化
     public void Init()
     {
-        //プレー中かどうか
-        isPlaying = false;
         //gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost / 100;//StarCostを『0.01』にする
         for (int i = 0; i < obstacleManager.Length; i++)
         {
@@ -113,8 +106,7 @@ public class GameSceneController : MonoBehaviour
         isGetStar = false;
         isGameClear = false;
         isGameOver = false;
-        isPause = false;
-
+        isOperation = false;
         canCameraShake = false;
 
     }
@@ -128,8 +120,6 @@ public class GameSceneController : MonoBehaviour
     //スタート
     IEnumerator Start()
     {
-        isPlaying = false;
-
         yield return null;
         Init();
         starChargeController.Init();
@@ -139,15 +129,12 @@ public class GameSceneController : MonoBehaviour
         yield return null;
         uiManager.FadeImageDisplay(false);
         yield return null;
-
         yield return uiManager.FadeInEnumerator(2);
-
-        isPlaying = true;
+        isMoveCamera = false;
         gameMainState = GameMainState.Play;
         Singleton.Instance.soundManager.PlayBgm("NormalBGM");
 
     }
-
 
     // Update is called once per frame
     void Update()
@@ -167,7 +154,7 @@ public class GameSceneController : MonoBehaviour
                 GameOver();
                 break;
         }
-
+        //カメラShake
         if (canCameraShake)
         {
             cameraController.Shake(0.25f, 0.1f);
@@ -178,7 +165,8 @@ public class GameSceneController : MonoBehaviour
     {
         if (gameMainState == GameMainState.Play)//ゲームスタート
         {
-            cameraController.MoveUpdate();
+            if(isMoveCamera) cameraController.MoveUpdate();
+
             if (isGetStar)
             {
                 isGetStar = false;
@@ -187,14 +175,19 @@ public class GameSceneController : MonoBehaviour
         }
     }
 
+    //モアイ動きスタート
+    IEnumerator BigMoaiMoveStart()
+    {
+        canCameraShake = true;
+        yield return new WaitForSeconds(2.0f);
+        canCameraShake = false;
+        Destroy(safeHitGigMoaiObj);
+        isMoveCamera = true;
+    }
 
-
-
-
-    //スタート
+    //クリア
     IEnumerator OnClear()
     {
-        isPlaying = false;
         canCameraShake = true;
         yield return new WaitForSeconds(0.5f);
         uiManager.GameClearUIDisplay(true);
@@ -207,11 +200,11 @@ public class GameSceneController : MonoBehaviour
     //ゲームオーバー
     IEnumerator OnGameOver()
     {
-        isPlaying = false;
         yield return new WaitForSeconds(0.5f);
         uiManager.GameOvreUIDisplay(true);
         yield return new WaitForSeconds(2.5f);
         uiManager.GameOverDiaLogDisplay(true);
+        isOperation = true;
     }
 
     void GamePlay()
@@ -220,6 +213,10 @@ public class GameSceneController : MonoBehaviour
 
         playerMove.OnUpdate(deltaTime);//PlayerのUpdate
 
+        if (obstacleManager[0] != null && obstacleManager[0].isDestroyed)
+        {
+            StartCoroutine(BigMoaiMoveStart());
+        }
         //ゲームオーバー
         if (isGameOver)
         {
@@ -232,14 +229,17 @@ public class GameSceneController : MonoBehaviour
             Singleton.Instance.soundManager.PlayJingle("GameClear");
             gameMainState = GameMainState.GameClear;
         }
-
+        //ポーズ
         if (Input.GetButtonDown("Pause") || Input.GetKeyDown(KeyCode.Escape))
         {
             uiManager.PauseDiaLogDisplay(true);
             gameMainState = GameMainState.Pause;
         }
     }
-
+    /// <summary>
+    /// Pause時の処理
+    /// この時にもう一度Pauseボタンを押すとPlayモードに戻る
+    /// </summary>
     void GamePause()
     {
         uiManager.PauseButtonSelectUpdate();
@@ -249,15 +249,25 @@ public class GameSceneController : MonoBehaviour
             gameMainState = GameMainState.Play;
         }
     }
-
+    /// <summary>
+    /// /ゲームクリア時の処理
+    /// </summary>
     void GameClear()
     {
         StartCoroutine(OnClear());
     }
-
+    /// <summary>
+    /// ゲームオーバー時の処理
+    /// コルーチンで一定時間後にゲームオーバーダイアログを操作可能にできる
+    /// isOperationはゲームオーバー時に適当にボタンを押されるとダイアログ表示前に【リトライorやめる】に遷移してしまう
+    /// ため設定しました
+    /// </summary>
     void GameOver()
     {
         StartCoroutine(OnGameOver());
-        uiManager.GameOverButtonSelectUpdate();
+        if (isOperation)
+        {
+            uiManager.GameOverButtonSelectUpdate();
+        }
     }
 }

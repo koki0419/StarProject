@@ -20,7 +20,7 @@ public class EnemyAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int starCount = script.StarChildCount;
+        int starCount = script.starChildCount;
 
     }
 
