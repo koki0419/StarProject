@@ -97,14 +97,14 @@ public class Boss : MonoBehaviour
 
         if (foundationHP <= 0)
         {
-            Singleton.Instance.gameSceneController.IsGameClear = true;
+            Singleton.Instance.gameSceneController.isGameClear = true;
         }
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
+        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canAttackFlag)
         {
             foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
             Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);

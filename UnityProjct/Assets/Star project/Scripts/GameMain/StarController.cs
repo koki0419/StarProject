@@ -29,7 +29,7 @@ public class StarController : MonoBehaviour
             if (starPoint == 0 && starPoint == 1)
             {
                 playerMove.IsAcquisitionStar = true;
-                Singleton.Instance.gameSceneController.ChargePointManager.StarChildCount += starPoint;
+                Singleton.Instance.gameSceneController.ChargePointManager.starChildCount += starPoint;
             }
             else
             {

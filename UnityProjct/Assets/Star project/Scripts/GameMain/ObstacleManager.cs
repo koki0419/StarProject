@@ -35,7 +35,10 @@ public class ObstacleManager : MonoBehaviour
     //-------------フラグ用変数------------------------------
     bool onRemoveObjFlag = false;
 
-
+    public bool isDestroyed
+    {
+        get;private set;
+    }
     [SerializeField] bool onMove;
 
     public void Init()
@@ -59,7 +62,7 @@ public class ObstacleManager : MonoBehaviour
 
         var hp = 1.0;
         hp -= foundationHP / foundationHPMax;
-
+        isDestroyed = false;
         breakEffect.SetActive(false);
     }
 
@@ -90,7 +93,7 @@ public class ObstacleManager : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //if (collision.gameObject.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
-        if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
+        if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.canAttackFlag)
         {
             //Hpをへらす
             foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
@@ -103,6 +106,7 @@ public class ObstacleManager : MonoBehaviour
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
+                isDestroyed = true;
                 Singleton.Instance.soundManager.StopObstaclesSe();
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
                 if (starNum != 0)

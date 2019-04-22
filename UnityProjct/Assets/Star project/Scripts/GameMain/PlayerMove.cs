@@ -119,10 +119,9 @@ public class PlayerMove : MonoBehaviour
     //ジャンプフラグ
     [SerializeField] bool cnaJumpFlag;
     //アタックフラグ
-    [SerializeField] bool canAttackFlag;
-    public bool CanAttackFlag
+    public bool canAttackFlag
     {
-        get { return canAttackFlag; }
+        get; private set;
     }
     //地面との接触
     bool isGround;
@@ -142,6 +141,10 @@ public class PlayerMove : MonoBehaviour
     bool isUpAttack;
     bool isDownAttack;
     bool isAttack;
+
+    [Header("当たり判定のあるオブジェクトの名前")]
+    [SerializeField] string groundName;
+    [SerializeField] string gameOverLineName;
 
     //初期化
     public void Init()
@@ -214,7 +217,7 @@ public class PlayerMove : MonoBehaviour
     {
        
         //ゲームオーバーの当たり判定
-        if (collision.gameObject.name == "GameOverLine")
+        if (collision.gameObject.name == gameOverLineName)
         {
             objState = ObjState.CharacterGameOver;
         }
@@ -223,18 +226,16 @@ public class PlayerMove : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Box001")
+        if (other.gameObject.name == groundName)
         {
-            Debug.Log("着地");
             isGround = true;
             rigidbody.drag = dragPower;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name == "Box001")
+        if (other.gameObject.name == groundName)
         {
-            Debug.Log("ジャンプ");
             isGround = false;
             Singleton.Instance.soundManager.StopPlayerSe();
             //ジャンプ音再生
@@ -325,24 +326,20 @@ public class PlayerMove : MonoBehaviour
             if (isRightDirection && !isLeftDirection)
             {
                 rig.AddForce(Vector3.right * speedForce, ForceMode.Impulse);
-                Debug.Log("右");
             }
             //左向きの時
             else
             {
                 rig.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
-                Debug.Log("左");
             }
         }
         else if (isUpAttack)
         {
             rig.AddForce(Vector3.up * speedForce, ForceMode.Impulse);
-            Debug.Log("上");
         }
         else if (isDownAttack)
         {
             rig.AddForce(Vector3.down * speedForce, ForceMode.Impulse);
-            Debug.Log("下");
         }
         isChargeFlag = false;
     }
@@ -354,7 +351,7 @@ public class PlayerMove : MonoBehaviour
     /// <returns></returns>
     void ChargeAttackHand(float charge)
     {
-        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.ChargePointMax;
+        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.StarChildCountMax;
         var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
         //チャージ量の+-量
         float chargeProportion = userChargePonitUp * 10;
@@ -438,6 +435,7 @@ public class PlayerMove : MonoBehaviour
                 break;
             case (int)PlayerAttackIndex.ChargeAttackNormal:
                 CharacterAnimation("chargepunch");
+                FreezeUp();
                 objState = ObjState.ChargeAttack;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackDown:
@@ -565,6 +563,7 @@ public class PlayerMove : MonoBehaviour
         }else if (!isGround)
         {
             CharacterAnimation("jump");
+            SandEffectPlay(false);
         }
 
         //移動
@@ -574,7 +573,6 @@ public class PlayerMove : MonoBehaviour
         {
             FreezePositionSet();
             CharacterAnimation("charge");
-            canAttackFlag = true;
             isChargeFlag = true;
             //チャージSE再生
             Singleton.Instance.soundManager.StopPlayerSe();
@@ -598,12 +596,10 @@ public class PlayerMove : MonoBehaviour
         //チャージ
         if (Input.GetKey(KeyCode.T) || Input.GetButton("Charge"))
         {
-            Debug.Log("チャージ中");
-
             //チャージ中
-            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint / 10));
+            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));
             Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
-            ChargeAttackHand(Singleton.Instance.gameSceneController.ChargePointManager.ChargePoint);
+            ChargeAttackHand(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount);
             //チャージエフェクトデバック---------------------------
             if (chargeCount < 3)
             {
@@ -650,7 +646,7 @@ public class PlayerMove : MonoBehaviour
 
             chargeCount = 0;
             chargeNow = 0.0f;
-
+            canAttackFlag = true;
             isAttack = true;
 
         }
@@ -684,6 +680,10 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         Singleton.Instance.gameSceneController.isGameOver = true;
     }
+    void FreezeUp()
+    {
+        rigidbody.constraints = RigidbodyConstraints.FreezePositionZ |RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+    }
     /// <summary>
     /// 初期状態に戻します
     /// </summary>
@@ -698,7 +698,7 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void FreezePositionSet()
     {
-        rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
 
     void SandEffectPlay(bool isPlay)
