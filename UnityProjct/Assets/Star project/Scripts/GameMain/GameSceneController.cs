@@ -110,18 +110,6 @@ public class GameSceneController : MonoBehaviour
             starControllers[i].Init(playerObj, playerMove);
         }
 
-        //エネミー子供オブジェクト取得
-        //enemyChildrenOBJ = new GameObject[enemyObj.transform.childCount];
-        //enemyController = new EnemyController[enemyObj.transform.childCount];
-        ////エネミー子供オブジェクト初期化
-        //for (int i = 0; enemyObj.transform.childCount > i; i++)
-        //{
-        //    enemyChildrenOBJ[i] = enemyObj.transform.GetChild(i).gameObject;
-        //    enemyController[i] = enemyChildrenOBJ[i].GetComponent<EnemyController>();
-        //    enemyController[i].Init(playerObj);
-        //}
-
-
         isGetStar = false;
         isGameClear = false;
         isGameOver = false;
@@ -156,6 +144,7 @@ public class GameSceneController : MonoBehaviour
 
         isPlaying = true;
         gameMainState = GameMainState.Play;
+        Singleton.Instance.soundManager.PlayBgm("NormalBGM");
 
     }
 
@@ -234,11 +223,13 @@ public class GameSceneController : MonoBehaviour
         //ゲームオーバー
         if (isGameOver)
         {
+            Singleton.Instance.soundManager.PlayJingle("GameOver");
             gameMainState = GameMainState.GameOver;
         }
         //ゲームクリア
         if (isGameClear)
         {
+            Singleton.Instance.soundManager.PlayJingle("GameClear");
             gameMainState = GameMainState.GameClear;
         }
 
