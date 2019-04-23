@@ -16527,21 +16527,20 @@ MonoBehaviour:
   jumpSpeed: 1000
   userChargePonitUp: 0.1
   foundationoffensivePower: 10
-  foundationSpeedForce: 500
-  airFoundationSpeedForce: 25
+  foundationSpeedForce: 700
+  UpFoundationSpeedForce: 800
   offensivePower: 1
   speedForce: 25
-  attackPower: 50000000
+  attackPower: 10000
   AttackJabTime: 1
-  chargeAttackTime: 1
-  chargeAttackUpTime: 1
+  chargeAttackTime: 0.5
+  chargeAttackUpTime: 0.5
   chargeAttackDownTime: 1
   dashSeNum: 0
   jumpSeNum: 3
   chargeSeNum: 2
   punchSeNum: 1
   getStarSeNum: 5
-  cnaJumpFlag: 0
   groundName: Box001
   gameOverLineName: GameOverLine
 --- !u!136 &1774836256
@@ -16551,7 +16550,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774836254}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 492783d816986014284125ee88d711b4, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.25
