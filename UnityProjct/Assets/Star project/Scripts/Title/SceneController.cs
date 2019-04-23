@@ -18,40 +18,33 @@ namespace StarProject.Title
         public enum TitleTyp
         {
             None,
-            OnMovie,
             OnTitle,
-
         }
-
         public TitleTyp titleTyp = TitleTyp.None;
 
 
-        //オープニング用
-        [SerializeField] VideoPlayer video = null;
-        //オープニングムービー再生用OBJ
-        [SerializeField] GameObject movieObj = null;
-        //skipダイアログ
-        [SerializeField] GameObject skipDialog = null;
-        [SerializeField] GameObject skipYesButton = null;
-        [SerializeField] GameObject skipNoButton = null;
-        bool skipFlag;
-        int skipButtonNum;
-
-        [SerializeField] GameObject canvas = null;
-
         //ボタン選択用ナンバー
-        [Header("ステージ数")]
+        [Header("ボタン")]
         [SerializeField] int stageMax = 0;
-        [SerializeField] GameObject selectButton = null;
-        [SerializeField] GameObject exitButton = null;
+        [SerializeField] Image selectButton = null;
+        [SerializeField] Image exitButton = null;
+        [SerializeField] Sprite selectButtonNormalSprite;
+        [SerializeField] Sprite selectButtonSelectSprite;
+        [SerializeField] Sprite exitButtonNormalSprite;
+        [SerializeField] Sprite exitButtonSelectSprite;
 
         int buttonNum;
 
         //EXITダイアログUI
         [Header("EXIT用テクスチャー")]
         [SerializeField] GameObject exitDialogUI = null;
-        [SerializeField] GameObject yesButton = null;
-        [SerializeField] GameObject noButton = null;
+
+        [SerializeField] Image yesButton = null;
+        [SerializeField] Image noButton = null;
+        [SerializeField] Sprite exitButtonYesNormalSprite;
+        [SerializeField] Sprite exitButtonYesSelectSprite;
+        [SerializeField] Sprite exitButtonNoNormalSprite;
+        [SerializeField] Sprite exitButtonNoSelectSprite;
 
         //EXITボタン選択用ナンバー
         int exitYNNum;
@@ -65,16 +58,12 @@ namespace StarProject.Title
         // Start is called before the first frame update
         void Init()
         {
-            canvas.SetActive(false);
             exitDialogUI.SetActive(false);
             buttonNum = 0;
             exitFlag = false;
             exitYNNum = 1;
             OnSelect(buttonNum);
             countNum = 0;
-            movieObj.SetActive(true);
-            skipDialog.SetActive(false);
-            skipFlag = false;
         }
 
         //スタート
@@ -82,8 +71,7 @@ namespace StarProject.Title
         {
             Init();
             yield return null;
-            video.Play();
-            titleTyp = TitleTyp.OnMovie;
+            titleTyp = TitleTyp.OnTitle;
         }
 
         // Update is called once per frame
@@ -92,67 +80,6 @@ namespace StarProject.Title
             float dx = Input.GetAxis("Horizontal");
             switch (titleTyp)
             {
-                case TitleTyp.OnMovie:
-                    titleGameTime += Time.deltaTime;
-                    if (titleGameTime > 33.0f)
-                    {
-                        movieObj.SetActive(false);
-                        canvas.SetActive(true);
-                        skipDialog.SetActive(false);
-                        titleTyp = TitleTyp.OnTitle;
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
-                    {
-                        if (!skipFlag)
-                        {
-                            skipFlag = true;
-                            canvas.SetActive(true);
-                            skipDialog.SetActive(true);
-                            video.Pause();
-                        }
-                        else
-                        {
-                            switch (skipButtonNum)
-                            {
-                                case 0:
-                                    movieObj.SetActive(false);
-                                    skipDialog.SetActive(false);
-                                    titleTyp = TitleTyp.OnTitle;
-                                    break;
-                                case 1:
-                                    skipFlag = false;
-                                    canvas.SetActive(false);
-                                    skipDialog.SetActive(false);
-                                    video.Play();
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (skipFlag)
-                    {
-                        //左
-                        if (dx < 0 && countNum == 0)
-                        {
-                            countNum++;
-                            if (skipButtonNum > 0) skipButtonNum--;
-                            OnSkip(skipButtonNum);
-                        }//右
-                        else if (dx > 0 && countNum == 0)
-                        {
-                            countNum++;
-                            if (skipButtonNum < 2) skipButtonNum++;
-                            OnSkip(skipButtonNum);
-                        }
-                        else if (dx == 0 && countNum != 0)
-                        {
-                            countNum = 0;
-                        }
-                    }
-                    break;
-
-
                 case TitleTyp.OnTitle:
                     //左
                     if (dx < 0 && countNum == 0)
@@ -239,12 +166,12 @@ namespace StarProject.Title
                 switch (num)
                 {
                     case 0:
-                        selectButton.GetComponent<Image>().color = selectedColor;
-                        exitButton.GetComponent<Image>().color = normalColor;
+                        selectButton.sprite = selectButtonNormalSprite;
+                        exitButton.sprite = exitButtonSelectSprite;
                         return;
                     case 1:
-                        selectButton.GetComponent<Image>().color = normalColor;
-                        exitButton.GetComponent<Image>().color = selectedColor;
+                        selectButton.sprite = selectButtonSelectSprite;
+                        exitButton.sprite = exitButtonNormalSprite;
                         return;
                 }
             }
@@ -253,32 +180,16 @@ namespace StarProject.Title
                 switch (num)
                 {
                     case 0:
-                        yesButton.GetComponent<Image>().color = selectedColor;
-                        noButton.GetComponent<Image>().color = normalColor;
+                        yesButton.sprite = exitButtonYesNormalSprite;
+                        noButton.sprite = exitButtonNoSelectSprite;
                         return;
                     case 1:
-                        yesButton.GetComponent<Image>().color = normalColor;
-                        noButton.GetComponent<Image>().color = selectedColor;
+                        yesButton.sprite = exitButtonYesSelectSprite;
+                        noButton.sprite = exitButtonNoNormalSprite;
                         return;
                 }
             }
 
         }
-
-        private void OnSkip(int num)
-        {
-            switch (num)
-            {
-                case 0:
-                    skipYesButton.GetComponent<Image>().color = new Color(0, 100, 100);
-                    skipNoButton.GetComponent<Image>().color = new Color(255, 255, 255);
-                    return;
-                case 1:
-                    skipYesButton.GetComponent<Image>().color = new Color(255, 255, 255);
-                    skipNoButton.GetComponent<Image>().color = new Color(0, 100, 100);
-                    return;
-            }
-        }
-
     }
 }
