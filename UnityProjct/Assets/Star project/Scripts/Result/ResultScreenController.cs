@@ -38,6 +38,23 @@ namespace StarProject.Result
         //総ダメージの表示
         static public int all_damage = 0;
 
+        //ダメージ表記スコアUIを取得
+        [SerializeField] Image[] scoreUI;
+        //ダメージ表示用の数値画像0～9
+        [SerializeField] Sprite[] numSprite;
+        //ステージ数の表記UI
+        [SerializeField] Image stageNumUI;
+        //ステージ数表示画像
+        [SerializeField] Sprite[] stageNumSprite;
+        //クリアランク表示用UI
+        [SerializeField] Image rankUI;
+        //クリアランク表示画像
+        [SerializeField] Sprite[] rankSprite;
+        [Header("ランク振り分けスコア")]
+        [SerializeField] int rankAScore;
+        [SerializeField] int rankBScore;
+        [SerializeField] int rankCScore;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -45,6 +62,9 @@ namespace StarProject.Result
             NextStageDiaLogDisplay(false);
             buttonSelectNum = 0;
             NextStageButtonSelectColor(buttonSelectNum);
+            StageNumDisplay(GameSceneController.stageNum);
+            ResultScoreDisplay(all_damage);
+            ClearRankDisplay(all_damage);
             resultState = ResultState.ResultAnimation;
         }
 
@@ -151,6 +171,61 @@ namespace StarProject.Result
                     exitTitleButton.GetComponent<Image>().color = selectColor;
                     return;
             }
+        }
+        /// <summary>
+        /// クリアステージ数を表示します
+        /// </summary>
+        /// <param name="stageNum">クリアステージ数</param>
+        void StageNumDisplay(int stageNum)
+        {
+            stageNumUI.sprite = stageNumSprite[stageNum];
+        }
+        /// <summary>
+        /// ダメージを表示します
+        /// 変数の作りすぎかもなので修正できるといいです
+        /// </summary>
+        /// <param name="ollDamage">総ダメージ値</param>
+        void ResultScoreDisplay(int allDamage)
+        {
+            var damage = allDamage;
+            //1の桁
+            var score1 = damage % 10;
+            //10の桁
+            var score10 = damage / 10 % 10;
+            //100の桁
+            var score100 = damage / 100 % 10;
+            //1000の桁
+            var score1000 = damage / 1000 % 10;
+            //10000の桁
+            var score10000 = damage / 10000 % 10;
+            //100000の桁
+            var score100000 = damage / 100000 % 10;
+            //1000000の桁
+            var score1000000 = damage / 1000000 % 10;
+            //10000000の桁
+            var score10000000 = damage / 10000000 % 10;
+            scoreUI[0].sprite = numSprite[score1];
+            scoreUI[1].sprite = numSprite[score10];
+            scoreUI[2].sprite = numSprite[score100];
+            scoreUI[3].sprite = numSprite[score1000];
+            scoreUI[4].sprite = numSprite[score10000];
+            scoreUI[5].sprite = numSprite[score100000];
+            scoreUI[6].sprite = numSprite[score1000000];
+            scoreUI[7].sprite = numSprite[score10000000];
+        }
+        /// <summary>
+        /// クリアランクを表示します
+        /// </summary>
+        /// <param name="allDamage">総ダメージ値</param>
+        void ClearRankDisplay(int allDamage)
+        {
+            //Aランク
+            if (allDamage > rankAScore) rankUI.sprite = rankSprite[0];
+            //Bランク
+            else if (allDamage > rankBScore) rankUI.sprite = rankSprite[1];
+            //Cランク
+            else
+                rankUI.sprite = rankSprite[2];
         }
     }
 }

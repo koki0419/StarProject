@@ -204,7 +204,6 @@ public class PlayerMove : MonoBehaviour
                 CharacterGameOver();
                 break;
         }
-        Debug.Log("ObjState = " + objState);
         if (isAcquisitionStar)
         {
             StartCoroutine(OnGetStar());
