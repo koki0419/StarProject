@@ -72,7 +72,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float foundationoffensivePower = 0;
     //初期移動量
     [SerializeField] float foundationSpeedForce = 0;
-    [SerializeField] float airFoundationSpeedForce = 0;
+    [SerializeField] float UpFoundationSpeedForce = 0;
 
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
@@ -117,7 +117,7 @@ public class PlayerMove : MonoBehaviour
     //-------------フラグ用変数------------------------------
     [Header("各種フラグ")]
     //ジャンプフラグ
-    [SerializeField] bool cnaJumpFlag;
+    bool isJumpFlag;
     //アタックフラグ
     public bool canAttackFlag
     {
@@ -160,7 +160,7 @@ public class PlayerMove : MonoBehaviour
         Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
         //----初期化-----
         canAttackFlag = false;
-        //cnaJumpFlag = true;
+        isJumpFlag = false;
         isGround = false;
         isAcquisitionStar = false;
 
@@ -174,6 +174,7 @@ public class PlayerMove : MonoBehaviour
         isUpAttack = false;
         isDownAttack = false;
         isAttack = false;
+
     }
 
     // Update is called once per frame
@@ -228,6 +229,7 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.name == groundName)
         {
             isGround = true;
+            isJumpFlag = false;
             rigidbody.drag = dragPower;
         }
     }
@@ -315,30 +317,33 @@ public class PlayerMove : MonoBehaviour
     /// 上下左右の動きを管理しています
     /// </summary>
     /// <param name="speedForce">チャージ攻撃時の移動量</param>
-    void MoveAttack(float speedForce)
+    void MoveAttack()
     {
-        //Debug.Log("speedForce = " + speedForce);
         var rig = rigidbody;
+        rig.drag = dragPower;
+        attackSpeed = (chargeCount * speedForce + foundationSpeedForce)/10;
         if (!isUpAttack && !isDownAttack)
         {
+
             //右向きの時
             if (isRightDirection && !isLeftDirection)
             {
-                rig.AddForce(Vector3.right * speedForce, ForceMode.Impulse);
+                rig.AddForce(Vector3.right * attackSpeed, ForceMode.Impulse);
             }
             //左向きの時
             else
             {
-                rig.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
+                rig.AddForce(Vector3.left * attackSpeed, ForceMode.Impulse);
             }
         }
         else if (isUpAttack)
         {
-            rig.AddForce(Vector3.up * speedForce, ForceMode.Impulse);
+            attackSpeed = (chargeCount * speedForce + UpFoundationSpeedForce)/10;
+            rig.AddForce(Vector3.up * attackSpeed, ForceMode.Impulse);
         }
         else if (isDownAttack)
         {
-            rig.AddForce(Vector3.down * speedForce, ForceMode.Impulse);
+            rig.AddForce(Vector3.down * attackSpeed, ForceMode.Impulse);
         }
         isChargeFlag = false;
     }
@@ -615,14 +620,8 @@ public class PlayerMove : MonoBehaviour
 
             //チャージ終了（チャージゲージを0に戻す）
             attackPower = chargeCount * offensivePower + foundationoffensivePower;
-            if (isGround)
-            {
-                attackSpeed = chargeCount * speedForce + foundationSpeedForce;
-            }
-            else
-            {
-                attackSpeed = chargeCount * speedForce + airFoundationSpeedForce;
-            }
+
+            //attackSpeed = chargeCount * speedForce + foundationSpeedForce;
             //チャージゲージをリセットします
             Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
             //チャージ中☆を戻します
@@ -656,7 +655,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="animationTime">アニメーション時間</param>
     void AttackUpdate(float animationTime)
     {
-        MoveAttack(attackSpeed / 10);
+        MoveAttack();
         if (isAttack)
         {
             isAttack = false;
