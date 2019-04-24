@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour
     public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
 
     //オブジェクトステータス
-    public enum ObjState
+     enum ObjState
     {
         None,
         Normal,//通常状態
@@ -27,11 +27,11 @@ public class PlayerMove : MonoBehaviour
         OnCharge,//チャージ中状態
         CharacterGameOver,//ゲームオーバー状態
     }
-    public ObjState objState = ObjState.None;
+    ObjState objState = ObjState.None;
 
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
-    public Animator animatorComponent;
+    [SerializeField] Animator animatorComponent;
 
     new Rigidbody rigidbody;
 
@@ -141,6 +141,7 @@ public class PlayerMove : MonoBehaviour
     bool isUpAttack;
     bool isDownAttack;
     bool isAttack;
+    bool canAttack;
 
     [Header("当たり判定のあるオブジェクトの名前")]
     [SerializeField] string groundName;
@@ -174,7 +175,7 @@ public class PlayerMove : MonoBehaviour
         isUpAttack = false;
         isDownAttack = false;
         isAttack = false;
-
+        canAttack = false;
     }
 
     // Update is called once per frame
@@ -462,8 +463,6 @@ public class PlayerMove : MonoBehaviour
     {
         yield return new WaitForSeconds(animationTime);
         canAttackFlag = false;
-        //var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
-        //charaHand.SetBlendShapeWeight(0, 0);
         chargeNowHand = 0.0f;
         FreezePositionCancel();
         PunchEffectPlay(false);
@@ -559,12 +558,15 @@ public class PlayerMove : MonoBehaviour
             CharacterAnimation("dash");
             Singleton.Instance.soundManager.PlayPlayerSe(dashSeNum);
             SandEffectPlay(true);
+            canAttack = true;
         }
         else if (!isChargeFlag && isGround)
         {
             CharacterAnimation("idol");
             SandEffectPlay(false);
-        }else if (!isGround)
+            canAttack = true;
+        }
+        else if (!isGround)
         {
             CharacterAnimation("jump");
             SandEffectPlay(false);
@@ -573,8 +575,9 @@ public class PlayerMove : MonoBehaviour
         //移動
         CharacterMove(dx, deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.T) || Input.GetButtonDown("Charge"))
+        if (Input.GetKeyDown(KeyCode.T) && canAttack || Input.GetButtonDown("Charge") && canAttack)
         {
+            canAttack = false;
             FreezePositionSet();
             CharacterAnimation("charge");
             isChargeFlag = true;

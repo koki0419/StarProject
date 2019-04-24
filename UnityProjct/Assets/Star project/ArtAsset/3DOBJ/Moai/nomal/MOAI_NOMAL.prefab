@@ -138,6 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breakEffect: {fileID: 5642504955173503560}
+  moaiRenderer: {fileID: 5268350531781032509}
   starNum: 0
   deleteTime: 2
   foundationHP: 10

@@ -83,7 +83,7 @@ public class Boss : MonoBehaviour
         if (onRemoveObjFlag)
         {
             deleteTime -= Time.deltaTime;
-            animator.SetBool("Break", true);
+            animator.SetTrigger("Break");
             //OnRemoveObj();
             if (deleteTime <= 0)
             {
