@@ -9,16 +9,11 @@ namespace StarProject.Title
 {
     public class SceneController : MonoBehaviour
     {
-        [SerializeField]
-        Color normalColor;
-        [SerializeField]
-        Color selectedColor;
-
-
         public enum TitleTyp
         {
             None,
-            OnTitle,
+            TitleSelect,
+            ExitSelect
         }
         public TitleTyp titleTyp = TitleTyp.None;
 
@@ -47,7 +42,7 @@ namespace StarProject.Title
         [SerializeField] Sprite exitButtonNoSelectSprite;
 
         //EXITボタン選択用ナンバー
-        int exitYNNum;
+        int exitSelectNum = 0;
 
         bool exitFlag;
 
@@ -61,8 +56,8 @@ namespace StarProject.Title
             exitDialogUI.SetActive(false);
             buttonNum = 0;
             exitFlag = false;
-            exitYNNum = 1;
-            OnSelect(buttonNum);
+            exitSelectNum = 0;
+            TitleSelectButton(buttonNum);
             countNum = 0;
         }
 
@@ -71,7 +66,7 @@ namespace StarProject.Title
         {
             Init();
             yield return null;
-            titleTyp = TitleTyp.OnTitle;
+            titleTyp = TitleTyp.TitleSelect;
         }
 
         // Update is called once per frame
@@ -80,35 +75,19 @@ namespace StarProject.Title
             float dx = Input.GetAxis("Horizontal");
             switch (titleTyp)
             {
-                case TitleTyp.OnTitle:
+                case TitleTyp.TitleSelect:
                     //左
                     if (dx < 0 && countNum == 0)
                     {
                         countNum++;
-                        if (!exitFlag)
-                        {
-                            if (buttonNum > 0) buttonNum--;
-                            OnSelect(buttonNum);
-                        }
-                        else
-                        {
-                            if (exitYNNum > 0) exitYNNum--;
-                            OnSelect(exitYNNum);
-                        }
+                        if (buttonNum > 0) buttonNum--;
+                        TitleSelectButton(buttonNum);
                     }//右
                     else if (dx > 0 && countNum == 0)
                     {
                         countNum++;
-                        if (!exitFlag)
-                        {
-                            if (buttonNum < stageMax) buttonNum++;
-                            OnSelect(buttonNum);
-                        }
-                        else
-                        {
-                            if (exitYNNum < 1) exitYNNum++;
-                            OnSelect(exitYNNum);
-                        }
+                        if (buttonNum < stageMax) buttonNum++;
+                        TitleSelectButton(buttonNum);
                     }
                     else if (dx == 0 && countNum != 0)
                     {
@@ -117,34 +96,55 @@ namespace StarProject.Title
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                     {
-                        if (!exitFlag)
+                        switch (buttonNum)
                         {
-                            switch (buttonNum)
-                            {
-                                case 0:
-                                    GameSceneController.stageNum = 1;
-                                    SceneManager.LoadScene("PrototypeScene");
-                                    return;
-                                case 1:
-                                    exitDialogUI.SetActive(true);
-                                    exitFlag = true;
-                                    exitYNNum = 1;
-                                    OnSelect(exitYNNum);
-                                    return;
-                            }
+                            case 0:
+                                GameSceneController.stageNum = 1;
+                                SceneManager.LoadScene("PrototypeScene");
+                                titleTyp = TitleTyp.None;
+                                break;
+                            case 1:
+                                exitDialogUI.SetActive(true);
+                                exitFlag = true;
+                                exitSelectNum = 0;
+                                ExitSelectButton(exitSelectNum);
+                                titleTyp = TitleTyp.ExitSelect;
+                                break;
                         }
-                        else
+                    }
+                    break;
+                case TitleTyp.ExitSelect:
+                    //左
+                    if (dx < 0 && countNum == 0)
+                    {
+                        countNum++;
+                        if (exitSelectNum > 0) exitSelectNum--;
+                        ExitSelectButton(exitSelectNum);
+                    }//右
+                    else if (dx > 0 && countNum == 0)
+                    {
+                        countNum++;
+                        if (exitSelectNum < 1) exitSelectNum++;
+                        ExitSelectButton(exitSelectNum);
+                    }
+                    else if (dx == 0 && countNum != 0)
+                    {
+                        countNum = 0;
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+                    {
+                        switch (exitSelectNum)
                         {
-                            switch (exitYNNum)
-                            {
-                                case 0:
-                                    OnExit();
-                                    return;
-                                case 1:
-                                    exitDialogUI.SetActive(false);
-                                    exitFlag = false;
-                                    return;
-                            }
+                            case 0:
+                                exitDialogUI.SetActive(false);
+                                exitFlag = false;
+                                titleTyp = TitleTyp.TitleSelect;
+                                break;
+                            case 1:
+                                OnExit();
+                                titleTyp = TitleTyp.None;
+                                break;
                         }
                     }
                     break;
@@ -159,37 +159,33 @@ namespace StarProject.Title
             Debug.Log("アプリ終了");
         }
 
-        private void OnSelect(int num)
+        private void TitleSelectButton(int selectNum)
         {
-            if (!exitFlag)
+            switch (selectNum)
             {
-                switch (num)
-                {
-                    case 0:
-                        selectButton.sprite = selectButtonNormalSprite;
-                        exitButton.sprite = exitButtonSelectSprite;
-                        return;
-                    case 1:
-                        selectButton.sprite = selectButtonSelectSprite;
-                        exitButton.sprite = exitButtonNormalSprite;
-                        return;
-                }
+                case 0:
+                    selectButton.sprite = selectButtonSelectSprite;
+                    exitButton.sprite = exitButtonNormalSprite;
+                    break;
+                case 1:
+                    selectButton.sprite = selectButtonNormalSprite;
+                    exitButton.sprite = exitButtonSelectSprite;
+                    break;
             }
-            else
+        }
+        private void ExitSelectButton(int selectNum)
+        {
+            switch (selectNum)
             {
-                switch (num)
-                {
-                    case 0:
-                        yesButton.sprite = exitButtonYesNormalSprite;
-                        noButton.sprite = exitButtonNoSelectSprite;
-                        return;
-                    case 1:
-                        yesButton.sprite = exitButtonYesSelectSprite;
-                        noButton.sprite = exitButtonNoNormalSprite;
-                        return;
-                }
+                case 0:
+                    yesButton.sprite = exitButtonYesNormalSprite;
+                    noButton.sprite = exitButtonNoSelectSprite;
+                    break;
+                case 1:
+                    yesButton.sprite = exitButtonYesSelectSprite;
+                    noButton.sprite = exitButtonNoNormalSprite;
+                    break;
             }
-
         }
     }
 }

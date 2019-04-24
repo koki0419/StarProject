@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+using StarProject.Result;
+
 public class GameSceneController : MonoBehaviour
 {
     public enum GameMainState
@@ -76,6 +78,8 @@ public class GameSceneController : MonoBehaviour
     }
 
     bool isOperation;
+
+    static public bool isPlaying;
     //初期化
     public void Init()
     {
@@ -189,6 +193,7 @@ public class GameSceneController : MonoBehaviour
     IEnumerator OnClear()
     {
         canCameraShake = true;
+        ResultScreenController.allStar = chargePointManager.starChildCount;
         yield return new WaitForSeconds(0.5f);
         uiManager.GameClearUIDisplay(true);
         yield return new WaitForSeconds(3.0f);

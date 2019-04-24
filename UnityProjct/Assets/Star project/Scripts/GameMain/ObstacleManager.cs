@@ -12,6 +12,7 @@ public class ObstacleManager : MonoBehaviour
     [SerializeField] GameObject breakEffect = null;
 
     GameObject[] childrenOBJ;
+    [SerializeField] Renderer moaiRenderer;
     //-------------クラス関係--------------------------------
 
     //『PlayerMove』を取得します
@@ -75,8 +76,6 @@ public class ObstacleManager : MonoBehaviour
         //オブジェクトを消去します
         if (onRemoveObjFlag)
         {
-            //
-            //onRemoveObjFlag = false;
             deleteTime -= Time.deltaTime;
             if (deleteTime <= 0)
             {
@@ -120,7 +119,7 @@ public class ObstacleManager : MonoBehaviour
                 acquisitionPoint++;
                 breakEffect.SetActive(true);
                 onRemoveObjFlag = true;
-                //gameObject.GetComponent<Renderer>().enabled = false;
+                moaiRenderer.enabled = false;
 
             }
         }
