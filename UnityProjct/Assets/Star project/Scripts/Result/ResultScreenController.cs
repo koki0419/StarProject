@@ -293,7 +293,7 @@ namespace StarProject.Result
         /// <param name="stageNum">クリアステージ数</param>
         void StageNumDisplay(int stageNum)
         {
-            stageNumUI.sprite = stageNumSprite[stageNum];
+            stageNumUI.sprite = stageNumSprite[stageNum-1];
         }
         /// <summary>
         /// ダメージを表示します
