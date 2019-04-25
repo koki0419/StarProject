@@ -49,6 +49,7 @@ public class GameSceneController : MonoBehaviour
     // 変数本体でInspectorにはこちらが表示される
     [SerializeField] ChargePointManager chargePointManager = null;
     [SerializeField] UiManager uiManager = null;
+    [SerializeField] GameOverLineController gameOverLineController = null;
 
     //------------数値変数の宣言--------------------
     //現在のステージ番号 // リザルトでリトライやNextステージで使用します
@@ -57,12 +58,12 @@ public class GameSceneController : MonoBehaviour
     //------------フラグ変数の宣言------------------
     public bool isGameClear
     {
-        set;private get;
+        set; private get;
     }
 
     public bool isGameOver
     {
-        set;get;
+        set; get;
     }
     //カメラを振動出せるかどうか
     bool canCameraShake;
@@ -74,7 +75,7 @@ public class GameSceneController : MonoBehaviour
 
     public bool isMoveCamera
     {
-        get;set;
+        get; set;
     }
 
     bool isOperation;
@@ -130,6 +131,7 @@ public class GameSceneController : MonoBehaviour
         playerMove.Init();
         cameraController.Init();
         chargePointManager.Init();
+        gameOverLineController.Init();
         yield return null;
         uiManager.FadeImageDisplay(false);
         yield return null;
@@ -169,7 +171,7 @@ public class GameSceneController : MonoBehaviour
     {
         if (gameMainState == GameMainState.Play)//ゲームスタート
         {
-            if(isMoveCamera) cameraController.MoveUpdate();
+            if (isMoveCamera) cameraController.MoveUpdate();
 
             if (isGetStar)
             {
@@ -182,6 +184,9 @@ public class GameSceneController : MonoBehaviour
     //モアイ動きスタート
     IEnumerator BigMoaiMoveStart()
     {
+        gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
+        gameOverLineController.GameOverLineAnimation();
+        yield return new WaitForSeconds(1.0f);
         canCameraShake = true;
         yield return new WaitForSeconds(2.0f);
         canCameraShake = false;
