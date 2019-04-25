@@ -19,8 +19,9 @@ namespace StarProject.Result
         private enum ResultRetryState
         {
             None,
-            ResultSerect,
-            RetrySerect,
+            ResultSelect,
+            Retry,
+            Exit,
         }
         ResultRetryState resultRetryState = ResultRetryState.None;
 
@@ -31,9 +32,7 @@ namespace StarProject.Result
         [SerializeField] private Image nextStageButton = null;
         [SerializeField] private Image exitTitleButton = null;
         [SerializeField] private Image retryButton = null;
-        [SerializeField] private GameObject resultRetryDiaLog = null;
-        [SerializeField] private Image resultRetryYesButton = null;
-        [SerializeField] private Image resultRetryNoButton = null;
+
         [Header("次のステージ選択ダイアログ用画像")]
         [SerializeField] private Sprite nextStageNormalSprite = null;
         [SerializeField] private Sprite nextStageSelectSprite = null;
@@ -41,11 +40,20 @@ namespace StarProject.Result
         [SerializeField] private Sprite exitTitleSelectSprite = null;
         [SerializeField] private Sprite retryNormalSprite = null;
         [SerializeField] private Sprite retrySelectSprite = null;
-        //リトライダイアログ
-        [SerializeField] private Sprite retryYesNormalSprite = null;
-        [SerializeField] private Sprite retryYesSelectSprite = null;
-        [SerializeField] private Sprite retryNoNormalSprite = null;
-        [SerializeField] private Sprite retryNoSelectSprite = null;
+
+        //2重確認ダイアログ用画像
+        [SerializeField] GameObject exitDoubleCheckDialog;
+        [SerializeField] GameObject retryDoubleCheckDialog;
+        [Header("2重確認用ボタン")]
+        [SerializeField] Image exitDoubleCheckDialogYesButton = null;
+        [SerializeField] Image exitDoubleCheckDialogNoButton = null;
+        [SerializeField] Image retryDoubleCheckDialogYesButton = null;
+        [SerializeField] Image retryDoubleCheckDialogNoButton = null;
+        [Header("2重確認用画像")]
+        [SerializeField] Sprite doubleCheckDialogYesNormalSprite;
+        [SerializeField] Sprite doubleCheckDialogYesSelectSprite;
+        [SerializeField] Sprite doubleCheckDialogNoNormalSprite;
+        [SerializeField] Sprite doubleCheckDialogNoSelectSprite;
         //ボタン選択時にGetAxisを使用するので回数制限に使用します
         int countNum = 0;
         //ボタン選択番号
@@ -53,6 +61,8 @@ namespace StarProject.Result
         int nextStageButtonSelectNumMax = 3;
         int retryButtonSelectNum = 0;
         int retryButtonSelectNumMax = 2;
+        int exitButtonSelectNum = 0;
+        int exitButtonSelectNumMax = 2;
         //選択ステージ番号を格納
         int stageNum;
 
@@ -85,14 +95,15 @@ namespace StarProject.Result
         {
             stageNum = GameSceneController.stageNum;
             NextStageDiaLogDisplay(false);
-            ResultRetryDiaLogDysplay(false);
+            RetryDiaLogDysplay(false);
+            ExitDiaLogDysplay(false);
             nextStageButtonSelectNum = 0;
             NextStageButtonSelect(nextStageButtonSelectNum);
             StageNumDisplay(GameSceneController.stageNum);
             ResultScoreDisplay(all_damage);
             ClearRankDisplay(all_damage);
             resultState = ResultState.ResultAnimation;
-            resultRetryState = ResultRetryState.ResultSerect;
+            resultRetryState = ResultRetryState.ResultSelect;
             if (allStar / 10 != 0) resultAnimator.SetInteger("ResultStars", allStar / 10);
 
         }
@@ -110,12 +121,15 @@ namespace StarProject.Result
                     break;
             }
         }
-
+        /// <summary>
+        /// 評価演出
+        /// </summary>
         void ResultAnimation()
         {
             AnimatorStateInfo animInfo = resultAnimator.GetCurrentAnimatorStateInfo(0);
             if (animInfo.normalizedTime < 1.0f)
             {
+                //アニメーション早送り
                 if (Input.GetKey(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                 {
                     Time.timeScale = 2.5f;
@@ -126,7 +140,7 @@ namespace StarProject.Result
                 }
             }
             else
-            {
+            {   //アニメーション終了後クリックしてダイアログ表示
                 if (Input.GetKey(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                 {
                     NextStageDiaLogDisplay(true);
@@ -146,7 +160,7 @@ namespace StarProject.Result
             float dy = Input.GetAxis("Vertical");
             switch (resultRetryState)
             {
-                case ResultRetryState.ResultSerect:
+                case ResultRetryState.ResultSelect:
                     //左
                     if (dx < 0 && countNum == 0)
                     {
@@ -177,46 +191,48 @@ namespace StarProject.Result
                                 break;
                             case 1://リトライ
                                 retryButtonSelectNum = 0;
-                                ResultRetryButtonSelect(retryButtonSelectNum);
-                                ResultRetryDiaLogDysplay(true);
-                                resultRetryState = ResultRetryState.RetrySerect;
+                                RetryButtonSelect(retryButtonSelectNum);
+                                RetryDiaLogDysplay(true);
+                                resultRetryState = ResultRetryState.Retry;
                                 break;
                             case 2://やめる
-                                SceneManager.LoadScene("TitleScene");
+                                exitButtonSelectNum = 0;
+                                ExitButtonSelect(exitButtonSelectNum);
+                                ExitDiaLogDysplay(true);
+                                resultRetryState = ResultRetryState.Exit;
+                                break;
+                        }
+                    }
+                    break;
+                case ResultRetryState.Retry:
+                    RetrySelect(dx);
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    {
+                        switch (retryButtonSelectNum)
+                        {
+                            case 0://いいえ
+                                RetryDiaLogDysplay(false);
+                                resultRetryState = ResultRetryState.ResultSelect;
+                                break;
+                            case 1://はい
+                                SceneManager.LoadScene(string.Format("Main{0}", stageNum));
                                 resultRetryState = ResultRetryState.None;
                                 break;
                         }
                     }
                     break;
-                case ResultRetryState.RetrySerect:
-                    //左
-                    if (dx < 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (retryButtonSelectNum > 0) retryButtonSelectNum--;
-                        ResultRetryButtonSelect(retryButtonSelectNum);
-                    }//右
-                    else if (dx > 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (retryButtonSelectNum < retryButtonSelectNumMax) retryButtonSelectNum++;
-                        ResultRetryButtonSelect(retryButtonSelectNum);
-                    }
-                    else if (dx == 0 && countNum != 0)
-                    {
-                        countNum = 0;
-                    }
-
+                case ResultRetryState.Exit:
+                    ExitSelect(dx);
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
                     {
-                        switch (retryButtonSelectNum)
+                        switch (exitButtonSelectNum)
                         {
-                            case 0:
-                                ResultRetryDiaLogDysplay(false);
-                                resultRetryState = ResultRetryState.ResultSerect;
+                            case 0://いいえ
+                                ExitDiaLogDysplay(false);
+                                resultRetryState = ResultRetryState.ResultSelect;
                                 break;
-                            case 1://リトライ
-                                SceneManager.LoadScene(string.Format("Main{0}", stageNum));
+                            case 1://はい
+                                SceneManager.LoadScene("TitleScene");
                                 resultRetryState = ResultRetryState.None;
                                 break;
                         }
@@ -253,21 +269,88 @@ namespace StarProject.Result
             }
         }
         /// <summary>
-        /// リトライ選択YesNoボタンの選択
+        /// リトライ選択時のYesNoボタンセレクト
         /// </summary>
-        /// <param name="buttonSelectNum">選択したボタンに種類</param>
-        private void ResultRetryButtonSelect(int buttonSelectNum)
+        /// <param name="dx">左右選択</param>
+        private void RetrySelect(float dx)
         {
-
+            //右
+            if (dx > 0 && countNum == 0)
+            {
+                countNum++;
+                if (retryButtonSelectNum < retryButtonSelectNumMax) retryButtonSelectNum++;
+                RetryButtonSelect(retryButtonSelectNum);
+            }//左
+            else if (dx < 0 && countNum == 0)
+            {
+                countNum++;
+                if (retryButtonSelectNum > 0) retryButtonSelectNum--;
+                RetryButtonSelect(retryButtonSelectNum);
+            }
+            else if (dx == 0 && countNum != 0)
+            {
+                countNum = 0;
+            }
+        }
+        /// <summary>
+        /// 終了選択時のYesNoボタンセレクト
+        /// </summary>
+        /// <param name="dx"></param>
+        private void ExitSelect(float dx)
+        {
+            //右
+            if (dx > 0 && countNum == 0)
+            {
+                countNum++;
+                if (exitButtonSelectNum < exitButtonSelectNumMax) exitButtonSelectNum++;
+                ExitButtonSelect(exitButtonSelectNum);
+            }//左
+            else if (dx < 0 && countNum == 0)
+            {
+                countNum++;
+                if (exitButtonSelectNum > 0) exitButtonSelectNum--;
+                ExitButtonSelect(exitButtonSelectNum);
+            }
+            else if (dx == 0 && countNum != 0)
+            {
+                countNum = 0;
+            }
+        }
+        /// <summary>
+        /// Exitを選択した後のYesNoボタン選択
+        /// 選択したボタンの色を変更します
+        /// </summary>
+        /// <param name="buttonSelectNum">選択したボタンの番号</param>
+        private void ExitButtonSelect(int buttonSelectNum)
+        {
             switch (buttonSelectNum)
             {
-                case 0://No
-                    resultRetryYesButton.sprite = retryYesNormalSprite;
-                    resultRetryNoButton.sprite = retryNoSelectSprite;
+                case 0:
+                    exitDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesNormalSprite;
+                    exitDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoSelectSprite;
                     return;
-                case 1://Yes
-                    resultRetryYesButton.sprite = retryYesSelectSprite;
-                    resultRetryNoButton.sprite = retryNoNormalSprite;
+                case 1:
+                    exitDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesSelectSprite;
+                    exitDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoNormalSprite;
+                    return;
+            }
+        }
+        /// <summary>
+        /// リトライ時YesNoのボタン選択
+        /// 選択したボタンの色を変更します
+        /// </summary>
+        /// <param name="buttonSelectNum">選択したボタンの番号</param>
+        private void RetryButtonSelect(int buttonSelectNum)
+        {
+            switch (buttonSelectNum)
+            {
+                case 0:
+                    retryDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesNormalSprite;
+                    retryDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoSelectSprite;
+                    return;
+                case 1:
+                    retryDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesSelectSprite;
+                    retryDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoNormalSprite;
                     return;
             }
         }
@@ -283,9 +366,17 @@ namespace StarProject.Result
         /// リトライボタンを押したときのYesNo確認ダイアログ
         /// </summary>
         /// <param name="isDysplay">表示非表示</param>
-        void ResultRetryDiaLogDysplay(bool isDysplay)
+        void RetryDiaLogDysplay(bool isDysplay)
         {
-            resultRetryDiaLog.SetActive(isDysplay);
+            retryDoubleCheckDialog.SetActive(isDysplay);
+        }
+        /// <summary>
+        /// 終了ボタンを押したときのYesNo確認ダイアログ
+        /// </summary>
+        /// <param name="isDysplay">表示非表示</param>
+        void ExitDiaLogDysplay(bool isDysplay)
+        {
+            exitDoubleCheckDialog.SetActive(isDysplay);
         }
         /// <summary>
         /// クリアステージ数を表示します
@@ -293,7 +384,7 @@ namespace StarProject.Result
         /// <param name="stageNum">クリアステージ数</param>
         void StageNumDisplay(int stageNum)
         {
-            stageNumUI.sprite = stageNumSprite[stageNum-1];
+            stageNumUI.sprite = stageNumSprite[stageNum];
         }
         /// <summary>
         /// ダメージを表示します

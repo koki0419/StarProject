@@ -12,6 +12,7 @@ public class UiManager : MonoBehaviour
         None,
         Normal,//一回目のセレクト
         Retry,//リトライボタンを押したときのタイプ
+        Exit,//Exitボタンを押したときのタイプ
     }
     GameOverTyp gameOverTyp = GameOverTyp.None;
     //ポーズ時のタイプ
@@ -19,6 +20,7 @@ public class UiManager : MonoBehaviour
     {
         None,
         Normal,//一回目のセレクト
+        Retry,//リトライボタンを押したときのタイプ
         Exit,//Exitボタンを押したときのタイプ
     }
     PauseTyp pauseTyp = PauseTyp.None;
@@ -44,20 +46,12 @@ public class UiManager : MonoBehaviour
     [SerializeField] GameObject pauseDiaLog = null;
     [SerializeField] Image pauseRetryButton;
     [SerializeField] Image pauseTitleButton;
-    [SerializeField] GameObject pauseExitDiaLog = null;
-    [SerializeField] Image pauseExitYesButton;
-    [SerializeField] Image pauseExitNoButton;
     //ポーズボタン
     [Header("ポーズ時のダイアログ画像")]
     [SerializeField] Sprite pauseNormalRetrySprite;
     [SerializeField] Sprite pauseSelectRetrySprite;
     [SerializeField] Sprite pauseNormalTitleSprite;
     [SerializeField] Sprite pauseSelectTitleSprite;
-    [Header("ポーズ時Exitダイアログ画像")]
-    [SerializeField] Sprite pauseExitYesNormalRetrySprite;
-    [SerializeField] Sprite pauseExitYesSelectRetrySprite;
-    [SerializeField] Sprite pauseExitNoNormalRetrySprite;
-    [SerializeField] Sprite pauseExitNoSelectRetrySprite;
 
     int countNum;
 
@@ -66,30 +60,36 @@ public class UiManager : MonoBehaviour
 
     int pauseButtonSelectNum = 0;
     int pauseButtonSelectNumMax = 2;
-    int pauseExitButtonSelectNum = 0;
-    int pauseExitButtonSelectNumMax = 2;
     int gameOverButtonSelectNum = 0;
     int gameOverButtonSelectNumMax = 2;
-    int gameOverRetryButtonSelectNum = 0;
-    int gameOverRetryButtonSelectNumMax = 2;
+    int exitButtonSelectNum = 0;
+    int exitButtonSelectNumMax = 2;
+    int retryButtonSelectNum = 0;
+    int retryButtonSelectNumMax = 2;
 
     //ゲームオーバーダイアログ
     [SerializeField] GameObject gameOverDiaLog = null;
     [SerializeField] Image gameOverRetryButton = null;
     [SerializeField] Image gameOverExitTitleButton = null;
-    [SerializeField] GameObject GameOverRetryDiaLog = null;
-    [SerializeField] Image gameOverRetryYesButton = null;
-    [SerializeField] Image gameOverRetryNoButton = null;
     [Header("ゲームオーバー時のダイアログ画像")]
     [SerializeField] Sprite gameOverRetryNormalSprite;
     [SerializeField] Sprite gameOverRetrySelectSprite;
     [SerializeField] Sprite gameOverExitNormalSprite;
     [SerializeField] Sprite gameOverExitSelectSprite;
-    [Header("ゲームオーバー時のリトライダイアログ用画像")]
-    [SerializeField] Sprite retryYesNormalSprite;
-    [SerializeField] Sprite retryYesSelectSprite;
-    [SerializeField] Sprite retryNoNormalSprite;
-    [SerializeField] Sprite retryNoSelectSprite;
+    //2重確認ダイアログ用画像
+    [SerializeField] GameObject exitDoubleCheckDialog;
+    [SerializeField] GameObject retryDoubleCheckDialog;
+    [Header("2重確認用ボタン")]
+    [SerializeField] Image exitDoubleCheckDialogYesButton = null;
+    [SerializeField] Image exitDoubleCheckDialogNoButton = null;
+    [SerializeField] Image retryDoubleCheckDialogYesButton = null;
+    [SerializeField] Image retryDoubleCheckDialogNoButton = null;
+    [Header("2重確認用画像")]
+    [SerializeField] Sprite doubleCheckDialogYesNormalSprite;
+    [SerializeField] Sprite doubleCheckDialogYesSelectSprite;
+    [SerializeField] Sprite doubleCheckDialogNoNormalSprite;
+    [SerializeField] Sprite doubleCheckDialogNoSelectSprite;
+
     // Start is called before the first frame update
     public void Init()
     {
@@ -99,18 +99,18 @@ public class UiManager : MonoBehaviour
         StarUICanvasDisplay(true);
         GameOvreUIDisplay(false);
         GameOverDiaLogDisplay(false);
-        GameOverRetryDiaLogDisplay(false);
+        RetryDiaLogDisplay(false);
         GameClearUIDisplay(false);
         PauseDiaLogDisplay(false);
-        PauseExitDiaLogDisplay(false);
+        ExitDiaLogDisplay(false);
         pauseButtonSelectNum = 0;
-        pauseExitButtonSelectNum = 0;
-        gameOverRetryButtonSelectNum = 0;
+        exitButtonSelectNum = 0;
+        retryButtonSelectNum = 0;
         gameOverButtonSelectNum = 0;
         countNum = 0;
         PauseButtonSelect(pauseButtonSelectNum);
         GemaOverButtonSelect(gameOverButtonSelectNum);
-        GemaOverRetryButtonSelect(gameOverRetryButtonSelectNum);
+        RetryButtonSelect(retryButtonSelectNum);
         pauseTyp = PauseTyp.Normal;
         gameOverTyp = GameOverTyp.Normal;
     }
@@ -193,46 +193,48 @@ public class UiManager : MonoBehaviour
                     switch (pauseButtonSelectNum)
                     {
                         case 0:
-                            StartCoroutine(OnRetry());
-                            pauseTyp = PauseTyp.None;
+                            RetryDiaLogDisplay(true);
+                            retryButtonSelectNum = 0;
+                            pauseTyp = PauseTyp.Retry;
+                            RetryButtonSelect(retryButtonSelectNum);
                             break;
                         case 1:
-                            PauseExitDiaLogDisplay(true);
-                            pauseExitButtonSelectNum = 0;
+                            ExitDiaLogDisplay(true);
+                            exitButtonSelectNum = 0;
                             pauseTyp = PauseTyp.Exit;
-                            PauseExitButtonSelect(pauseExitButtonSelectNum);
+                            ExitButtonSelect(exitButtonSelectNum);
+                            break;
+                    }
+                }
+                break;
+            case PauseTyp.Retry:
+                RetrySelect(dx);
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+                {
+                    switch (retryButtonSelectNum)
+                    {
+                        case 0://いいえ
+                            RetryDiaLogDisplay(false);
+                            pauseTyp = PauseTyp.Normal;
+                            break;
+                        case 1://はい
+                            StartCoroutine(OnRetry());
+                            pauseTyp = PauseTyp.None;
                             break;
                     }
                 }
                 break;
             case PauseTyp.Exit:
-                //右
-                if (dx > 0 && countNum == 0)
-                {
-                    countNum++;
-                    if (pauseExitButtonSelectNum < pauseExitButtonSelectNumMax) pauseExitButtonSelectNum++;
-                    PauseExitButtonSelect(pauseExitButtonSelectNum);
-                }//左
-                else if (dx < 0 && countNum == 0)
-                {
-                    countNum++;
-                    if (pauseExitButtonSelectNum > 0) pauseExitButtonSelectNum--;
-                    PauseExitButtonSelect(pauseExitButtonSelectNum);
-                }
-                else if (dx == 0 && countNum != 0)
-                {
-                    countNum = 0;
-                }
-
+                ExitSelect(dx);
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                 {
-                    switch (pauseExitButtonSelectNum)
+                    switch (exitButtonSelectNum)
                     {
-                        case 0:
-                            PauseExitDiaLogDisplay(false);
+                        case 0://いいえ
+                            ExitDiaLogDisplay(false);
                             pauseTyp = PauseTyp.Normal;
                             break;
-                        case 1:
+                        case 1://はい
                             StartCoroutine(OnTitle());
                             pauseTyp = PauseTyp.None;
                             break;
@@ -252,67 +254,18 @@ public class UiManager : MonoBehaviour
     {
         switch (buttonSelectNum)
         {
-            case 0:
+            case 0://リトライボタン
                 pauseRetryButton.sprite = pauseSelectRetrySprite;
                 pauseTitleButton.sprite = pauseNormalTitleSprite;
                 return;
-            case 1:
+            case 1://終了ボタン
                 pauseRetryButton.sprite = pauseNormalRetrySprite;
                 pauseTitleButton.sprite = pauseSelectTitleSprite;
                 return;
         }
     }
-    /// <summary>
-    /// ポーズ時Exitを選択した後のYesNoボタン選択
-    /// 選択したボタンの色を変更します
-    /// </summary>
-    /// <param name="buttonSelectNum">選択したボタンの番号</param>
-    private void PauseExitButtonSelect(int buttonSelectNum)
-    {
-        switch (buttonSelectNum)
-        {
-            case 0:
-                pauseExitYesButton.sprite = pauseExitYesNormalRetrySprite;
-                pauseExitNoButton.sprite = pauseExitNoSelectRetrySprite;
-                return;
-            case 1:
-                pauseExitYesButton.sprite = pauseExitYesSelectRetrySprite;
-                pauseExitNoButton.sprite = pauseExitNoNormalRetrySprite;
-                return;
-        }
-    }
-    /// <summary>
-    /// ゲームクリアUIを表示非表示します
-    /// </summary>
-    /// <param name="isDisplay">表示するかどうか</param>
-    public void GameClearUIDisplay(bool isDisplay)
-    {
-        gameClearUI.SetActive(isDisplay);
-    }
-    /// <summary>
-    /// ゲームオーバーUIを表示非表示します
-    /// </summary>
-    /// <param name="isDisplay">表示するかどうか</param>
-    public void GameOvreUIDisplay(bool isDisplay)
-    {
-        gameOvreUI.SetActive(isDisplay);
-    }
-    /// <summary>
-    /// ゲームオーバーダイアログの表示非表示
-    /// </summary>
-    /// <param name="isDisplay">表示するかどうか</param>
-    public void GameOverDiaLogDisplay(bool isDisplay)
-    {
-        gameOverDiaLog.SetActive(isDisplay);
-    }
-    /// <summary>
-    /// ゲームオーバー時のリトライダイアログ表示非表示
-    /// </summary>
-    /// <param name="isDisplay">表示するかどうか</param>
-    public void GameOverRetryDiaLogDisplay(bool isDisplay)
-    {
-        GameOverRetryDiaLog.SetActive(isDisplay);
-    }
+
+
     /// <summary>
     /// ゲームオーバー時に操作できる
     /// ゲームオーバーボタンの選択を行います
@@ -348,44 +301,29 @@ public class UiManager : MonoBehaviour
                     switch (gameOverButtonSelectNum)
                     {
                         case 0:
-                            GameOverRetryDiaLogDisplay(true);
-                            gameOverRetryButtonSelectNum = 0;
-                            GemaOverRetryButtonSelect(gameOverRetryButtonSelectNum);
+                            RetryDiaLogDisplay(true);
+                            retryButtonSelectNum = 0;
+                            RetryButtonSelect(retryButtonSelectNum);
                             gameOverTyp = GameOverTyp.Retry;
                             break;
                         case 1:
-                            StartCoroutine(OnTitle());
-                            gameOverTyp = GameOverTyp.None;
+                            ExitDiaLogDisplay(true);
+                            exitButtonSelectNum = 0;
+                            ExitButtonSelect(exitButtonSelectNum);
+                            gameOverTyp = GameOverTyp.Exit;
                             break;
                     }
                 }
                 break;
             //リトライボタンを押したときの操作
             case GameOverTyp.Retry:
-                //右
-                if (dx > 0 && countNum == 0)
-                {
-                    countNum++;
-                    if (gameOverRetryButtonSelectNum < gameOverRetryButtonSelectNumMax) gameOverRetryButtonSelectNum++;
-                    GemaOverRetryButtonSelect(gameOverRetryButtonSelectNum);
-                }//左
-                else if (dx < 0 && countNum == 0)
-                {
-                    countNum++;
-                    if (gameOverRetryButtonSelectNum > 0) gameOverRetryButtonSelectNum--;
-                    GemaOverRetryButtonSelect(gameOverRetryButtonSelectNum);
-                }
-                else if (dx == 0 && countNum != 0)
-                {
-                    countNum = 0;
-                }
-
+                RetrySelect(dx);
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                 {
-                    switch (gameOverRetryButtonSelectNum)
+                    switch (retryButtonSelectNum)
                     {
                         case 0:
-                            GameOverRetryDiaLogDisplay(false);
+                            RetryDiaLogDisplay(false);
                             gameOverButtonSelectNum = 0;
                             GemaOverButtonSelect(gameOverButtonSelectNum);
                             gameOverTyp = GameOverTyp.Normal;
@@ -397,10 +335,25 @@ public class UiManager : MonoBehaviour
                     }
                 }
                 break;
+            case GameOverTyp.Exit:
+                ExitSelect(dx);
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+                {
+                    switch (exitButtonSelectNum)
+                    {
+                        case 0://いいえ
+                            ExitDiaLogDisplay(false);
+                            gameOverTyp = GameOverTyp.Normal;
+                            break;
+                        case 1://はい
+                            StartCoroutine(OnTitle());
+                            gameOverTyp = GameOverTyp.None;
+                            break;
+                    }
+                }
+                break;
         }
-
     }
-
 
     /// <summary>
     /// ゲームオーバー時のボタン選択
@@ -422,23 +375,130 @@ public class UiManager : MonoBehaviour
         }
     }
     /// <summary>
-    /// リトライ時のボタン選択
+    /// リトライ選択時のYesNoボタンセレクト
+    /// </summary>
+    /// <param name="dx">左右選択</param>
+    private void RetrySelect(float dx)
+    {
+        //右
+        if (dx > 0 && countNum == 0)
+        {
+            countNum++;
+            if (retryButtonSelectNum < retryButtonSelectNumMax) retryButtonSelectNum++;
+            RetryButtonSelect(retryButtonSelectNum);
+        }//左
+        else if (dx < 0 && countNum == 0)
+        {
+            countNum++;
+            if (retryButtonSelectNum > 0) retryButtonSelectNum--;
+            RetryButtonSelect(retryButtonSelectNum);
+        }
+        else if (dx == 0 && countNum != 0)
+        {
+            countNum = 0;
+        }
+    }
+    /// <summary>
+    /// 終了選択時のYesNoボタンセレクト
+    /// </summary>
+    /// <param name="dx"></param>
+    private void ExitSelect(float dx)
+    {
+        //右
+        if (dx > 0 && countNum == 0)
+        {
+            countNum++;
+            if (exitButtonSelectNum < exitButtonSelectNumMax) exitButtonSelectNum++;
+            ExitButtonSelect(exitButtonSelectNum);
+        }//左
+        else if (dx < 0 && countNum == 0)
+        {
+            countNum++;
+            if (exitButtonSelectNum > 0) exitButtonSelectNum--;
+            ExitButtonSelect(exitButtonSelectNum);
+        }
+        else if (dx == 0 && countNum != 0)
+        {
+            countNum = 0;
+        }
+    }
+    /// <summary>
+    /// Exitを選択した後のYesNoボタン選択
     /// 選択したボタンの色を変更します
     /// </summary>
     /// <param name="buttonSelectNum">選択したボタンの番号</param>
-    private void GemaOverRetryButtonSelect(int buttonSelectNum)
+    private void ExitButtonSelect(int buttonSelectNum)
     {
         switch (buttonSelectNum)
         {
             case 0:
-                gameOverRetryYesButton.sprite = retryYesNormalSprite;
-                gameOverRetryNoButton.sprite = retryNoSelectSprite;
+                exitDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesNormalSprite;
+                exitDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoSelectSprite;
                 return;
             case 1:
-                gameOverRetryYesButton.sprite = retryYesSelectSprite;
-                gameOverRetryNoButton.sprite = retryNoNormalSprite;
+                exitDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesSelectSprite;
+                exitDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoNormalSprite;
                 return;
         }
+    }
+    /// <summary>
+    /// リトライ時YesNoのボタン選択
+    /// 選択したボタンの色を変更します
+    /// </summary>
+    /// <param name="buttonSelectNum">選択したボタンの番号</param>
+    private void RetryButtonSelect(int buttonSelectNum)
+    {
+        switch (buttonSelectNum)
+        {
+            case 0:
+                retryDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesNormalSprite;
+                retryDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoSelectSprite;
+                return;
+            case 1:
+                retryDoubleCheckDialogYesButton.sprite = doubleCheckDialogYesSelectSprite;
+                retryDoubleCheckDialogNoButton.sprite = doubleCheckDialogNoNormalSprite;
+                return;
+        }
+    }
+    /// <summary>
+    /// ゲームクリアUIを表示非表示します
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void GameClearUIDisplay(bool isDisplay)
+    {
+        gameClearUI.SetActive(isDisplay);
+    }
+    /// <summary>
+    /// ゲームオーバーUIを表示非表示します
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void GameOvreUIDisplay(bool isDisplay)
+    {
+        gameOvreUI.SetActive(isDisplay);
+    }
+    /// <summary>
+    /// ゲームオーバーダイアログの表示非表示
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void GameOverDiaLogDisplay(bool isDisplay)
+    {
+        gameOverDiaLog.SetActive(isDisplay);
+    }
+    /// <summary>
+    /// ゲームオーバー時のリトライダイアログ表示非表示
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void RetryDiaLogDisplay(bool isDisplay)
+    {
+        retryDoubleCheckDialog.SetActive(isDisplay);
+    }
+    /// <summary>
+    /// ポーズダイアログを表示非表示します
+    /// </summary>
+    /// <param name="isDisplay">表示するかどうか</param>
+    public void ExitDiaLogDisplay(bool isDisplay)
+    {
+        exitDoubleCheckDialog.SetActive(isDisplay);
     }
     /// <summary>
     /// starUICanvasを表示非表示します
@@ -466,17 +526,10 @@ public class UiManager : MonoBehaviour
         {
             //Time.timeScale = 1.0f;
             GameSceneController.isPlaying = true;
-            PauseExitDiaLogDisplay(false);
+            ExitDiaLogDisplay(false);
             pauseTyp = PauseTyp.Normal;
         }
     }
-    /// <summary>
-    /// ポーズダイアログを表示非表示します
-    /// </summary>
-    /// <param name="isDisplay">表示するかどうか</param>
-    public void PauseExitDiaLogDisplay(bool isDisplay)
-    {
-        pauseExitDiaLog.SetActive(isDisplay);
-    }
+
 
 }
