@@ -136,7 +136,18 @@ public class GameSceneController : MonoBehaviour
         uiManager.FadeImageDisplay(false);
         yield return null;
         yield return uiManager.FadeInEnumerator(2);
-        isMoveCamera = false;
+        if(stageNum == 1)
+        {
+            isMoveCamera = false;
+        }
+        else
+        {
+            isMoveCamera = true;
+            Destroy(safeHitGigMoaiObj);
+            gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
+            gameOverLineController.GameOverLineAnimation();
+        }
+       
         gameMainState = GameMainState.Play;
         Singleton.Instance.soundManager.PlayBgm("NormalBGM");
 
@@ -184,6 +195,7 @@ public class GameSceneController : MonoBehaviour
     //モアイ動きスタート
     IEnumerator BigMoaiMoveStart()
     {
+        gameOverLineController.PlayMoaiAwakeningSE();
         gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
         gameOverLineController.GameOverLineAnimation();
         yield return new WaitForSeconds(1.0f);
@@ -223,7 +235,7 @@ public class GameSceneController : MonoBehaviour
 
         playerMove.OnUpdate(deltaTime);//PlayerのUpdate
 
-        if (obstacleManager[0] != null && obstacleManager[0].isDestroyed)
+        if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 0)
         {
             StartCoroutine(BigMoaiMoveStart());
         }

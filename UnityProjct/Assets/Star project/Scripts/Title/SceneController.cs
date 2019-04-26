@@ -100,7 +100,7 @@ namespace StarProject.Title
                         {
                             case 0:
                                 GameSceneController.stageNum = 1;
-                                SceneManager.LoadScene("Mani01");
+                                SceneManager.LoadScene("main01");
                                 titleTyp = TitleTyp.None;
                                 break;
                             case 1:

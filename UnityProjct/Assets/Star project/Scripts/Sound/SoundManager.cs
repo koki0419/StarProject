@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] AudioSource bgmAudio;
     [SerializeField] AudioSource playerSeAudio;
+    [SerializeField] AudioSource playerLoopSeAudio;
     [SerializeField] AudioSource obstaclesSeAudio;
 
     [SerializeField] AudioClip normalBgm;
@@ -91,7 +92,7 @@ public class SoundManager : MonoBehaviour
     /// <param name="playSeNum"></param>
     public void PlayPlayerSe(int playSeNum)
     {
-        if (playerSeAudio.isPlaying)
+        if (playerSeAudio.isPlaying && playerLoopSeAudio.isPlaying)
         {
             return;
         }
@@ -100,10 +101,22 @@ public class SoundManager : MonoBehaviour
             playerSeAudio.PlayOneShot(se[playSeNum]);
         }
     }
+    public void PlayPlayerLoopSe(int playSeNum)
+    {
+        if (playerSeAudio.isPlaying && playerLoopSeAudio.isPlaying)
+        {
+            return;
+        }
+        else if (!playerLoopSeAudio.isPlaying)
+        {
+            playerLoopSeAudio.PlayOneShot(se[playSeNum]);
+        }
+    }
 
     public void StopPlayerSe()
     {
         playerSeAudio.Stop();
+        playerLoopSeAudio.Stop();
     }
 
     public void PlayObstaclesSe(int playSeNum)

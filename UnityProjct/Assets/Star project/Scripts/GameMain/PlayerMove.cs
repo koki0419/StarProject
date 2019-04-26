@@ -112,6 +112,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private int dashSeNum;
     [SerializeField] private int jumpSeNum;
     [SerializeField] private int chargeSeNum;
+    [SerializeField] private int chargeAttackSeNum;
     [SerializeField] private int punchSeNum;
     [SerializeField] private int getStarSeNum;
     //-------------フラグ用変数------------------------------
@@ -128,10 +129,9 @@ public class PlayerMove : MonoBehaviour
     //チャージ中かどうか
     bool isChargeFlag;
     //☆獲得時フラグ
-    bool isAcquisitionStar = false;
-    public bool IsAcquisitionStar
+    public bool isAcquisitionStar
     {
-        set { isAcquisitionStar = value; }
+        set;get;
     }
 
     //キャラクターの向き
@@ -169,7 +169,7 @@ public class PlayerMove : MonoBehaviour
         SandEffectPlay(false);
         PunchEffectPlay(false);
 
-        starAcquisitionEffect.SetActive(false);
+        GetStarEffectPlay(false);
         ChargeEffectPlay(false, false);
 
         isUpAttack = false;
@@ -208,6 +208,7 @@ public class PlayerMove : MonoBehaviour
         }
         if (isAcquisitionStar)
         {
+            isAcquisitionStar = false;
             StartCoroutine(OnGetStar());
         }
     }
@@ -477,11 +478,12 @@ public class PlayerMove : MonoBehaviour
     /// <returns></returns>
     public IEnumerator OnGetStar()
     {
-        starAcquisitionEffect.SetActive(true);
+        Singleton.Instance.soundManager.StopPlayerSe();
         Singleton.Instance.soundManager.PlayPlayerSe(getStarSeNum);
+        //isAcquisitionStar = false;
+        GetStarEffectPlay(true);
         yield return new WaitForSeconds(1.5f);
-        isAcquisitionStar = false;
-        starAcquisitionEffect.SetActive(false);
+        GetStarEffectPlay(false);
     }
     /// <summary>
     /// キャラクターのアニメーションです
@@ -583,7 +585,6 @@ public class PlayerMove : MonoBehaviour
             isChargeFlag = true;
             //チャージSE再生
             Singleton.Instance.soundManager.StopPlayerSe();
-            Singleton.Instance.soundManager.PlayPlayerSe(chargeSeNum);
             objState = ObjState.OnCharge;
         }
     }
@@ -603,6 +604,7 @@ public class PlayerMove : MonoBehaviour
         //チャージ
         if (Input.GetKey(KeyCode.T) || Input.GetButton("Charge"))
         {
+            Singleton.Instance.soundManager.PlayPlayerLoopSe(chargeSeNum);
             //チャージ中
             Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));
             Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
@@ -705,6 +707,10 @@ public class PlayerMove : MonoBehaviour
     void SandEffectPlay(bool isPlay)
     {
         sandEffect.SetActive(isPlay);
+    }
+    void GetStarEffectPlay(bool isPlay)
+    {
+        starAcquisitionEffect.SetActive(isPlay);
     }
 
     void PunchEffectPlay(bool isPlay)

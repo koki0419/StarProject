@@ -215,7 +215,7 @@ namespace StarProject.Result
                                 resultRetryState = ResultRetryState.ResultSelect;
                                 break;
                             case 1://はい
-                                SceneManager.LoadScene(string.Format("Main{0}", stageNum));
+                                SceneManager.LoadScene(string.Format("Main0{0}", stageNum));
                                 resultRetryState = ResultRetryState.None;
                                 break;
                         }
