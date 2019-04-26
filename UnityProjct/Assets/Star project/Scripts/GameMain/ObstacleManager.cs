@@ -31,7 +31,7 @@ public class ObstacleManager : MonoBehaviour
     //HpMax
     float foundationHPMax;
 
-    int breakSeNum = 4;
+    int breakSeNum = 7;
 
     //-------------フラグ用変数------------------------------
     bool onRemoveObjFlag = false;

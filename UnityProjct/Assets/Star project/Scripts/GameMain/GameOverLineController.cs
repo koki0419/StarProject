@@ -15,6 +15,8 @@ public class GameOverLineController : MonoBehaviour
 
     private Animator gameOverLineAnimator;
 
+    [SerializeField] int awakeningSeNum;
+
     public void Init()
     {
         gameOverLineAnimator = GetComponent<Animator>();
@@ -30,5 +32,12 @@ public class GameOverLineController : MonoBehaviour
                 gameOverLineAnimator.SetTrigger("OnAwakening");
                 break;
         }
+    }
+
+    public void PlayMoaiAwakeningSE()
+    {
+        Singleton.Instance.soundManager.StopPlayerSe();
+        //ジャンプ音再生
+        Singleton.Instance.soundManager.PlayPlayerSe(awakeningSeNum);
     }
 }
