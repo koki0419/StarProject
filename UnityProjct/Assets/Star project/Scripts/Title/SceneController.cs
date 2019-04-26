@@ -100,7 +100,7 @@ namespace StarProject.Title
                         {
                             case 0:
                                 GameSceneController.stageNum = 1;
-                                SceneManager.LoadScene("PrototypeScene");
+                                SceneManager.LoadScene("Mani01");
                                 titleTyp = TitleTyp.None;
                                 break;
                             case 1:
@@ -158,7 +158,10 @@ namespace StarProject.Title
             Application.Quit();
             Debug.Log("アプリ終了");
         }
-
+        /// <summary>
+        /// タイトルボタンセレクト時に画像を切り替えます
+        /// </summary>
+        /// <param name="selectNum"></param>
         private void TitleSelectButton(int selectNum)
         {
             switch (selectNum)
@@ -173,6 +176,10 @@ namespace StarProject.Title
                     break;
             }
         }
+        /// <summary>
+        /// 終了ボタン選択時YesNoボタンセレクトの画像を切り替えます
+        /// </summary>
+        /// <param name="selectNum"></param>
         private void ExitSelectButton(int selectNum)
         {
             switch (selectNum)
