@@ -71,7 +71,7 @@ public class ObstacleManager : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    public void ObstacleControllerUpdate()
     {
         //オブジェクトを消去します
         if (onRemoveObjFlag)
@@ -92,12 +92,12 @@ public class ObstacleManager : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //if (collision.gameObject.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
-        if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.canAttackFlag)
+        if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             //Hpをへらす
-            foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
+            foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
             //ダメージテキストにアクセスして生成します
-            Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
             //substanceにアクセスします
             //var hp = 1.0;
             //hp -= (foundationHP / foundationHPMax);

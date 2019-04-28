@@ -450,6 +450,15 @@ MonoBehaviour:
     type: 3}
   doubleCheckDialogNoSelectSprite: {fileID: 21300000, guid: df594d53febd20c4a8e108499ac68873,
     type: 3}
+  scoreObj:
+  - {fileID: 1274156890}
+  - {fileID: 525063741}
+  - {fileID: 1184766016}
+  - {fileID: 1275471278}
+  - {fileID: 1073002731}
+  - {fileID: 205759865}
+  - {fileID: 410669333}
+  - {fileID: 1798712617}
   scoreUI:
   - {fileID: 1274156892}
   - {fileID: 525063743}
