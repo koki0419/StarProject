@@ -12,10 +12,6 @@ public class StarGenerator : MonoBehaviour
     PlayerMove playerMove = null;
     //------------数値変数の宣言--------------------
     //------------フラグ変数の宣言------------------
-    public void Init()
-    {
-
-    }
 
     //星を生成します
     void OnCreate(Vector3 createPos)

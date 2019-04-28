@@ -9,14 +9,11 @@ EditorBuildSettings:
     path: Assets/Star project/Scenes/TitleScene.unity
     guid: d56ae264e0edb5b45811b7646a858d43
   - enabled: 1
-    path: Assets/Star project/Scenes/SelectScene.unity
-    guid: 9d899e103b4f3094fb0a6354f9f2d827
-  - enabled: 1
     path: Assets/Star project/Scenes/Main01.unity
     guid: 89f8e12bc5d66d14f9d5dbf6b7f6d4f1
   - enabled: 1
     path: Assets/Star project/Scenes/Main02.unity
-    guid: 63de52a7935be724bb83c40e553b9bab
+    guid: 26fddc99c7e42e1408d5035d5088fc9b
   - enabled: 1
     path: Assets/Star project/Scenes/ResultScene.unity
     guid: 9adf6fe4010fd764dab6c0d4339706a3

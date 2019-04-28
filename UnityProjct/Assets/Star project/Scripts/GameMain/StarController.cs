@@ -33,6 +33,7 @@ public class StarController : MonoBehaviour
             }
             else
             {
+                playerMove.isAcquisitionStar = true;
                 Singleton.Instance.gameSceneController.ChargePointManager.starChildCountSkip += starPoint;
                 Singleton.Instance.gameSceneController.ChargePointManager.isSkipStar = true;
             }

@@ -104,12 +104,12 @@ public class BreakBoxController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canAttackFlag)
+        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             //Hpをへらす
-            foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
+            foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
             //ダメージテキストにアクセスして生成します
-            Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
             //substanceにアクセスします
             //var hp = 1.0;
             //hp -= (foundationHP / foundationHPMax);

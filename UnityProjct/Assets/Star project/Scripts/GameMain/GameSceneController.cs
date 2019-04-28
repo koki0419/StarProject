@@ -8,37 +8,41 @@ using StarProject.Result;
 
 public class GameSceneController : MonoBehaviour
 {
-    public enum GameMainState
+    enum GameMainState
     {
         None,
+        Opening,
         Play,
         Pause,
         GameClear,
         GameOver,
     }
-    public GameMainState gameMainState = GameMainState.None;
+    GameMainState gameMainState = GameMainState.None;
     //---------Unityコンポーネント宣言--------------
 
     [SerializeField] GameObject playerObj = null;
 
-    [SerializeField] GameObject starObj = null;
-
     [SerializeField] GameObject safeHitGigMoaiObj;
-
+    //エネミーのスクリプト取得用
+    [SerializeField] GameObject enemysObj = null;
+    EnemyController[] enemyController = null;
+    GameObject[] enemyChilledObj = null;
+    ObstacleManager[] obstacleManager = null;
     //☆子供オブジェクト取得用
-    GameObject[] starChildrenOBJ;
+    [SerializeField] GameObject starObj = null;
+    StarController[] starControllers = null;
+    GameObject[] starChildrenOBJ = null;
+    [SerializeField] GameObject mainCamera;
+    [SerializeField] GameObject openingCamera;
     //------------クラスの宣言----------------------
     public PlayerMove playerMove;
 
-    [SerializeField] ObstacleManager[] obstacleManager = null;
-
     [SerializeField] Boss[] boss = null;
 
-    [SerializeField] StarController[] starControllers;
 
     CameraController cameraController;
 
-    [SerializeField] EnemyController[] enemyController;
+
 
     public StarChargeController starChargeController;
     // 変数を直接参照させないでプロパティ文法でアクセサを経由させる
@@ -80,16 +84,14 @@ public class GameSceneController : MonoBehaviour
 
     bool isOperation;
 
+    bool exitOpning;
     static public bool isPlaying;
+
+    [SerializeField] bool debug;
     //初期化
     public void Init()
     {
         //gaugeDroportion = (float)PlayerMove.PlayerBeastModeState.StarCost / 100;//StarCostを『0.01』にする
-        for (int i = 0; i < obstacleManager.Length; i++)
-        {
-            obstacleManager[i].Init();
-        }
-
         for (int i = 0; i < boss.Length; i++)
         {
             boss[i].Init();
@@ -108,6 +110,20 @@ public class GameSceneController : MonoBehaviour
             starControllers[i].Init(playerObj, playerMove);
         }
 
+        //エネミー子供オブジェクトを取得
+        enemyChilledObj = new GameObject[enemysObj.transform.childCount];
+        enemyController = new EnemyController[enemysObj.transform.childCount];
+        obstacleManager = new ObstacleManager[enemysObj.transform.childCount];
+        //☆エネミー子供オブジェクト初期化
+        for (int i = 0; enemysObj.transform.childCount > i; i++)
+        {
+            enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
+            enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
+            enemyController[i].Init(playerObj);
+            obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
+            obstacleManager[i].Init();
+        }
+
         isGetStar = false;
         isGameClear = false;
         isGameOver = false;
@@ -120,14 +136,18 @@ public class GameSceneController : MonoBehaviour
     private void Awake()
     {
         uiManager.Init();
+        CameraSelect(false, true);
     }
 
     //スタート
     IEnumerator Start()
     {
+        isPlaying = false;
+        exitOpning = false;
         yield return null;
         Init();
         starChargeController.Init();
+        StarsObjDysplay(false);
         playerMove.Init();
         cameraController.Init();
         chargePointManager.Init();
@@ -136,21 +156,27 @@ public class GameSceneController : MonoBehaviour
         uiManager.FadeImageDisplay(false);
         yield return null;
         yield return uiManager.FadeInEnumerator(2);
-        if(stageNum == 1)
+        if (!debug)
         {
-            isMoveCamera = false;
+            if (stageNum == 1)
+            {
+                isMoveCamera = false;
+            }
+            else
+            {
+                isMoveCamera = true;
+                Destroy(safeHitGigMoaiObj);
+                gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
+                gameOverLineController.GameOverLineAnimation();
+            }
         }
         else
         {
-            isMoveCamera = true;
-            Destroy(safeHitGigMoaiObj);
-            gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
-            gameOverLineController.GameOverLineAnimation();
+            isMoveCamera = false;
         }
-       
-        gameMainState = GameMainState.Play;
+        gameMainState = GameMainState.Opening;
         Singleton.Instance.soundManager.PlayBgm("NormalBGM");
-
+        isPlaying = true;
     }
 
     // Update is called once per frame
@@ -158,6 +184,9 @@ public class GameSceneController : MonoBehaviour
     {
         switch (gameMainState)
         {
+            case GameMainState.Opening:
+                OpeningUpdate();
+                break;
             case GameMainState.Play:
                 GamePlay();
                 break;
@@ -229,15 +258,60 @@ public class GameSceneController : MonoBehaviour
         isOperation = true;
     }
 
+    void OpeningUpdate()
+    {
+        if (!exitOpning)
+        {
+            AnimatorStateInfo animInfo = playerMove.playerAnimator.GetCurrentAnimatorStateInfo(0);
+            if (animInfo.normalizedTime < 1.0f)
+            {
+                return;
+            }
+            else
+            {
+                exitOpning = true;
+                StartCoroutine(OpeningEnumerator());
+            }
+        }
+    }
+    IEnumerator OpeningEnumerator()
+    {
+        uiManager.ForceColor(Color.black);
+        uiManager.FadeImageDisplay(true);
+        yield return null;
+        CameraChange();
+        StarsObjDysplay(true);
+        playerMove.CharacterAnimation("gameStart");
+        yield return uiManager.FadeInEnumerator(2);
+        gameMainState = GameMainState.Play;
+    }
     void GamePlay()
     {
         float deltaTime = Time.deltaTime;
 
         playerMove.OnUpdate(deltaTime);//PlayerのUpdate
-
-        if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 0)
+                                       //☆エネミー子供オブジェクト初期化
+        for (int i = 0; enemysObj.transform.childCount > i; i++)
         {
-            StartCoroutine(BigMoaiMoveStart());
+            enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
+            enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
+            enemyController[i].EnemyControllerUpdate();
+            obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
+            obstacleManager[i].ObstacleControllerUpdate();
+        }
+        if (!debug)
+        {
+            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 1)
+            {
+                StartCoroutine(BigMoaiMoveStart());
+            }
+        }
+        else
+        {
+            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed)
+            {
+                StartCoroutine(BigMoaiMoveStart());
+            }
         }
         //ゲームオーバー
         if (isGameOver)
@@ -290,6 +364,29 @@ public class GameSceneController : MonoBehaviour
         if (isOperation)
         {
             uiManager.GameOverButtonSelectUpdate();
+        }
+    }
+    void StarsObjDysplay(bool isDysplay)
+    {
+        starObj.SetActive(isDysplay);
+    }
+    void CameraSelect(bool mainCameraActive, bool openingCameraActive)
+    {
+        mainCamera.SetActive(mainCameraActive);
+        openingCamera.SetActive(openingCameraActive);
+    }
+
+    void CameraChange()
+    {
+        if (mainCamera.activeSelf)
+        {
+            mainCamera.SetActive(false);
+            openingCamera.SetActive(true);
+        }
+        else
+        {
+            mainCamera.SetActive(true);
+            openingCamera.SetActive(false);
         }
     }
 }

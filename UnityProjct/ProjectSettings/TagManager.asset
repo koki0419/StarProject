@@ -19,7 +19,7 @@ TagManager:
   - Player
   - GameOverObj
   - SceneRestrictionBar
-  - Obstacls
+  - Obstacles
   - BreakObstacls
   - Ground
   - 

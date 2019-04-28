@@ -73,6 +73,8 @@ namespace StarProject.Result
         static public int all_damage = 0;
         static public int allStar = 0;
         //ダメージ表記スコアUIを取得
+        [SerializeField] GameObject[] scoreObj;
+        //ダメージ表記スコアUIを取得
         [SerializeField] Image[] scoreUI;
         //ダメージ表示用の数値画像0～9
         [SerializeField] Sprite[] numSprite;
@@ -100,6 +102,7 @@ namespace StarProject.Result
             nextStageButtonSelectNum = 0;
             NextStageButtonSelect(nextStageButtonSelectNum);
             StageNumDisplay(GameSceneController.stageNum);
+            ScoreUIDysplay(scoreObj.Length, false);
             ResultScoreDisplay(all_damage);
             ClearRankDisplay(all_damage);
             resultState = ResultState.ResultAnimation;
@@ -384,7 +387,7 @@ namespace StarProject.Result
         /// <param name="stageNum">クリアステージ数</param>
         void StageNumDisplay(int stageNum)
         {
-            stageNumUI.sprite = stageNumSprite[stageNum];
+            //stageNumUI.sprite = stageNumSprite[stageNum - 1];
         }
         /// <summary>
         /// ダメージを表示します
@@ -393,6 +396,7 @@ namespace StarProject.Result
         /// <param name="ollDamage">総ダメージ値</param>
         void ResultScoreDisplay(int allDamage)
         {
+            Debug.Log("allDamage : " + allDamage);
             var damage = allDamage;
             //1の桁
             var score1 = damage % 10;
@@ -418,6 +422,24 @@ namespace StarProject.Result
             scoreUI[5].sprite = numSprite[score100000];
             scoreUI[6].sprite = numSprite[score1000000];
             scoreUI[7].sprite = numSprite[score10000000];
+            if (allDamage < 1000) ScoreUIDysplay(3, true);
+            else if(allDamage < 10000) ScoreUIDysplay(4, true);
+            else if(allDamage < 100000) ScoreUIDysplay(5, true);
+            else if(allDamage < 1000000) ScoreUIDysplay(6, true);
+            else if(allDamage < 10000000) ScoreUIDysplay(7, true);
+            else ScoreUIDysplay(scoreObj.Length, true);
+
+
+
+        }
+        void ScoreUIDysplay(int dysPlayNum,bool isDysPlay)
+        {
+            Debug.Log("dysPlayNum : " + dysPlayNum);
+            Debug.Log("isDysPlay : " + isDysPlay);
+            for (int i = 0; i < dysPlayNum; i++)
+            {
+                scoreObj[i].SetActive(isDysPlay);
+            }
         }
         /// <summary>
         /// クリアランクを表示します

@@ -104,10 +104,10 @@ public class Boss : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canAttackFlag)
+        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canDamage)
         {
-            foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
-            Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
+            foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
             var hp = 1.0;
             hp -= (foundationHP / foundationHPMax);
             if (foundationHP <= 0)
