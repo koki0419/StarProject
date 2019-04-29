@@ -11,21 +11,31 @@ namespace StarProject.Result
         private enum ResultState
         {
             None,
-            ResultAnimation,
-            ResultSerect,
+            ResultAnimation,//リザルトアニメーション
+            ResultSerect,//リザルトボタンセレクト
+            GameEnd,//すべてのゲームが終了したとき
         }
-        ResultState resultState = ResultState.None;
+        private ResultState resultState = ResultState.None;
 
+        //ボタン選択のステータス
         private enum ResultRetryState
         {
             None,
-            ResultSelect,
-            Retry,
-            Exit,
+            ResultSelect,//リザルト初期選択時
+            Retry,//リトライダブルチェック選択時
+            Exit,//終了ダブルチェック選択時
         }
-        ResultRetryState resultRetryState = ResultRetryState.None;
+        private ResultRetryState resultRetryState = ResultRetryState.None;
 
-        [SerializeField] Animator resultAnimator;
+        [SerializeField] private Animator resultAnimator = null;
+        //フェード関係
+        [Header("フェード関係")]
+        [SerializeField] private GameObject fadeImageObj = null;
+        [SerializeField] private GameObject fadeText = null;
+        [SerializeField] private GameObject fadeChara = null;
+        private Image fadeImage;
+        [SerializeField] private Color fadeOutColor;
+        [SerializeField] private float fadeOutTime;
 
         //ネクストステージダイアログ
         [SerializeField] private GameObject nextStageDiaLog = null;
@@ -42,74 +52,87 @@ namespace StarProject.Result
         [SerializeField] private Sprite retrySelectSprite = null;
 
         //2重確認ダイアログ用画像
-        [SerializeField] GameObject exitDoubleCheckDialog;
-        [SerializeField] GameObject retryDoubleCheckDialog;
+        [SerializeField] private GameObject exitDoubleCheckDialog = null;
+        [SerializeField] private GameObject retryDoubleCheckDialog = null;
         [Header("2重確認用ボタン")]
-        [SerializeField] Image exitDoubleCheckDialogYesButton = null;
-        [SerializeField] Image exitDoubleCheckDialogNoButton = null;
-        [SerializeField] Image retryDoubleCheckDialogYesButton = null;
-        [SerializeField] Image retryDoubleCheckDialogNoButton = null;
+        [SerializeField] private Image exitDoubleCheckDialogYesButton = null;
+        [SerializeField] private Image exitDoubleCheckDialogNoButton = null;
+        [SerializeField] private Image retryDoubleCheckDialogYesButton = null;
+        [SerializeField] private Image retryDoubleCheckDialogNoButton = null;
         [Header("2重確認用画像")]
-        [SerializeField] Sprite doubleCheckDialogYesNormalSprite;
-        [SerializeField] Sprite doubleCheckDialogYesSelectSprite;
-        [SerializeField] Sprite doubleCheckDialogNoNormalSprite;
-        [SerializeField] Sprite doubleCheckDialogNoSelectSprite;
+        [SerializeField] private Sprite doubleCheckDialogYesNormalSprite = null;
+        [SerializeField] private Sprite doubleCheckDialogYesSelectSprite = null;
+        [SerializeField] private Sprite doubleCheckDialogNoNormalSprite = null;
+        [SerializeField] private Sprite doubleCheckDialogNoSelectSprite = null;
         //ボタン選択時にGetAxisを使用するので回数制限に使用します
-        int countNum = 0;
+        private int countNum = 0;
         //ボタン選択番号
-        int nextStageButtonSelectNum = 0;
-        int nextStageButtonSelectNumMax = 3;
-        int retryButtonSelectNum = 0;
-        int retryButtonSelectNumMax = 2;
-        int exitButtonSelectNum = 0;
-        int exitButtonSelectNumMax = 2;
+        private int nextStageButtonSelectNum = 0;
+        private int nextStageButtonSelectNumMax = 3;
+        private int retryButtonSelectNum = 0;
+        private int retryButtonSelectNumMax = 2;
+        private int exitButtonSelectNum = 0;
+        private int exitButtonSelectNumMax = 2;
         //選択ステージ番号を格納
-        int stageNum;
+        private int stageNum;
 
-        float resultAnimationTime;
-        float resultAnimationTimeMax = 10.0f;
+        private float resultAnimationTime;
+        private float resultAnimationTimeMax = 10.0f;
 
         //総ダメージの表示
         static public int all_damage = 0;
         static public int allStar = 0;
         //ダメージ表記スコアUIを取得
-        [SerializeField] GameObject[] scoreObj;
+        [SerializeField] private GameObject[] scoreObj = null;
         //ダメージ表記スコアUIを取得
-        [SerializeField] Image[] scoreUI;
+        [SerializeField] private Image[] scoreUI = null;
         //ダメージ表示用の数値画像0～9
-        [SerializeField] Sprite[] numSprite;
+        [SerializeField] private Sprite[] numSprite = null;
         //ステージ数の表記UI
-        [SerializeField] Image stageNumUI;
+        [SerializeField] private Image stageNumUI = null;
         //ステージ数表示画像
-        [SerializeField] Sprite[] stageNumSprite;
+        [SerializeField] private Sprite[] stageNumSprite = null;
         //クリアランク表示用UI
-        [SerializeField] Image rankUI;
+        [SerializeField] private Image rankUI = null;
         //クリアランク表示画像
-        [SerializeField] Sprite[] rankSprite;
+        [SerializeField] Sprite[] rankSprite = null;
         [Header("ランク振り分けスコア")]
-        [SerializeField] int rankAScore;
-        [SerializeField] int rankBScore;
-        [SerializeField] int rankCScore;
+        [SerializeField] private int rankAScore;
+        [SerializeField] private int rankBScore;
+        [SerializeField] private int rankCScore;
 
+        //全ステージ数
+        private const int ollStageNum = 3;
+
+        [SerializeField] private bool debug;
+        [SerializeField] private int debugStage = 3;
 
         // Start is called before the first frame update
-        void Start()
+        IEnumerator Start()
         {
-            stageNum = GameSceneController.stageNum;
-            NextStageDiaLogDisplay(false);
-            RetryDiaLogDysplay(false);
+            fadeImage = fadeImageObj.GetComponent<Image>();
+            FadeImageDysplay(false);
             ExitDiaLogDysplay(false);
+            RetryDiaLogDysplay(false);
             nextStageButtonSelectNum = 0;
             NextStageButtonSelect(nextStageButtonSelectNum);
-            StageNumDisplay(GameSceneController.stageNum);
-            ScoreUIDysplay(scoreObj.Length, false);
-            ResultScoreDisplay(all_damage);
+            NextStageDiaLogDisplay(false);
             ClearRankDisplay(all_damage);
+            stageNum = GameSceneController.stageNum;
+            StageNumDisplay(stageNum);
+            ScoreUIDysplay(scoreObj.Length, false);
+            yield return null;
+            ResultScoreDisplay(all_damage);
+            if (allStar / 10 != 0) resultAnimator.SetInteger("ResultStars", allStar / 10);
+            yield return null;
             resultState = ResultState.ResultAnimation;
             resultRetryState = ResultRetryState.ResultSelect;
-            if (allStar / 10 != 0) resultAnimator.SetInteger("ResultStars", allStar / 10);
-
+            if (debug)
+            {
+                GameSceneController.stageNum = debugStage;
+            }
         }
+
 
         // Update is called once per frame
         void Update()
@@ -121,6 +144,9 @@ namespace StarProject.Result
                     break;
                 case ResultState.ResultSerect:
                     NextStageSelect();
+                    break;
+                case ResultState.GameEnd:
+                    GameEndUpdate();
                     break;
             }
         }
@@ -146,12 +172,18 @@ namespace StarProject.Result
             {   //アニメーション終了後クリックしてダイアログ表示
                 if (Input.GetKey(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                 {
-                    NextStageDiaLogDisplay(true);
-                    resultState = ResultState.ResultSerect;
+                    Time.timeScale = 1.0f;
+                    if (GameSceneController.stageNum != ollStageNum)
+                    {
+                        NextStageDiaLogDisplay(true);
+                        resultState = ResultState.ResultSerect;
+                    }
+                    else
+                    {
+                        resultState = ResultState.GameEnd;
+                    }
                 }
-
             }
-
         }
 
         /// <summary>
@@ -242,7 +274,6 @@ namespace StarProject.Result
                     }
                     break;
             }
-
         }
 
         /// <summary>
@@ -358,10 +389,88 @@ namespace StarProject.Result
             }
         }
         /// <summary>
+        /// 全てのステージがクリアしたときに呼び出されます
+        /// </summary>
+        private void GameEndUpdate()
+        {
+            StartCoroutine(GameEndEnumerator());
+        }
+        /// <summary>
+        /// エンディングシーン遷移時にフェードを入れてから遷移
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator GameEndEnumerator()
+        {
+            ForceColor(Color.clear);
+            FadeImageDisplay(true);
+            yield return FadeOutEnumerator(fadeOutColor, fadeOutTime);
+            FadeImageDisplay(false);
+            SceneManager.LoadScene("EndingScene");
+        }
+        /// <summary>
+        /// フェードアウト
+        /// </summary>
+        /// <param name="color">最終カラー</param>
+        /// <param name="period">フェード時間</param>
+        /// <returns></returns>
+        private IEnumerator FadeOutEnumerator(Color color, float period)
+        {
+            fadeImageObj.transform.SetAsLastSibling();
+            yield return FadeEnumerator(Color.clear, color, period);
+        }
+        /// <summary>
+        /// フェード実体
+        /// </summary>
+        /// <param name="startColor">初期カラー</param>
+        /// <param name="targetColor">最終カラー</param>
+        /// <param name="period">フェード時間</param>
+        /// <returns></returns>
+        private IEnumerator FadeEnumerator(Color startColor, Color targetColor, float period)
+        {
+            float t = 0;
+            while (t < period)
+            {
+
+                t += Time.deltaTime;
+                Color color = Color.Lerp(startColor, targetColor, t / period);
+                fadeImage.color = color;
+                yield return null;
+            }
+
+            fadeImage.color = targetColor;
+        }
+        /// <summary>
+        /// フェードカラー初期化用
+        /// </summary>
+        /// <param name="color">初期化カラー</param>
+        private void ForceColor(Color color)
+        {
+            FadeImageDysplay(true);
+            fadeImageObj.transform.SetAsLastSibling();
+            fadeImage.color = color;
+        }
+        /// <summary>
+        /// フェード時フェードキャラクターを表示非表示します
+        /// </summary>
+        /// <param name="isFade">表示するかどうか</param>
+        private void FadeImageDisplay(bool isFade)
+        {
+            fadeText.SetActive(isFade);
+            fadeChara.SetActive(isFade);
+        }
+        /// <summary>
+        /// フェードImageの表示非表示
+        /// </summary>
+        /// <param name="isDysplay">表示非表示</param>
+        private void FadeImageDysplay(bool isDysplay)
+        {
+            fadeImageObj.SetActive(isDysplay);
+        }
+        /// <summary>
         /// 次のステージに挑戦するかダイアログを表示非表示
         /// </summary>
         /// <param name="isDisplay">表示非表示</param>
-        void NextStageDiaLogDisplay(bool isDisplay)
+        private void NextStageDiaLogDisplay(bool isDisplay)
         {
             nextStageDiaLog.SetActive(isDisplay);
         }
@@ -369,7 +478,7 @@ namespace StarProject.Result
         /// リトライボタンを押したときのYesNo確認ダイアログ
         /// </summary>
         /// <param name="isDysplay">表示非表示</param>
-        void RetryDiaLogDysplay(bool isDysplay)
+        private void RetryDiaLogDysplay(bool isDysplay)
         {
             retryDoubleCheckDialog.SetActive(isDysplay);
         }
@@ -377,7 +486,7 @@ namespace StarProject.Result
         /// 終了ボタンを押したときのYesNo確認ダイアログ
         /// </summary>
         /// <param name="isDysplay">表示非表示</param>
-        void ExitDiaLogDysplay(bool isDysplay)
+        private void ExitDiaLogDysplay(bool isDysplay)
         {
             exitDoubleCheckDialog.SetActive(isDysplay);
         }
@@ -385,18 +494,18 @@ namespace StarProject.Result
         /// クリアステージ数を表示します
         /// </summary>
         /// <param name="stageNum">クリアステージ数</param>
-        void StageNumDisplay(int stageNum)
+        private void StageNumDisplay(int stageNum)
         {
-            //stageNumUI.sprite = stageNumSprite[stageNum - 1];
+            if (debug) return;
+            else stageNumUI.sprite = stageNumSprite[stageNum - 1];
         }
         /// <summary>
         /// ダメージを表示します
         /// 変数の作りすぎかもなので修正できるといいです
         /// </summary>
         /// <param name="ollDamage">総ダメージ値</param>
-        void ResultScoreDisplay(int allDamage)
+        private void ResultScoreDisplay(int allDamage)
         {
-            Debug.Log("allDamage : " + allDamage);
             var damage = allDamage;
             //1の桁
             var score1 = damage % 10;
@@ -423,19 +532,22 @@ namespace StarProject.Result
             scoreUI[6].sprite = numSprite[score1000000];
             scoreUI[7].sprite = numSprite[score10000000];
             if (allDamage < 1000) ScoreUIDysplay(3, true);
-            else if(allDamage < 10000) ScoreUIDysplay(4, true);
-            else if(allDamage < 100000) ScoreUIDysplay(5, true);
-            else if(allDamage < 1000000) ScoreUIDysplay(6, true);
-            else if(allDamage < 10000000) ScoreUIDysplay(7, true);
+            else if (allDamage < 10000) ScoreUIDysplay(4, true);
+            else if (allDamage < 100000) ScoreUIDysplay(5, true);
+            else if (allDamage < 1000000) ScoreUIDysplay(6, true);
+            else if (allDamage < 10000000) ScoreUIDysplay(7, true);
             else ScoreUIDysplay(scoreObj.Length, true);
 
 
 
         }
-        void ScoreUIDysplay(int dysPlayNum,bool isDysPlay)
+        /// <summary>
+        /// スコアによって最大桁数以上の数値UIを非表示にするために使用します
+        /// </summary>
+        /// <param name="dysPlayNum"></param>
+        /// <param name="isDysPlay"></param>
+        private void ScoreUIDysplay(int dysPlayNum, bool isDysPlay)
         {
-            Debug.Log("dysPlayNum : " + dysPlayNum);
-            Debug.Log("isDysPlay : " + isDysPlay);
             for (int i = 0; i < dysPlayNum; i++)
             {
                 scoreObj[i].SetActive(isDysPlay);
@@ -445,7 +557,7 @@ namespace StarProject.Result
         /// クリアランクを表示します
         /// </summary>
         /// <param name="allDamage">総ダメージ値</param>
-        void ClearRankDisplay(int allDamage)
+        private void ClearRankDisplay(int allDamage)
         {
             //Aランク
             if (allDamage > rankAScore) rankUI.sprite = rankSprite[0];

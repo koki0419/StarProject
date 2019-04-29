@@ -39,10 +39,7 @@ public class GameSceneController : MonoBehaviour
 
     [SerializeField] Boss[] boss = null;
 
-
     CameraController cameraController;
-
-
 
     public StarChargeController starChargeController;
     // 変数を直接参照させないでプロパティ文法でアクセサを経由させる
@@ -59,6 +56,8 @@ public class GameSceneController : MonoBehaviour
     //現在のステージ番号 // リザルトでリトライやNextステージで使用します
     //タイトルでstageNumを1に設定します。その後はリザルトシーンのみでしか使用しません
     static public int stageNum;
+
+    int destroyCount = 0;
     //------------フラグ変数の宣言------------------
     public bool isGameClear
     {
@@ -152,8 +151,6 @@ public class GameSceneController : MonoBehaviour
         cameraController.Init();
         chargePointManager.Init();
         gameOverLineController.Init();
-        yield return null;
-        uiManager.FadeImageDisplay(false);
         yield return null;
         yield return uiManager.FadeInEnumerator(2);
         if (!debug)
@@ -257,7 +254,9 @@ public class GameSceneController : MonoBehaviour
         uiManager.GameOverDiaLogDisplay(true);
         isOperation = true;
     }
-
+    /// <summary>
+    /// ゲーム開始時登場演出
+    /// </summary>
     void OpeningUpdate()
     {
         if (!exitOpning)
@@ -276,9 +275,7 @@ public class GameSceneController : MonoBehaviour
     }
     IEnumerator OpeningEnumerator()
     {
-        uiManager.ForceColor(Color.black);
-        uiManager.FadeImageDisplay(true);
-        yield return null;
+        yield return uiManager.FadeOutEnumerator(Color.black, 3.0f);
         CameraChange();
         StarsObjDysplay(true);
         playerMove.CharacterAnimation("gameStart");
@@ -291,25 +288,30 @@ public class GameSceneController : MonoBehaviour
 
         playerMove.OnUpdate(deltaTime);//PlayerのUpdate
                                        //☆エネミー子供オブジェクト初期化
-        for (int i = 0; enemysObj.transform.childCount > i; i++)
+        if (enemysObj.transform.childCount != 0)
         {
-            enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
-            enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
-            enemyController[i].EnemyControllerUpdate();
-            obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
-            obstacleManager[i].ObstacleControllerUpdate();
+            for (int i = 0; enemysObj.transform.childCount > i; i++)
+            {
+                enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
+                enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
+                enemyController[i].EnemyControllerUpdate();
+                obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
+                obstacleManager[i].ObstacleControllerUpdate();
+            }
         }
         if (!debug)
         {
-            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 1)
+            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 1 && destroyCount == 0)
             {
+                destroyCount++;
                 StartCoroutine(BigMoaiMoveStart());
             }
         }
         else
         {
-            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed)
+            if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && destroyCount == 0)
             {
+                destroyCount++;
                 StartCoroutine(BigMoaiMoveStart());
             }
         }

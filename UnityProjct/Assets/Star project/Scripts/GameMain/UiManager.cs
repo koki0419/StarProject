@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour
     PauseTyp pauseTyp = PauseTyp.None;
 
     //FadeLayerクラスを取得
-    public FadeLayer fadeLayer;
+    [SerializeField] FadeLayer fadeLayer;
     //ゲームオーバー時表示UI
     [SerializeField] GameObject gameOvreUI = null;
 
@@ -36,10 +36,10 @@ public class UiManager : MonoBehaviour
 
 
     //フェード時表示用TEXT
-    public GameObject fadeText;
+    [SerializeField] GameObject fadeText;
 
     //フェード時表示用マスコットキャラ
-    public GameObject fadeChara;
+    [SerializeField] GameObject fadeChara;
 
     //ポーズ時ボタン
     //ポーズ時表示用UI
@@ -95,7 +95,6 @@ public class UiManager : MonoBehaviour
     {
         //初期化
         ForceColor(Color.black);
-        FadeImageDisplay(true);
         StarUICanvasDisplay(true);
         GameOvreUIDisplay(false);
         GameOverDiaLogDisplay(false);
@@ -117,21 +116,20 @@ public class UiManager : MonoBehaviour
     //スタート
     IEnumerator OnTitle()
     {
-        yield return FadeOutEnumerator();
-
+        yield return FadeOutEnumerator(Color.black, 3.0f);
         SceneManager.LoadScene("TitleScene");
     }
     //リトライ
     IEnumerator OnRetry()
     {
-        yield return FadeOutEnumerator();
+        yield return FadeOutEnumerator(Color.black,3.0f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     /// <summary>
     /// フェード時フェードキャラクターを表示非表示します
     /// </summary>
     /// <param name="isFade">表示するかどうか</param>
-    public void FadeImageDisplay(bool isFade)
+    void FadeImageDisplay(bool isFade)
     {
         fadeText.SetActive(isFade);
         fadeChara.SetActive(isFade);
@@ -144,16 +142,21 @@ public class UiManager : MonoBehaviour
     /// <returns></returns>
     public IEnumerator FadeInEnumerator(float fadeTime)
     {
+        FadeImageDisplay(true);
         yield return fadeLayer.FadeInEnumerator(fadeTime);
+        FadeImageDisplay(false);
     }
     /// <summary>
     /// フェードアウトの処理
     /// コルーチンの戻り値で使用します
     /// </summary>
     /// <returns></returns>
-    public IEnumerator FadeOutEnumerator()
+    public IEnumerator FadeOutEnumerator(Color targetColor,float period)
     {
-        yield return fadeLayer.FadeOutEnumerator(Color.black, 2);
+        ForceColor(Color.clear);
+        FadeImageDisplay(true);
+        yield return fadeLayer.FadeOutEnumerator(targetColor, period);
+        FadeImageDisplay(false);
     }
     public void ForceColor(Color fadeColor)
     {
