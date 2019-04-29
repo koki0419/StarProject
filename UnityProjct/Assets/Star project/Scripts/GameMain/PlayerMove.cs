@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     //攻撃時設定数値
-    public enum PlayerAttackIndex
+     enum PlayerAttackIndex
     {
         None,
         AttackNormal = 1000,
@@ -12,8 +12,7 @@ public class PlayerMove : MonoBehaviour
         ChargeAttackDown = 1001,
         ChargeAttackUp = 1011,
     }
-
-    public PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
+    PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
 
     //オブジェクトステータス
      enum ObjState
@@ -21,6 +20,7 @@ public class PlayerMove : MonoBehaviour
         None,
         Normal,//通常状態
         Stun,//スタン状態
+        NotAttackMode,//スタン状態
         AttackJab,//ジャブ攻撃状態
         AttackUp,//上攻撃状態
         AttackDown,//下攻撃状態
@@ -198,6 +198,9 @@ public class PlayerMove : MonoBehaviour
             case ObjState.Stun:
                 StanUpdate();
                 break;
+            case ObjState.NotAttackMode:
+                NotAttackModeUpdate(deltaTime);
+                break;
             case ObjState.OnCharge:
                 ChargeUpdate();
                 break;
@@ -252,6 +255,10 @@ public class PlayerMove : MonoBehaviour
             isGround = true;
             isJumpFlag = false;
             rigidbody.drag = dragPower;
+            if(objState == ObjState.NotAttackMode)
+            {
+                objState = ObjState.Normal;
+            }
         }
     }
     private void OnTriggerExit(Collider other)
@@ -479,10 +486,10 @@ public class PlayerMove : MonoBehaviour
     }
 
     //アタック時
-    public IEnumerator OnAttack(int attackResetNum, float animationTime)
+    public IEnumerator OnAttack(float animationTime)
     {
         yield return new WaitForSeconds(animationTime);
-        canDamage = true;
+        canDamage = false;
         canAttack = true;
         chargeNowHand = 0.0f;
         FreezePositionCancel();
@@ -490,7 +497,9 @@ public class PlayerMove : MonoBehaviour
         isUpAttack = false;
         isDownAttack = false;
         CharacterAnimation("ExitAnimation");
-        objState = ObjState.Normal;
+        if (isGround) objState = ObjState.Normal;
+        else objState = ObjState.NotAttackMode;
+
     }
     /// <summary>
     /// ☆獲得時の獲得エフェクトを表示する為のコルーチン
@@ -620,6 +629,36 @@ public class PlayerMove : MonoBehaviour
             objState = ObjState.OnCharge;
         }
     }
+
+    void NotAttackModeUpdate(float deltaTime)
+    {
+        //移動
+        float dx = Input.GetAxis("Horizontal");
+
+        //アニメーション
+        if (dx != 0 && !isChargeFlag && isGround)
+        {
+            CharacterAnimation("dash");
+            Singleton.Instance.soundManager.PlayPlayerSe(dashSeNum);
+            SandEffectPlay(true);
+            //canAttack = true;
+        }
+        else if (!isChargeFlag && isGround)
+        {
+            CharacterAnimation("idol");
+            Singleton.Instance.soundManager.StopPlayerSe();
+            SandEffectPlay(false);
+            //canAttack = true;
+        }
+        else if (!isGround)
+        {
+            CharacterAnimation("jump");
+            SandEffectPlay(false);
+        }
+
+        //移動
+        CharacterMove(dx, deltaTime);
+    }
     /// <summary>
     /// スタン状態時に実行します
     /// </summary>
@@ -723,7 +762,7 @@ public class PlayerMove : MonoBehaviour
             ChargeEffectPlay(false, false);
 
             PunchEffectPlay(true);
-
+            canDamage = true;
             chargeCount = 0;
             chargeNow = 0.0f;
             isAttack = true;
@@ -740,7 +779,7 @@ public class PlayerMove : MonoBehaviour
         if (isAttack)
         {
             isAttack = false;
-            StartCoroutine(OnAttack(0, animationTime));
+            StartCoroutine(OnAttack(animationTime));
         }
     }
 

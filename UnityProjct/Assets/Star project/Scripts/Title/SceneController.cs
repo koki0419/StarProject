@@ -9,56 +9,61 @@ namespace StarProject.Title
 {
     public class SceneController : MonoBehaviour
     {
-        public enum TitleTyp
+        private enum TitleTyp
         {
             None,
             TitleSelect,
             ExitSelect
         }
-        public TitleTyp titleTyp = TitleTyp.None;
+        private TitleTyp titleTyp = TitleTyp.None;
 
+        //フェード関係
+        [Header("フェード関係")]
+        [SerializeField] private GameObject fadeImageObj = null;
+        [SerializeField] private GameObject fadeText = null;
+        [SerializeField] private GameObject fadeChara = null;
+        private Image fadeImage;
+        [SerializeField] private Color fadeOutColor;
+        [SerializeField] private float fadeOutTime;
 
         //ボタン選択用ナンバー
         [Header("ボタン")]
-        [SerializeField] int stageMax = 0;
-        [SerializeField] Image selectButton = null;
-        [SerializeField] Image exitButton = null;
-        [SerializeField] Sprite selectButtonNormalSprite;
-        [SerializeField] Sprite selectButtonSelectSprite;
-        [SerializeField] Sprite exitButtonNormalSprite;
-        [SerializeField] Sprite exitButtonSelectSprite;
+        [SerializeField] private int stageMax = 0;
+        [SerializeField] private Image selectButton = null;
+        [SerializeField] private Image exitButton = null;
+        [SerializeField] private Sprite selectButtonNormalSprite = null;
+        [SerializeField] private Sprite selectButtonSelectSprite = null;
+        [SerializeField] private Sprite exitButtonNormalSprite = null;
+        [SerializeField] private Sprite exitButtonSelectSprite = null;
 
-        int buttonNum;
+        //タイトル終了ボタン選択ナンバー
+        private int buttonNum;
 
         //EXITダイアログUI
         [Header("EXIT用テクスチャー")]
-        [SerializeField] GameObject exitDialogUI = null;
+        [SerializeField] private GameObject exitDialogUI = null;
 
-        [SerializeField] Image yesButton = null;
-        [SerializeField] Image noButton = null;
-        [SerializeField] Sprite exitButtonYesNormalSprite;
-        [SerializeField] Sprite exitButtonYesSelectSprite;
-        [SerializeField] Sprite exitButtonNoNormalSprite;
-        [SerializeField] Sprite exitButtonNoSelectSprite;
+        [SerializeField] private Image yesButton = null;
+        [SerializeField] private Image noButton = null;
+        [SerializeField] private Sprite exitButtonYesNormalSprite = null;
+        [SerializeField] private Sprite exitButtonYesSelectSprite = null;
+        [SerializeField] private Sprite exitButtonNoNormalSprite = null;
+        [SerializeField] private Sprite exitButtonNoSelectSprite = null;
 
         //EXITボタン選択用ナンバー
-        int exitSelectNum = 0;
-
-        bool exitFlag;
-
-        int countNum;
-
-        float titleGameTime = 0;
+        private int exitSelectNum = 0;
+        //ゲームパッドjoyコン制御用
+        private int countNum;
 
         // Start is called before the first frame update
         void Init()
         {
-            exitDialogUI.SetActive(false);
             buttonNum = 0;
-            exitFlag = false;
-            exitSelectNum = 0;
-            TitleSelectButton(buttonNum);
             countNum = 0;
+            exitSelectNum = 0;
+            exitDialogUI.SetActive(false);
+            fadeImage = fadeImageObj.GetComponent<Image>();
+            TitleSelectButton(buttonNum);
         }
 
         //スタート
@@ -68,7 +73,10 @@ namespace StarProject.Title
             yield return null;
             titleTyp = TitleTyp.TitleSelect;
         }
-
+        private void Awake()
+        {
+            FadeImageDysplay(false);
+        }
         // Update is called once per frame
         void Update()
         {
@@ -99,13 +107,10 @@ namespace StarProject.Title
                         switch (buttonNum)
                         {
                             case 0:
-                                GameSceneController.stageNum = 1;
-                                SceneManager.LoadScene("main01");
-                                titleTyp = TitleTyp.None;
+                                StartCoroutine(GameStartEnumerator());
                                 break;
                             case 1:
                                 exitDialogUI.SetActive(true);
-                                exitFlag = true;
                                 exitSelectNum = 0;
                                 ExitSelectButton(exitSelectNum);
                                 titleTyp = TitleTyp.ExitSelect;
@@ -138,7 +143,6 @@ namespace StarProject.Title
                         {
                             case 0:
                                 exitDialogUI.SetActive(false);
-                                exitFlag = false;
                                 titleTyp = TitleTyp.TitleSelect;
                                 break;
                             case 1:
@@ -193,6 +197,79 @@ namespace StarProject.Title
                     noButton.sprite = exitButtonNoNormalSprite;
                     break;
             }
+        }
+        /// <summary>
+        /// ゲームスタート時に実行します
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator GameStartEnumerator()
+        {
+            ForceColor(Color.clear);
+            yield return FadeOutEnumerator(fadeOutColor, fadeOutTime);
+            FadeImageDisplay(false);
+            GameSceneController.stageNum = 1;
+            SceneManager.LoadScene("main01");
+            titleTyp = TitleTyp.None;
+        }
+        /// <summary>
+        /// フェードアウト
+        /// </summary>
+        /// <param name="color">最終カラー</param>
+        /// <param name="period">フェード時間</param>
+        /// <returns></returns>
+        private IEnumerator FadeOutEnumerator(Color color, float period)
+        {
+            fadeImageObj.transform.SetAsLastSibling();
+            yield return FadeEnumerator(Color.clear, color, period);
+        }
+        /// <summary>
+        /// フェード実体
+        /// </summary>
+        /// <param name="startColor">初期カラー</param>
+        /// <param name="targetColor">最終カラー</param>
+        /// <param name="period">フェード時間</param>
+        /// <returns></returns>
+        private IEnumerator FadeEnumerator(Color startColor, Color targetColor, float period)
+        {
+            float t = 0;
+            while (t < period)
+            {
+
+                t += Time.deltaTime;
+                Color color = Color.Lerp(startColor, targetColor, t / period);
+                fadeImage.color = color;
+                yield return null;
+            }
+
+            fadeImage.color = targetColor;
+        }
+        /// <summary>
+        /// フェードカラー初期化用
+        /// </summary>
+        /// <param name="color">初期化カラー</param>
+        private void ForceColor(Color color)
+        {
+            FadeImageDysplay(true);
+            fadeImageObj.transform.SetAsLastSibling();
+            fadeImage.color = color;
+        }
+
+        /// <summary>
+        /// フェード時フェードキャラクターを表示非表示します
+        /// </summary>
+        /// <param name="isFade">表示するかどうか</param>
+        private void FadeImageDisplay(bool isFade)
+        {
+            fadeText.SetActive(isFade);
+            fadeChara.SetActive(isFade);
+        }
+        /// <summary>
+        /// フェード用Imageの表示非表示
+        /// </summary>
+        /// <param name="isDysplay">表示非表示</param>
+        private void FadeImageDysplay(bool isDysplay)
+        {
+            fadeImageObj.SetActive(isDysplay);
         }
     }
 }
