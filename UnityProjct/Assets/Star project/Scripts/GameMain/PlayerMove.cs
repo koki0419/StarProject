@@ -101,7 +101,7 @@ public class PlayerMove : MonoBehaviour
     //攻撃時パワー
     public float attackPower
     {
-        get;private set;
+        get; private set;
     }
     [Header("スタン時ステータス")]
     //スタン状態からの復活時間
@@ -138,7 +138,7 @@ public class PlayerMove : MonoBehaviour
     //☆獲得時フラグ
     public bool isAcquisitionStar
     {
-        set;get;
+        set; get;
     }
 
     //キャラクターの向き
@@ -152,7 +152,7 @@ public class PlayerMove : MonoBehaviour
 
     private const string groundLayerName = "Ground";
     private const string gameOverLineLayerName = "GameOverObj";
-    private const  string enemyLayerName = "Obstacles";
+    private const string enemyLayerName = "Obstacles";
 
     //初期化
     public void Init()
@@ -223,6 +223,8 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
+
+        Debug.Log("objState : " + objState);
     }
 
     //--------------関数-----------------------------
@@ -238,7 +240,7 @@ public class PlayerMove : MonoBehaviour
             objState = ObjState.CharacterGameOver;
         }
         //エネミーとの当たり判定
-        else if(LayerMask.LayerToName(collision.gameObject.layer) == enemyLayerName)
+        else if (LayerMask.LayerToName(collision.gameObject.layer) == enemyLayerName)
         {
             if (collision.gameObject.GetComponent<EnemyController>().enemyState == EnemyController.EnemyState.StunAttack)
             {
@@ -253,7 +255,7 @@ public class PlayerMove : MonoBehaviour
             isGround = true;
             isJumpFlag = false;
             rigidbody.drag = dragPower;
-            if(objState == ObjState.NotAttackMode)
+            if (objState == ObjState.NotAttackMode)
             {
                 objState = ObjState.Normal;
             }
@@ -347,10 +349,9 @@ public class PlayerMove : MonoBehaviour
     {
         var rig = rigidbody;
         rig.drag = dragPower;
-        attackSpeed = (chargeCount * speedForce + foundationSpeedForce)/10;
+        attackSpeed = (chargeCount * speedForce + foundationSpeedForce) / 10;
         if (!isUpAttack && !isDownAttack)
         {
-
             //右向きの時
             if (isRightDirection && !isLeftDirection)
             {
@@ -364,7 +365,7 @@ public class PlayerMove : MonoBehaviour
         }
         else if (isUpAttack)
         {
-            attackSpeed = (chargeCount * speedForce + UpFoundationSpeedForce)/10;
+            attackSpeed = (chargeCount * speedForce + UpFoundationSpeedForce) / 10;
             rig.AddForce(Vector3.up * attackSpeed, ForceMode.Impulse);
         }
         else if (isDownAttack)
@@ -465,7 +466,7 @@ public class PlayerMove : MonoBehaviour
                 break;
             case (int)PlayerAttackIndex.ChargeAttackNormal:
                 CharacterAnimation("chargepunch");
-                FreezeUp();
+                FreezeChargeAttack();
                 objState = ObjState.ChargeAttack;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackDown:
@@ -503,7 +504,7 @@ public class PlayerMove : MonoBehaviour
     /// ☆獲得時の獲得エフェクトを表示する為のコルーチン
     /// </summary>
     /// <returns></returns>
-    public IEnumerator OnGetStar()
+    private IEnumerator OnGetStar()
     {
         Singleton.Instance.soundManager.StopPlayerSe();
         Singleton.Instance.soundManager.PlayPlayerSe(getStarSeNum);
@@ -541,36 +542,44 @@ public class PlayerMove : MonoBehaviour
             case "knockback"://ノックバック
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetBool("isJump", false);
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetInteger("setPunchNum", 0);
                 animatorComponent.SetBool("isKnockBack", true);
                 break;
             case "charge"://チャージ
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetTrigger("isCharge");
+                animatorComponent.SetBool("isCharge", true);
                 animatorComponent.SetInteger("setPunchNum", 0);
                 break;
             case "punch"://パンチ
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1000);
                 break;
             case "chargepunch"://チャージパンチ
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1010);
                 break;
             case "chargepunchUp"://チャージアッパー
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1011);
                 break;
             case "chargepunchDown"://チャージダウン
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1001);
                 break;
             case "GameOver"://ゲームオーバー
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetBool("isJump", false);
                 animatorComponent.SetTrigger("isGameOver");
                 break;
             case "ExitAnimation":
+                animatorComponent.SetBool("isCharge", false);
                 animatorComponent.SetTrigger("ExitAnimation");
                 break;
         }
@@ -618,8 +627,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T) && canAttack || Input.GetButtonDown("Charge") && canAttack)
         {
             canAttack = false;
-            FreezePositionSet();
-            CharacterAnimation("charge");
+            FreezePositionOll();
             isChargeFlag = true;
             //チャージSE再生
             Singleton.Instance.soundManager.StopPlayerSe();
@@ -666,13 +674,7 @@ public class PlayerMove : MonoBehaviour
     IEnumerator StunEnumerator(float stunTime)
     {
         CharacterAnimation("knockback");
-        ChargeEffectPlay(false, false);
-        canAttack = true;
         FreezePositionCancel();
-        isChargeFlag = false;
-        chargeCount = 0;
-        chargeNow = 0.0f;
-
         var rig = rigidbody;
         //右向きの時
         if (isRightDirection && !isLeftDirection)
@@ -686,6 +688,11 @@ public class PlayerMove : MonoBehaviour
         }
         yield return new WaitForSeconds(stunTime);
         CharacterAnimation("idol");
+        ChargeEffectPlay(false, false);
+        canAttack = true;
+        isChargeFlag = false;
+        chargeCount = 0;
+        chargeNow = 0.0f;
         objState = ObjState.Normal;
 
     }
@@ -700,11 +707,12 @@ public class PlayerMove : MonoBehaviour
         //移動
         float dx = Input.GetAxis("Horizontal");
         DirectionMove(dx);
-
+        CharacterAnimation("charge");
         //通常時
         //チャージ
         if (Input.GetKey(KeyCode.T) || Input.GetButton("Charge"))
         {
+            Debug.Log("koko");
             Singleton.Instance.soundManager.PlayPlayerLoopSe(chargeSeNum);
             //チャージ中
             Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));
@@ -793,9 +801,9 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         Singleton.Instance.gameSceneController.isGameOver = true;
     }
-    void FreezeUp()
+    void FreezeChargeAttack()
     {
-        rigidbody.constraints = RigidbodyConstraints.FreezePositionZ |RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
     }
     /// <summary>
     /// 初期状態に戻します
@@ -809,9 +817,9 @@ public class PlayerMove : MonoBehaviour
     /// チャージ攻撃横移動のみこれ使う
     /// 落下しなくなる
     /// </summary>
-    void FreezePositionSet()
+    void FreezePositionOll()
     {
-        rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
     }
     /// <summary>
     /// 砂煙エフェクトの表示非表示

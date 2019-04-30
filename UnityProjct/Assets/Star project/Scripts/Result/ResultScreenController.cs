@@ -97,6 +97,8 @@ namespace StarProject.Result
         [SerializeField] private Image rankUI = null;
         //クリアランク表示画像
         [SerializeField] Sprite[] rankSprite = null;
+
+        private const int MaxScore = 99999999;
         [Header("ランク振り分けスコア")]
         [SerializeField] private int rankAScore;
         [SerializeField] private int rankBScore;
@@ -508,6 +510,7 @@ namespace StarProject.Result
         private void ResultScoreDisplay(int allDamage)
         {
             var damage = allDamage;
+            if (damage > MaxScore) damage = MaxScore;
             //1の桁
             var score1 = damage % 10;
             //10の桁
