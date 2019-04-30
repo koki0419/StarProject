@@ -58,7 +58,7 @@ public class UiManager : MonoBehaviour
     private int countNum;
 
     //star関係canvas
-    [SerializeField] GameObject starUICanvas;
+    [SerializeField] private GameObject starUICanvas = null;
 
     private int pauseButtonSelectNum = 0;
     private int pauseButtonSelectNumMax = 2;
