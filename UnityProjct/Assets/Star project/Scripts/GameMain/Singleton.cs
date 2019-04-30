@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StarProject.Gamemain;
 
 public class Singleton : SingletonMonoBehaviour<Singleton>
 {

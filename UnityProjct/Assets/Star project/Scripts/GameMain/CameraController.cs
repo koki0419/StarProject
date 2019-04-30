@@ -6,10 +6,10 @@ public class CameraController : MonoBehaviour
 {
 
     //プレイヤーのTransformを取得
-    [SerializeField] Transform player = null;
-    [SerializeField] float camaraPos = 1.5f;
+    [SerializeField] private Transform player = null;
+    [SerializeField] private float camaraPos = 1.5f;
     [Header("カメラ移動速度")]
-    [SerializeField] float camaraMove = 1.5f;
+    [SerializeField] private float camaraMove = 1.5f;
 
     public void Init()
     {
@@ -25,27 +25,15 @@ public class CameraController : MonoBehaviour
         position.y = camaraPos;
         transform.position = position;
     }
-
-
-    // void Start()
-    //{
-    //    var position = transform.position;
-    //    position.x = player.position.x;
-    //}
-
-    //// Update is called once per frame
-    // void Update()
-    //{
-    //    var position = transform.position;
-    //    position.x += camaraMove;
-    //    position.y = camaraPos;
-    //    transform.position = position;
-    //}
+    /// <summary>
+    /// カメラを振動させます
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="magnitude"></param>
     public void Shake(float duration, float magnitude)
     {
         StartCoroutine(DoShake(duration, magnitude));
     }
-
     private IEnumerator DoShake(float duration, float magnitude)
     {
         var pos = transform.localPosition;

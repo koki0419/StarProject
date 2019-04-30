@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using StarProject.Gamemain;
 
 namespace StarProject.Result
 {
@@ -33,7 +34,7 @@ namespace StarProject.Result
         [SerializeField] private GameObject fadeImageObj = null;
         [SerializeField] private GameObject fadeText = null;
         [SerializeField] private GameObject fadeChara = null;
-        private Image fadeImage;
+        private Image fadeImage = null;
         [SerializeField] private Color fadeOutColor;
         [SerializeField] private float fadeOutTime;
 
@@ -241,7 +242,7 @@ namespace StarProject.Result
                     break;
                 case ResultRetryState.Retry:
                     RetrySelect(dx);
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                     {
                         switch (retryButtonSelectNum)
                         {
@@ -258,7 +259,7 @@ namespace StarProject.Result
                     break;
                 case ResultRetryState.Exit:
                     ExitSelect(dx);
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick1Button0))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
                     {
                         switch (exitButtonSelectNum)
                         {

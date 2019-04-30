@@ -15,7 +15,7 @@ public class GameOverLineController : MonoBehaviour
 
     private Animator gameOverLineAnimator;
 
-    [SerializeField] int awakeningSeNum;
+    [SerializeField] private　int awakeningSeNum;
 
     public void Init()
     {

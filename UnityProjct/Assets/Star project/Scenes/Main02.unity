@@ -1303,8 +1303,6 @@ MonoBehaviour:
   boss:
   - {fileID: 1399226575}
   starChargeController: {fileID: 1231812595}
-  chargePointManager:
-    destroyCount: 0
   uiManager: {fileID: 1219740086}
   gameOverLineController: {fileID: 1047188198}
   debug: 0
@@ -12868,10 +12866,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeLayer: {fileID: 1650613107}
-  gameOvreUI: {fileID: 2015005976}
-  gameClearUI: {fileID: 1296657480}
   fadeText: {fileID: 225856491}
   fadeChara: {fileID: 646481987}
+  fadeOutColor: {r: 0, g: 0, b: 0, a: 1}
+  fadeOutTime: 3
+  fadeInColor: {r: 0, g: 0, b: 0, a: 1}
+  fadeInTime: 3
+  gameOvreUI: {fileID: 2015005976}
+  gameClearUI: {fileID: 1296657480}
   pauseDiaLog: {fileID: 2035459236}
   pauseRetryButton: {fileID: 1195047083}
   pauseTitleButton: {fileID: 1099262630}
@@ -14497,9 +14499,6 @@ MonoBehaviour:
   deleteTime: 4
   defensePower: 1
   foundationHP: 10
-  foundationHPMax: 0
-  lnitialVelocity: 0
-  gravityMove: 0
 --- !u!95 &1399226576
 Animator:
   serializedVersion: 3

@@ -11,10 +11,9 @@ public class ChargePointManager
     {
         get;set;
     }
-    float starChildCountMax = 50;
-    public float StarChildCountMax
+    public float starChildCountMax
     {
-        get { return starChildCountMax; }
+        get;private set;
     }
     //小さい☆の獲得状況スキップ
     public int starChildCountSkip
@@ -22,20 +21,10 @@ public class ChargePointManager
         set; get;
     }
 
-    [SerializeField] float destroyCount = 0;
-    public float DestroyCount
-    {
-        get { return destroyCount; }
-        set { destroyCount = (int)value; }
-    }
-
-    //ゲージダウン割合
-    float gaugeDroportion;
-
     //一気に沢山の星を獲得したかどうか
     public bool isSkipStar
     {
-        set; private get;
+        set;get;
     }
 
     // Start is called before the first frame update
@@ -44,6 +33,7 @@ public class ChargePointManager
         //チャージポイント
         starChildCount = 0;
         starChildCountSkip = 0;
+        starChildCountMax = 50;
         isSkipStar = false;
     }
 
@@ -61,7 +51,7 @@ public class ChargePointManager
                 {
                     starChildCount++;
                     starChildCountSkip--;
-                    Singleton.Instance.gameSceneController.starChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
+                    Singleton.Instance.gameSceneController.StarChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
                     if (starChildCount >= starChildCountMax)
                     {
                         starChildCountSkip = 0;
@@ -71,7 +61,7 @@ public class ChargePointManager
             }
             else
             {
-                Singleton.Instance.gameSceneController.starChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
+                Singleton.Instance.gameSceneController.StarChargeController.UpdateDisplayAcquisitionSpriteStar(starChildCount);
             }
         }
     }
