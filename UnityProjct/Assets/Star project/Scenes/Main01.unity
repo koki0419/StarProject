@@ -1302,10 +1302,7 @@ MonoBehaviour:
   playerMove: {fileID: 1774836255}
   boss:
   - {fileID: 1399226575}
-  cameraController: {fileID: 534669906}
   starChargeController: {fileID: 1231812595}
-  chargePointManager:
-    destroyCount: 0
   uiManager: {fileID: 1219740086}
   gameOverLineController: {fileID: 1047188198}
   debug: 0
@@ -14502,9 +14499,6 @@ MonoBehaviour:
   deleteTime: 4
   defensePower: 1
   foundationHP: 10
-  foundationHPMax: 0
-  lnitialVelocity: 0
-  gravityMove: 0
 --- !u!95 &1399226576
 Animator:
   serializedVersion: 3
@@ -19274,7 +19268,12 @@ PrefabInstance:
     - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: enemyTyp
-      value: 1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: amountOfMovement.x
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
