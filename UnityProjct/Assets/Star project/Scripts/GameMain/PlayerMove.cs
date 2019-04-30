@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     //攻撃時設定数値
-     enum PlayerAttackIndex
+    private enum PlayerAttackIndex
     {
         None,
         AttackNormal = 1000,
@@ -12,10 +12,10 @@ public class PlayerMove : MonoBehaviour
         ChargeAttackDown = 1001,
         ChargeAttackUp = 1011,
     }
-    PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
+    private PlayerAttackIndex payerAttackIndex = PlayerAttackIndex.None;
 
     //オブジェクトステータス
-     enum ObjState
+    private enum ObjState
     {
         None,
         Normal,//通常状態
@@ -28,29 +28,29 @@ public class PlayerMove : MonoBehaviour
         OnCharge,//チャージ中状態
         CharacterGameOver,//ゲームオーバー状態
     }
-    ObjState objState = ObjState.None;
+    private ObjState objState = ObjState.None;
 
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
-    [SerializeField] Animator animatorComponent;
+    [SerializeField] private Animator animatorComponent = null;
     public Animator playerAnimator
     {
         get { return animatorComponent; }
     }
 
-    new Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
 
     [Header("エフェクト関係")]
     //スター獲得エフェクト
-    [SerializeField] GameObject starAcquisitionEffect = null;
+    [SerializeField] private GameObject starAcquisitionEffect = null;
     //チャージエフェクト1
-    [SerializeField] GameObject chargeEffect1 = null;
+    [SerializeField] private GameObject chargeEffect1 = null;
     //チャージエフェクト2
-    [SerializeField] GameObject chargeEffect2 = null;
+    [SerializeField] private GameObject chargeEffect2 = null;
     //砂煙エフェクト
-    [SerializeField] GameObject sandEffect = null;
+    [SerializeField] private GameObject sandEffect = null;
     //パンチエフェクト
-    [SerializeField] GameObject punchEffect = null;
+    [SerializeField] private GameObject punchEffect = null;
 
     //-------------クラス関係--------------------------------
     //『Attack』をインスタンス
