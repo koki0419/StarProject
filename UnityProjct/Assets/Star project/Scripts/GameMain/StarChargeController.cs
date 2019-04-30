@@ -16,29 +16,29 @@ public class StarChargeController : MonoBehaviour
 
     [Header("チャージ用☆UI")]
     //大きい☆UIを取得します →5個
-    [SerializeField] StarState[] starChargeUI = null;
+    [SerializeField] private StarState[] starChargeUI = null;
     //☆獲得ポイント
-    [SerializeField] private Image chargeFill;
+    [SerializeField] private Image chargeFill = null;
     //小さい☆UIが10個溜まったフラグ
-    bool starChargeMaxFlag = false;
+    private bool starChargeMaxFlag = false;
     //現在の大きい☆の数
-    [SerializeField] int bigStarCount = 0;
+    [SerializeField] private int bigStarCount = 0;
     public int StarCount
     {
         set { bigStarCount = value; }
         get { return bigStarCount; }
     }
     //小さい☆獲得表示UI(1/10)
-    [SerializeField] private GameObject AcquisitionSpriteStarCount0;
+    [SerializeField] private GameObject AcquisitionSpriteStarCount0 = null;
     //小さい☆獲得表示UI(10/10)
-    [SerializeField] private GameObject AcquisitionSpriteStarCount1;
+    [SerializeField] private GameObject AcquisitionSpriteStarCount1 = null;
     //小さい☆の獲得数画像
-    [SerializeField] private Sprite[] smallStarAcquisitionSprite;
+    [SerializeField] private Sprite[] smallStarAcquisitionSprite = null;
 
     //小さい☆獲得UI1/10のアニメーション
-    [SerializeField] Animator AcquisitionStarCount_1_10Animator;
+    [SerializeField] private Animator AcquisitionStarCount_1_10Animator = null;
     //小さい☆獲得UI10/10のアニメーション
-    [SerializeField] Animator AcquisitionStarCount_10_10Animator;
+    [SerializeField] private Animator AcquisitionStarCount_10_10Animator = null;
 
     public void Init()
     {

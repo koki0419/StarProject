@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    [SerializeField] AudioSource bgmAudio;
-    [SerializeField] AudioSource playerSeAudio;
-    [SerializeField] AudioSource playerLoopSeAudio;
-    [SerializeField] AudioSource obstaclesSeAudio;
+    [SerializeField] private AudioSource bgmAudio = null;
+    [SerializeField] private AudioSource playerSeAudio = null;
+    [SerializeField] private AudioSource playerLoopSeAudio = null;
+    [SerializeField] private AudioSource obstaclesSeAudio = null;
 
-    [SerializeField] AudioClip normalBgm;
-    [SerializeField] AudioClip bossBgm;
-    [SerializeField] AudioClip jingleClear;
-    [SerializeField] AudioClip jingleGameOver;
-    [SerializeField] AudioClip[] se;
+    [SerializeField] private AudioClip normalBgm = null;
+    [SerializeField] private AudioClip bossBgm = null;
+    [SerializeField] private AudioClip jingleClear = null;
+    [SerializeField] private AudioClip jingleGameOver = null;
+    [SerializeField] private AudioClip[] se = null;
 
     /// <summary>
     /// BGM再生用
@@ -101,6 +101,10 @@ public class SoundManager : MonoBehaviour
             playerSeAudio.PlayOneShot(se[playSeNum]);
         }
     }
+    /// <summary>
+    /// プレイヤーのSEをループ再生します
+    /// </summary>
+    /// <param name="playSeNum"></param>
     public void PlayPlayerLoopSe(int playSeNum)
     {
         if (playerSeAudio.isPlaying && playerLoopSeAudio.isPlaying)
@@ -112,13 +116,20 @@ public class SoundManager : MonoBehaviour
             playerLoopSeAudio.PlayOneShot(se[playSeNum]);
         }
     }
-
+    /// <summary>
+    /// プレイヤーSEの再生をすべてストップします
+    /// </summary>
     public void StopPlayerSe()
     {
         playerSeAudio.Stop();
         playerLoopSeAudio.Stop();
     }
-
+    /// <summary>
+    /// 障害物、エネミーのSEを再生します
+    /// SEが再生中は使用できません
+    /// 多重再生予防
+    /// </summary>
+    /// <param name="playSeNum"></param>
     public void PlayObstaclesSe(int playSeNum)
     {
         if (obstaclesSeAudio.isPlaying)
@@ -130,20 +141,11 @@ public class SoundManager : MonoBehaviour
             obstaclesSeAudio.PlayOneShot(se[playSeNum]);
         }
     }
+    /// <summary>
+    /// 障害物、エネミーのSEをストップさせます
+    /// </summary>
     public void StopObstaclesSe()
     {
         obstaclesSeAudio.Stop();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

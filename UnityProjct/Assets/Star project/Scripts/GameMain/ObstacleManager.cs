@@ -5,61 +5,46 @@ using UnityEngine;
 public class ObstacleManager : MonoBehaviour
 {
     //-------------Unityコンポーネント関係-------------------
-    new Rigidbody[] rigidbody;
-
-
     //エフェクト
-    [SerializeField] GameObject breakEffect = null;
-
-    GameObject[] childrenOBJ;
-    [SerializeField] Renderer moaiRenderer;
+    [SerializeField] private GameObject breakEffect = null;
+    [SerializeField] private Renderer moaiRenderer = null;
     //-------------クラス関係--------------------------------
 
     //『PlayerMove』を取得します
-    PlayerMove playerMove;
+    private PlayerMove playerMove = null;
     //-------------数値用変数--------------------------------
     //生成する星の数
-    [SerializeField] int starNum = 0;
+    [SerializeField] private int starNum = 0;
 
     //ポイントを獲得した回数
-    int acquisitionPoint = 0;
+    private int acquisitionPoint = 0;
 
-    [SerializeField] float deleteTime = 2.0f;
+    [SerializeField] private float deleteTime = 2.0f;
 
     //Hp
-    [SerializeField] float foundationHP;
+    [SerializeField] private float foundationHP;
     //HpMax
-    float foundationHPMax;
+    private float foundationHPMax;
 
-    int breakSeNum = 7;
+    private int breakSeNum = 7;
 
     //-------------フラグ用変数------------------------------
-    bool onRemoveObjFlag = false;
+    private bool onRemoveObjFlag = false;
 
     public bool isDestroyed
     {
         get;private set;
     }
-    [SerializeField] bool onMove;
 
     public void Init()
     {
         foundationHPMax = foundationHP;
         //『PlayerMove』を取得します
-        playerMove = Singleton.Instance.gameSceneController.playerMove;
-        //破壊したときの動き
-        // bool producedWhenDestroyed = false;
+        playerMove = Singleton.Instance.gameSceneController.PlayerMove;
         //オブジェクトを削除するかどうか
         onRemoveObjFlag = false;
         //ポイントを獲得した回数
         acquisitionPoint = 0;
-        //子供オブジェクトを取得
-        childrenOBJ = new GameObject[transform.childCount];
-        //子供オブジェクト取得
-        for (int i = 0; transform.childCount > i; i++)
-        {
-            childrenOBJ[i] = transform.GetChild(i).gameObject;
-        }
 
         var hp = 1.0;
         hp -= foundationHP / foundationHPMax;

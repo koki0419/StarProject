@@ -2,19 +2,21 @@
 using TMPro;
 using UnityEngine.UI;
 
-
 using StarProject.Result;
 
 public class DamageText : MonoBehaviour
 {
     public TextMeshPro text;
 
-    float startLife = 2.0f;
+    private float startLife = 2.0f;
 
     static public int a = 0;
 
 
-
+    /// <summary>
+    /// ダメージ表示
+    /// </summary>
+    /// <param name="damage"></param>
     public void SetText(int damage)
     {
         ResultScreenController.all_damage += damage;

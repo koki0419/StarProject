@@ -7,88 +7,90 @@ using UnityEngine.SceneManagement;
 public class UiManager : MonoBehaviour
 {
     //ゲームオーバー時のタイプ
-    public enum GameOverTyp
+    private enum GameOverTyp
     {
         None,
         Normal,//一回目のセレクト
         Retry,//リトライボタンを押したときのタイプ
         Exit,//Exitボタンを押したときのタイプ
     }
-    GameOverTyp gameOverTyp = GameOverTyp.None;
+    private GameOverTyp gameOverTyp = GameOverTyp.None;
     //ポーズ時のタイプ
-    public enum PauseTyp
+    private enum PauseTyp
     {
         None,
         Normal,//一回目のセレクト
         Retry,//リトライボタンを押したときのタイプ
         Exit,//Exitボタンを押したときのタイプ
     }
-    PauseTyp pauseTyp = PauseTyp.None;
+    private PauseTyp pauseTyp = PauseTyp.None;
 
+    //フェード関係
     //FadeLayerクラスを取得
-    [SerializeField] FadeLayer fadeLayer;
+    [SerializeField] private FadeLayer fadeLayer　= null;
+    [Header("フェード関係")]
+    [SerializeField] private GameObject fadeText = null;
+    [SerializeField] private GameObject fadeChara = null;
+    private Image fadeImage;
+    [SerializeField] private Color fadeOutColor;
+    [SerializeField] private float fadeOutTime;
+    [SerializeField] private Color fadeInColor;
+    [SerializeField] private float fadeInTime;
+
     //ゲームオーバー時表示UI
-    [SerializeField] GameObject gameOvreUI = null;
+    [SerializeField] private GameObject gameOvreUI = null;
 
     //ゲームクリア時表示用UI
-    [SerializeField] GameObject gameClearUI = null;
-
-
-
-    //フェード時表示用TEXT
-    [SerializeField] GameObject fadeText;
-
-    //フェード時表示用マスコットキャラ
-    [SerializeField] GameObject fadeChara;
+    [SerializeField] private GameObject gameClearUI = null;
 
     //ポーズ時ボタン
     //ポーズ時表示用UI
-    [SerializeField] GameObject pauseDiaLog = null;
-    [SerializeField] Image pauseRetryButton;
-    [SerializeField] Image pauseTitleButton;
+    [SerializeField] private GameObject pauseDiaLog = null;
+    [SerializeField] private Image pauseRetryButton = null;
+    [SerializeField] private Image pauseTitleButton = null;
     //ポーズボタン
     [Header("ポーズ時のダイアログ画像")]
-    [SerializeField] Sprite pauseNormalRetrySprite;
-    [SerializeField] Sprite pauseSelectRetrySprite;
-    [SerializeField] Sprite pauseNormalTitleSprite;
-    [SerializeField] Sprite pauseSelectTitleSprite;
+    [SerializeField] private Sprite pauseNormalRetrySprite = null;
+    [SerializeField] private Sprite pauseSelectRetrySprite = null;
+    [SerializeField] private Sprite pauseNormalTitleSprite = null;
+    [SerializeField] private Sprite pauseSelectTitleSprite = null;
 
-    int countNum;
+    private int countNum;
 
     //star関係canvas
-    public GameObject starUICanvas;
+    [SerializeField] GameObject starUICanvas;
 
-    int pauseButtonSelectNum = 0;
-    int pauseButtonSelectNumMax = 2;
-    int gameOverButtonSelectNum = 0;
-    int gameOverButtonSelectNumMax = 2;
-    int exitButtonSelectNum = 0;
-    int exitButtonSelectNumMax = 2;
-    int retryButtonSelectNum = 0;
-    int retryButtonSelectNumMax = 2;
+    private int pauseButtonSelectNum = 0;
+    private int pauseButtonSelectNumMax = 2;
+    private int gameOverButtonSelectNum = 0;
+    private int gameOverButtonSelectNumMax = 2;
+    private int exitButtonSelectNum = 0;
+    private int exitButtonSelectNumMax = 2;
+    private int retryButtonSelectNum = 0;
+    private int retryButtonSelectNumMax = 2;
 
     //ゲームオーバーダイアログ
-    [SerializeField] GameObject gameOverDiaLog = null;
-    [SerializeField] Image gameOverRetryButton = null;
-    [SerializeField] Image gameOverExitTitleButton = null;
+    [SerializeField] private GameObject gameOverDiaLog = null;
+    [SerializeField] private Image gameOverRetryButton = null;
+    [SerializeField] private Image gameOverExitTitleButton = null;
     [Header("ゲームオーバー時のダイアログ画像")]
-    [SerializeField] Sprite gameOverRetryNormalSprite;
-    [SerializeField] Sprite gameOverRetrySelectSprite;
-    [SerializeField] Sprite gameOverExitNormalSprite;
-    [SerializeField] Sprite gameOverExitSelectSprite;
+    [SerializeField] private Sprite gameOverRetryNormalSprite = null;
+    [SerializeField] private Sprite gameOverRetrySelectSprite = null;
+    [SerializeField] private Sprite gameOverExitNormalSprite = null;
+    [SerializeField] private Sprite gameOverExitSelectSprite = null;
     //2重確認ダイアログ用画像
-    [SerializeField] GameObject exitDoubleCheckDialog;
-    [SerializeField] GameObject retryDoubleCheckDialog;
+    [SerializeField] private GameObject exitDoubleCheckDialog = null;
+    [SerializeField] private GameObject retryDoubleCheckDialog = null;
     [Header("2重確認用ボタン")]
-    [SerializeField] Image exitDoubleCheckDialogYesButton = null;
-    [SerializeField] Image exitDoubleCheckDialogNoButton = null;
-    [SerializeField] Image retryDoubleCheckDialogYesButton = null;
-    [SerializeField] Image retryDoubleCheckDialogNoButton = null;
+    [SerializeField] private Image exitDoubleCheckDialogYesButton = null;
+    [SerializeField] private Image exitDoubleCheckDialogNoButton = null;
+    [SerializeField] private Image retryDoubleCheckDialogYesButton = null;
+    [SerializeField] private Image retryDoubleCheckDialogNoButton = null;
     [Header("2重確認用画像")]
-    [SerializeField] Sprite doubleCheckDialogYesNormalSprite;
-    [SerializeField] Sprite doubleCheckDialogYesSelectSprite;
-    [SerializeField] Sprite doubleCheckDialogNoNormalSprite;
-    [SerializeField] Sprite doubleCheckDialogNoSelectSprite;
+    [SerializeField] private Sprite doubleCheckDialogYesNormalSprite = null;
+    [SerializeField] private Sprite doubleCheckDialogYesSelectSprite = null;
+    [SerializeField] private Sprite doubleCheckDialogNoNormalSprite = null;
+    [SerializeField] private Sprite doubleCheckDialogNoSelectSprite = null;
 
     // Start is called before the first frame update
     public void Init()
@@ -114,22 +116,22 @@ public class UiManager : MonoBehaviour
         gameOverTyp = GameOverTyp.Normal;
     }
     //スタート
-    IEnumerator OnTitle()
+    private IEnumerator OnTitle()
     {
-        yield return FadeOutEnumerator(Color.black, 3.0f);
+        yield return FadeOutEnumerator();
         SceneManager.LoadScene("TitleScene");
     }
     //リトライ
-    IEnumerator OnRetry()
+    private IEnumerator OnRetry()
     {
-        yield return FadeOutEnumerator(Color.black,3.0f);
+        yield return FadeOutEnumerator();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     /// <summary>
     /// フェード時フェードキャラクターを表示非表示します
     /// </summary>
     /// <param name="isFade">表示するかどうか</param>
-    void FadeImageDisplay(bool isFade)
+    private void FadeImageDisplay(bool isFade)
     {
         fadeText.SetActive(isFade);
         fadeChara.SetActive(isFade);
@@ -140,10 +142,11 @@ public class UiManager : MonoBehaviour
     /// </summary>
     /// <param name="fadeTime">フェードインの時間を設定します</param>
     /// <returns></returns>
-    public IEnumerator FadeInEnumerator(float fadeTime)
+    public IEnumerator FadeInEnumerator()
     {
+        ForceColor(fadeInColor);
         FadeImageDisplay(true);
-        yield return fadeLayer.FadeInEnumerator(fadeTime);
+        yield return fadeLayer.FadeInEnumerator(fadeInTime);
         FadeImageDisplay(false);
     }
     /// <summary>
@@ -151,11 +154,11 @@ public class UiManager : MonoBehaviour
     /// コルーチンの戻り値で使用します
     /// </summary>
     /// <returns></returns>
-    public IEnumerator FadeOutEnumerator(Color targetColor,float period)
+    public IEnumerator FadeOutEnumerator()
     {
         ForceColor(Color.clear);
         FadeImageDisplay(true);
-        yield return fadeLayer.FadeOutEnumerator(targetColor, period);
+        yield return fadeLayer.FadeOutEnumerator(fadeOutColor, fadeOutTime);
         FadeImageDisplay(false);
     }
     public void ForceColor(Color fadeColor)
@@ -523,12 +526,10 @@ public class UiManager : MonoBehaviour
             //Time.timeScale = 0.0f;
             pauseButtonSelectNum = 0;
             PauseButtonSelect(pauseButtonSelectNum);
-            GameSceneController.isPlaying = false;
         }
         else
         {
             //Time.timeScale = 1.0f;
-            GameSceneController.isPlaying = true;
             ExitDiaLogDisplay(false);
             pauseTyp = PauseTyp.Normal;
         }

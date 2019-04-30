@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    /// <summary>
+    /// エネミーの現状ステータス
+    /// </summary>
     public enum EnemyState
     {
         None,
@@ -17,7 +20,9 @@ public class EnemyController : MonoBehaviour
     {
         get; private set;
     }
-
+    /// <summary>
+    /// エネミーのタイプ
+    /// </summary>
     public enum EnemyTyp
     {
         None,
@@ -28,30 +33,30 @@ public class EnemyController : MonoBehaviour
     [SerializeField] EnemyTyp enemyTyp = EnemyTyp.None;
 
     //プレイヤーポジション
-    GameObject playerObj;
-    Vector3 startPos;
-    Vector3 endPos;
+    private GameObject playerObj = null;
+    private Vector3 startPos = Vector3.zero;
+    private Vector3 endPos = Vector3.zero;
     // 
-    [SerializeField] Vector3 amountOfMovement = Vector3.zero;
+    [SerializeField] private Vector3 amountOfMovement = Vector3.zero;
     //移動スピード
     [Header("各状態の移動速度")]
-    [SerializeField] float searchMoveSpeed;
-    [SerializeField] float lockOnMoveSpeed;
-    [SerializeField] float removeMoveSpeed;
+    [SerializeField] private float searchMoveSpeed;
+    [SerializeField] private float lockOnMoveSpeed;
+    [SerializeField] private float removeMoveSpeed;
     //[Header("各状態の移動速度")]
     //[SerializeField] float difference;
     //移動方向
-    private Vector3 moveForce;
+    private Vector3 moveForce = Vector3.zero;
     //進む戻る
-    bool isReturn;
-    Rigidbody enemyRigidbody;
+    private bool isReturn;
+    private Rigidbody enemyRigidbody = null;
     //戻るポジション
-    Vector3 removePosition;
+    private Vector3 removePosition = Vector3.zero;
     //戻る移動方向
-    Vector3 removeForce;
-    [SerializeField] float defaultAttackTime = 2.0f;
-    float attackTime = 0;
-    [SerializeField] GameObject sandEffect;
+    private Vector3 removeForce = Vector3.zero;
+    [SerializeField] private float defaultAttackTime = 2.0f;
+    private float attackTime = 0;
+    [SerializeField] private GameObject sandEffect = null;
 
     public void Init(GameObject player)
     {
@@ -84,11 +89,11 @@ public class EnemyController : MonoBehaviour
         SandEffectPlay(false);
         enemyState = EnemyState.Search;
     }
-
+    /// <summary>
+    /// エネミーアップデート
+    /// </summary>
     public void EnemyControllerUpdate()
     {
-        //if (GameSceneController.isPlaying)
-        // {
         switch (enemyTyp)
         {
             case EnemyTyp.AirMoveEnemy:
@@ -130,13 +135,11 @@ public class EnemyController : MonoBehaviour
                 }
                 break;
         }
-        //  }
-        // Debug.Log("EnemyState : " + enemyState);
     }
     /// <summary>
     /// モアイの間合いに入った時、一定時間後にスタン攻撃します
     /// </summary>
-    void DiscoveryUpdate()
+    private void DiscoveryUpdate()
     {
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
@@ -162,7 +165,7 @@ public class EnemyController : MonoBehaviour
     /// <summary>
     /// モアイの間合いに入った時、一定時間後にスタン攻撃します
     /// </summary>
-    void MoveEnemy_DiscoveryUpdate()
+    private void MoveEnemy_DiscoveryUpdate()
     {
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
@@ -186,7 +189,7 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.StunAttack;
         }
     }
-    void StunAttackUpdate()
+    private void StunAttackUpdate()
     {
         return;
     }
@@ -194,7 +197,7 @@ public class EnemyController : MonoBehaviour
     /// 索敵状態
     /// スタート位置と終了位置を反復移動します
     /// </summary>
-    void SearchUpdate()
+    private void SearchUpdate()
     {
         var velocity = enemyRigidbody.velocity;
         //進む
@@ -246,7 +249,7 @@ public class EnemyController : MonoBehaviour
     /// Rigidbodyのフリーズポジション、ローテーションの固定
     /// 通常時の設定です
     /// </summary>
-    void FreezePositionOll()
+    private void FreezePositionOll()
     {
         enemyRigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
     }
@@ -254,11 +257,15 @@ public class EnemyController : MonoBehaviour
     /// Rigidbodyのフリーズポジション、ローテーションの固定
     /// スタン攻撃時の設定です
     /// </summary>
-    void FreezePositionSet()
+    private void FreezePositionSet()
     {
         enemyRigidbody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
-    void FreezePositionAir()
+    /// <summary>
+    /// Rigidbodyのフリーズポジション、ローテーションの固定
+    /// 空中浮遊状態のの設定です
+    /// </summary>
+    private void FreezePositionAir()
     {
         enemyRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
@@ -269,7 +276,11 @@ public class EnemyController : MonoBehaviour
             StartCoroutine(SandEffectEnumerator());
         }
     }
-    IEnumerator SandEffectEnumerator()
+    /// <summary>
+    /// スタン状態で地面に着くときにエフェクト非表示＆リジットボディを消去します
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SandEffectEnumerator()
     {
         enemyState = EnemyState.Stun;
         FreezePositionOll();
@@ -277,7 +288,7 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         SandEffectPlay(false);
     }
-    void OnTriggerStay(Collider collision)
+    private void OnTriggerStay(Collider collision)
     {
         //プレイキャラクターを発見
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Search)
@@ -297,7 +308,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider collision)
+    private void OnTriggerExit(Collider collision)
     {
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery)
         {
@@ -315,7 +326,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void SandEffectPlay(bool isPlay)
+    private void SandEffectPlay(bool isPlay)
     {
         sandEffect.SetActive(isPlay);
     }

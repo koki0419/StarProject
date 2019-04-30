@@ -15,13 +15,13 @@ public class StarState : MonoBehaviour
     public Star star = Star.None;
 
     [Header("☆の状態画像")]
-    [SerializeField] Sprite notAcquiredSprite = null;//使っていない
-    [SerializeField] Sprite normalSprite = null;//使っていない
-    [SerializeField] Sprite chageStarSprite = null;//チャージ中（大きい☆用）
+    [SerializeField] private Sprite notAcquiredSprite = null;//使っていない
+    [SerializeField] private Sprite normalSprite = null;//使っていない
+    [SerializeField] private Sprite chageStarSprite = null;//チャージ中（大きい☆用）
 
-    [SerializeField] GameObject starImage = null;
+    [SerializeField] private GameObject starImage = null;
 
-    [SerializeField] bool isBigStatUI;
+    [SerializeField] private bool isBigStatUI;
 
     public void UpdateStarSprite(int starState)
     {

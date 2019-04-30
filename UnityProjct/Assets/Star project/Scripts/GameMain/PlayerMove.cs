@@ -67,30 +67,30 @@ public class PlayerMove : MonoBehaviour
     //キー入力制御
     [SerializeField] private float inputMoveKey = 0;
     //ジャンプ力
-    [SerializeField] float jumpSpeed = 0;
+    [SerializeField] private float jumpSpeed = 0;
 
     //チャージポイント使用時のユーザーゲージ上昇量
-    [SerializeField] float userChargePonitUp = 0.001f;
+    [SerializeField] private float userChargePonitUp = 0.001f;
 
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
-    [SerializeField] float foundationoffensivePower = 0;
+    [SerializeField] private float foundationoffensivePower = 0;
     //初期移動量
-    [SerializeField] float foundationSpeedForce = 0;
-    [SerializeField] float UpFoundationSpeedForce = 0;
+    [SerializeField] private float foundationSpeedForce = 0;
+    [SerializeField] private float UpFoundationSpeedForce = 0;
 
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
-    [SerializeField] float fastOffensivePower = 0;
-    [SerializeField] float secondOffensivePower = 0;
+    [SerializeField] private float fastOffensivePower = 0;
+    [SerializeField] private float secondOffensivePower = 0;
     //移動量
-    [SerializeField] float speedForce = 0;
+    [SerializeField] private float speedForce = 0;
     //現在のチャージ量
-    float chargeNow = 0.0f;
+    private float chargeNow = 0.0f;
     //現在のチャージ量
-    float chargeNowHand = 0.0f;
+    private float chargeNowHand = 0.0f;
     //何回チャージしたか
-    int chargeCount = 0;
+    private int chargeCount = 0;
     //回転
     private float rot = 90;
     //攻撃時Speed
@@ -124,18 +124,17 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private int punchSeNum;
     [SerializeField] private int getStarSeNum;
     //-------------フラグ用変数------------------------------
-    [Header("各種フラグ")]
     //ジャンプフラグ
-    bool isJumpFlag;
+    private bool isJumpFlag;
     //アタックフラグ
     public bool canDamage
     {
         get; private set;
     }
     //地面との接触
-    bool isGround;
+    private bool isGround;
     //チャージ中かどうか
-    bool isChargeFlag;
+    private bool isChargeFlag;
     //☆獲得時フラグ
     public bool isAcquisitionStar
     {
@@ -143,13 +142,13 @@ public class PlayerMove : MonoBehaviour
     }
 
     //キャラクターの向き
-    bool isRightDirection;
-    bool isLeftDirection;
+    private bool isRightDirection;
+    private bool isLeftDirection;
 
-    bool isUpAttack;
-    bool isDownAttack;
-    bool isAttack;
-    bool canAttack;
+    private bool isUpAttack;
+    private bool isDownAttack;
+    private bool isAttack;
+    private bool canAttack;
 
     private const string groundLayerName = "Ground";
     private const string gameOverLineLayerName = "GameOverObj";
@@ -166,7 +165,7 @@ public class PlayerMove : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
         dragPower = rigidbody.drag;
         //チャージゲージをリセットします
-        Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+        Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(0);
         //----初期化-----
         canDamage = false;
         isJumpFlag = false;
@@ -224,7 +223,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-        Debug.Log("ObjState : " + objState);
     }
 
     //--------------関数-----------------------------
@@ -383,7 +381,7 @@ public class PlayerMove : MonoBehaviour
     /// <returns></returns>
     void ChargeAttackHand(float charge)
     {
-        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.StarChildCountMax;
+        var chargeMax = Singleton.Instance.gameSceneController.ChargePointManager.starChildCountMax;
         var charaHand = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
         //チャージ量の+-量
         float chargeProportion = userChargePonitUp * 10;
@@ -547,7 +545,6 @@ public class PlayerMove : MonoBehaviour
                 animatorComponent.SetBool("isKnockBack", true);
                 break;
             case "charge"://チャージ
-                Debug.Log("チャージ");
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetTrigger("isCharge");
                 animatorComponent.SetInteger("setPunchNum", 0);
@@ -710,8 +707,8 @@ public class PlayerMove : MonoBehaviour
         {
             Singleton.Instance.soundManager.PlayPlayerLoopSe(chargeSeNum);
             //チャージ中
-            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));
-            Singleton.Instance.gameSceneController.starChargeController.ChargeBigStar(chargeCount);
+            Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));
+            Singleton.Instance.gameSceneController.StarChargeController.ChargeBigStar(chargeCount);
             ChargeAttackHand(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount);
             //チャージエフェクトデバック---------------------------
             if (chargeCount < 3)
@@ -739,9 +736,9 @@ public class PlayerMove : MonoBehaviour
 
             //attackSpeed = chargeCount * speedForce + foundationSpeedForce;
             //チャージゲージをリセットします
-            Singleton.Instance.gameSceneController.starChargeController.UpdateChargePoint(0);
+            Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(0);
             //チャージ中☆を戻します
-            Singleton.Instance.gameSceneController.starChargeController.UpdateBigStarUI(chargeCount);
+            Singleton.Instance.gameSceneController.StarChargeController.UpdateBigStarUI(chargeCount);
             //攻撃アニメーション
             //チャージ回数が1回までなら通常パンチ
             //チャージしたなら入力角度を計算して上下左右を判断して攻撃
