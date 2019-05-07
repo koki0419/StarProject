@@ -359,8 +359,8 @@ namespace StarProject.Title
         private IEnumerator GameStartEnumerator()
         {
             ForceColor(Color.clear);
-            yield return FadeOutEnumerator(fadeOutColor, fadeOutTime);
-            FadeImageDisplay(false);
+            yield return FadeEnumerator(Color.clear, fadeOutColor, fadeOutTime);
+            //FadeImageDisplay(false);
             GameSceneController.stageNum = 1;
             SceneManager.LoadScene("main01");
             titleTyp = TitleTyp.None;
@@ -371,11 +371,10 @@ namespace StarProject.Title
         /// <param name="color">最終カラー</param>
         /// <param name="period">フェード時間</param>
         /// <returns></returns>
-        private IEnumerator FadeOutEnumerator(Color color, float period)
-        {
-            fadeImageObj.transform.SetAsLastSibling();
-            yield return FadeEnumerator(Color.clear, color, period);
-        }
+        //private IEnumerator FadeOutEnumerator(Color color, float period)
+        //{
+        //    yield return 
+        //}
         /// <summary>
         /// フェード実体
         /// </summary>
