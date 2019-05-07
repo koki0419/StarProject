@@ -15,6 +15,30 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip jingleGameOver = null;
     [SerializeField] private AudioClip[] se = null;
 
+    static public float audioVolume = 1.0f;
+    static public float bgmVolume = 1.0f;
+    static public float seVolume = 1.0f;
+
+    /// <summary>
+    /// 全てのオーディオの音量を管理します（音量0の時実装）
+    /// </summary>
+    public void AllAudioVolume()
+    {
+        if (bgmAudio != null) bgmAudio.volume = audioVolume;
+        if (playerSeAudio != null) playerSeAudio.volume = audioVolume;
+        if (playerLoopSeAudio != null) playerLoopSeAudio.volume = audioVolume;
+        if (obstaclesSeAudio != null) obstaclesSeAudio.volume = audioVolume;
+    }
+    /// <summary>
+    /// 全てのオーディオの音量を管理します
+    /// </summary>
+    public void AudioVolume()
+    {
+        if (bgmAudio != null) bgmAudio.volume = bgmVolume;
+        if (playerSeAudio != null) playerSeAudio.volume = seVolume;
+        if (playerLoopSeAudio != null) playerLoopSeAudio.volume = seVolume;
+        if (obstaclesSeAudio != null) obstaclesSeAudio.volume = seVolume;
+    }
     /// <summary>
     /// BGM再生用
     /// BGMを通常とボス戦で変えられるようにclipをここでセットして再生

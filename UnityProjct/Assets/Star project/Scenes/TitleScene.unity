@@ -972,6 +972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1301524554}
   - component: {fileID: 1301524555}
+  - component: {fileID: 1301524556}
   m_Layer: 0
   m_Name: Scene Controller
   m_TagString: Untagged
@@ -1032,6 +1033,22 @@ MonoBehaviour:
     type: 3}
   exitButtonNoSelectSprite: {fileID: 21300000, guid: df594d53febd20c4a8e108499ac68873,
     type: 3}
+--- !u!114 &1301524556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301524553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3970cb1a286410e4f83b27372f2f1289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  starGenerator: {fileID: 0}
+  gameSceneController: {fileID: 0}
+  cameraController: {fileID: 0}
+  soundManager: {fileID: 1434055875}
 --- !u!1 &1434055874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,11 +1078,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c722a9973513b5341a467d0d266a62dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmAudio: {fileID: 0}
+  bgmAudio: {fileID: 2048835922}
   playerSeAudio: {fileID: 0}
   playerLoopSeAudio: {fileID: 0}
   obstaclesSeAudio: {fileID: 0}
-  normalBgm: {fileID: 0}
+  normalBgm: {fileID: 8300000, guid: 3445d43dfbb901241b4b8d47d04d82b1, type: 3}
   bossBgm: {fileID: 0}
   jingleClear: {fileID: 0}
   jingleGameOver: {fileID: 0}
@@ -1407,7 +1424,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3445d43dfbb901241b4b8d47d04d82b1, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

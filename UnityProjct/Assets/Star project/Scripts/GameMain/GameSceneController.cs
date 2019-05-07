@@ -151,11 +151,11 @@ namespace StarProject.Gamemain
         IEnumerator Start()
         {
             exitOpning = false;
+            playerMove.Init();
             yield return null;
             Init();
             starChargeController.Init();
             StarsObjDysplay(false);
-            playerMove.Init();
             cameraController.Init();
             chargePointManager.Init();
             gameOverLineController.Init();
@@ -180,6 +180,8 @@ namespace StarProject.Gamemain
                 isMoveCamera = false;
             }
             gameMainState = GameMainState.Opening;
+            if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
+            else Singleton.Instance.soundManager.AllAudioVolume();
             Singleton.Instance.soundManager.PlayBgm("NormalBGM");
         }
 

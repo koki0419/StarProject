@@ -134,8 +134,10 @@ namespace StarProject.Result
             {
                 GameSceneController.stageNum = debugStage;
             }
+            if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
+            else Singleton.Instance.soundManager.AllAudioVolume();
+            Singleton.Instance.soundManager.PlayBgm("NormalBGM");
         }
-
 
         // Update is called once per frame
         void Update()
