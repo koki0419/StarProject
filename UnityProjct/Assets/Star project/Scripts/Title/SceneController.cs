@@ -14,9 +14,19 @@ namespace StarProject.Title
         {
             None,
             TitleSelect,
-            ExitSelect
+            ExitSelect,
+            Debug,
         }
         private TitleTyp titleTyp = TitleTyp.None;
+
+        private enum DebugTyp
+        {
+            None,
+            Audio,
+            BGM,
+            SE,
+        }
+        private DebugTyp debugTyp = DebugTyp.None;
 
         //フェード関係
         [Header("フェード関係")]
@@ -56,6 +66,8 @@ namespace StarProject.Title
         //ゲームパッドjoyコン制御用
         private int countNum;
 
+        private bool debugFlag = false;
+
         // Start is called before the first frame update
         void Init()
         {
@@ -72,6 +84,9 @@ namespace StarProject.Title
         {
             Init();
             yield return null;
+            if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
+            else Singleton.Instance.soundManager.AllAudioVolume();
+            Singleton.Instance.soundManager.PlayBgm("NormalBGM");
             titleTyp = TitleTyp.TitleSelect;
         }
         private void Awake()
@@ -81,87 +96,225 @@ namespace StarProject.Title
         // Update is called once per frame
         void Update()
         {
-            float dx = Input.GetAxis("Horizontal");
             switch (titleTyp)
             {
                 case TitleTyp.TitleSelect:
-                    //左
-                    if (dx < 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (buttonNum > 0) buttonNum--;
-                        TitleSelectButton(buttonNum);
-                    }//右
-                    else if (dx > 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (buttonNum < stageMax) buttonNum++;
-                        TitleSelectButton(buttonNum);
-                    }
-                    else if (dx == 0 && countNum != 0)
-                    {
-                        countNum = 0;
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
-                    {
-                        switch (buttonNum)
-                        {
-                            case 0:
-                                StartCoroutine(GameStartEnumerator());
-                                break;
-                            case 1:
-                                exitDialogUI.SetActive(true);
-                                exitSelectNum = 0;
-                                ExitSelectButton(exitSelectNum);
-                                titleTyp = TitleTyp.ExitSelect;
-                                break;
-                        }
-                    }
+                    TitleSeletUpdate();
                     break;
                 case TitleTyp.ExitSelect:
-                    //左
-                    if (dx < 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (exitSelectNum > 0) exitSelectNum--;
-                        ExitSelectButton(exitSelectNum);
-                    }//右
-                    else if (dx > 0 && countNum == 0)
-                    {
-                        countNum++;
-                        if (exitSelectNum < 1) exitSelectNum++;
-                        ExitSelectButton(exitSelectNum);
-                    }
-                    else if (dx == 0 && countNum != 0)
-                    {
-                        countNum = 0;
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
-                    {
-                        switch (exitSelectNum)
-                        {
-                            case 0:
-                                exitDialogUI.SetActive(false);
-                                titleTyp = TitleTyp.TitleSelect;
-                                break;
-                            case 1:
-                                OnExit();
-                                titleTyp = TitleTyp.None;
-                                break;
-                        }
-                    }
+                    ExitSelectUpdate();
                     break;
+                case TitleTyp.Debug:
+                    DebugUpdate();
+                    break;
+            }
+
+        }
+        int debugSelectIndex = 0;
+        int debugJoyCount = 0;
+        private const float debugSelectHeightGUISize = 250;
+        private const float debugSelectWidhtGUISize = 500;
+        private const float debugNormalHeightGUISize = 125;
+        private const float debugNormalWidhtGUISize = 250;
+        void OnGUI()
+        {
+            if (debugFlag)
+            {
+                GUIStyle myLabelStyle = new GUIStyle(GUI.skin.label);
+                myLabelStyle.fontSize = 50;
+
+                float dx = Input.GetAxis("Horizontal");
+                float dy = Input.GetAxis("Vertical");
+
+                if (dy < 0 && debugJoyCount == 0)
+                {
+                    debugSelectIndex++;
+                    debugJoyCount++;
+                    if (debugSelectIndex < 0)
+                    {
+                        debugSelectIndex = 0;
+                    }
+                }
+                else if (dy > 0 && debugJoyCount == 0)
+                {
+                    debugSelectIndex--;
+                    debugJoyCount++;
+                    if (debugSelectIndex > 3)
+                    {
+                        debugSelectIndex = 3;
+                    }
+                }
+                else if (dy == 0)
+                {
+                    debugJoyCount = 0;
+                }
+                if (debugSelectIndex == 1) debugTyp = DebugTyp.Audio;
+                else if (debugSelectIndex == 2) debugTyp = DebugTyp.BGM;
+                else if (debugSelectIndex == 3) debugTyp = DebugTyp.SE;
+                switch (debugTyp)
+                {
+                    case DebugTyp.Audio:
+                        // 全てのオーディオに影響します
+                        if (dx < 0)
+                        {
+                            SoundManager.audioVolume -= 0.01f;
+                            if (SoundManager.audioVolume < 0) SoundManager.audioVolume = 0;
+                        }
+                        else if (dx > 0)
+                        {
+                            SoundManager.audioVolume += 0.01f;
+                            if (SoundManager.audioVolume > 1) SoundManager.audioVolume = 1;
+                        }
+
+                        GUI.Label(new Rect(100, 150, 500, 500), "AudioVolume:", myLabelStyle);
+                        SoundManager.audioVolume = GUI.HorizontalSlider(new Rect(100, 200, debugSelectWidhtGUISize, debugSelectHeightGUISize), SoundManager.audioVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 250, 250, 250), "BGMVolume:", myLabelStyle);
+                        SoundManager.bgmVolume = GUI.HorizontalSlider(new Rect(100, 300, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.bgmVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 350, 250, 250), "SeVolume:", myLabelStyle);
+                        SoundManager.seVolume = GUI.HorizontalSlider(new Rect(100, 400, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.seVolume, 0.0F, 1.0F);
+                        break;
+                    case DebugTyp.BGM:
+                        // BGMオーディオに影響します
+                        if (dx < 0)
+                        {
+                            SoundManager.bgmVolume -= 0.01f;
+                            if (SoundManager.bgmVolume < 0) SoundManager.bgmVolume = 0;
+                        }
+                        else if (dx > 0)
+                        {
+                            SoundManager.bgmVolume += 0.01f;
+                            if (SoundManager.bgmVolume > 1) SoundManager.bgmVolume = 1;
+                        }
+
+                        GUI.Label(new Rect(100, 150, 250, 250), "AudioVolume:", myLabelStyle);
+                        SoundManager.audioVolume = GUI.HorizontalSlider(new Rect(100, 200, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.audioVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 250, 500, 500), "BGMVolume:", myLabelStyle);
+                        SoundManager.bgmVolume = GUI.HorizontalSlider(new Rect(100, 300, debugSelectWidhtGUISize, debugSelectHeightGUISize), SoundManager.bgmVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 350, 250, 250), "SeVolume:", myLabelStyle);
+                        SoundManager.seVolume = GUI.HorizontalSlider(new Rect(100, 400, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.seVolume, 0.0F, 1.0F);
+
+                        if(SoundManager.bgmVolume != 0) SoundManager.audioVolume = 1.0f;
+                        break;
+                    case DebugTyp.SE:
+                        // SEオーディオに影響します
+                        if (dx < 0)
+                        {
+                            SoundManager.seVolume -= 0.01f;
+                            if (SoundManager.seVolume < 0) SoundManager.seVolume = 0;
+                        }
+                        else if (dx > 0)
+                        {
+                            SoundManager.seVolume += 0.01f;
+                            if (SoundManager.seVolume > 1) SoundManager.seVolume = 1;
+                        }
+                        GUI.Label(new Rect(100, 150, 250, 250), "AudioVolume:", myLabelStyle);
+                        SoundManager.audioVolume = GUI.HorizontalSlider(new Rect(100, 200, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.audioVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 250, 250, 250), "BGMVolume:", myLabelStyle);
+                        SoundManager.bgmVolume = GUI.HorizontalSlider(new Rect(100, 300, debugNormalWidhtGUISize, debugNormalHeightGUISize), SoundManager.bgmVolume, 0.0F, 1.0F);
+                        GUI.Label(new Rect(100, 350, 500, 500), "SeVolume:", myLabelStyle);
+                        SoundManager.seVolume = GUI.HorizontalSlider(new Rect(100, 400, debugSelectWidhtGUISize, debugSelectHeightGUISize), SoundManager.seVolume, 0.0F, 1.0F);
+                        if (SoundManager.seVolume != 0) SoundManager.audioVolume = 1.0f;
+                        break;
+                }
             }
         }
 
-
+        private void DebugUpdate()
+        {
+            if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
+            else Singleton.Instance.soundManager.AllAudioVolume();
+            //debugupdateへ
+            if (Input.GetKeyUp(KeyCode.A) && Input.GetKeyUp(KeyCode.S) && Input.GetKeyUp(KeyCode.D) && Input.GetKeyUp(KeyCode.F))
+            {
+                debugFlag = false;
+                titleTyp = TitleTyp.TitleSelect;
+            }
+        }
         //アプリ終了関数
         private void OnExit()
         {
             Application.Quit();
             Debug.Log("アプリ終了");
+        }
+        private void TitleSeletUpdate()
+        {
+            float dx = Input.GetAxis("Horizontal");
+            //左
+            if (dx < 0 && countNum == 0)
+            {
+                countNum++;
+                if (buttonNum > 0) buttonNum--;
+                TitleSelectButton(buttonNum);
+            }//右
+            else if (dx > 0 && countNum == 0)
+            {
+                countNum++;
+                if (buttonNum < stageMax) buttonNum++;
+                TitleSelectButton(buttonNum);
+            }
+            else if (dx == 0 && countNum != 0)
+            {
+                countNum = 0;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+            {
+                switch (buttonNum)
+                {
+                    case 0:
+                        StartCoroutine(GameStartEnumerator());
+                        break;
+                    case 1:
+                        exitDialogUI.SetActive(true);
+                        exitSelectNum = 0;
+                        ExitSelectButton(exitSelectNum);
+                        titleTyp = TitleTyp.ExitSelect;
+                        break;
+                }
+            }
+            //debugupdateへ
+            if (Input.GetKeyUp(KeyCode.A) && Input.GetKeyUp(KeyCode.S) && Input.GetKeyUp(KeyCode.D) && Input.GetKeyUp(KeyCode.F))
+            {
+                debugFlag = true;
+                titleTyp = TitleTyp.Debug;
+                debugTyp = DebugTyp.Audio;
+            }
+        }
+        private void ExitSelectUpdate()
+        {
+            float dx = Input.GetAxis("Horizontal");
+            //左
+            if (dx < 0 && countNum == 0)
+            {
+                countNum++;
+                if (exitSelectNum > 0) exitSelectNum--;
+                ExitSelectButton(exitSelectNum);
+            }//右
+            else if (dx > 0 && countNum == 0)
+            {
+                countNum++;
+                if (exitSelectNum < 1) exitSelectNum++;
+                ExitSelectButton(exitSelectNum);
+            }
+            else if (dx == 0 && countNum != 0)
+            {
+                countNum = 0;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+            {
+                switch (exitSelectNum)
+                {
+                    case 0:
+                        exitDialogUI.SetActive(false);
+                        titleTyp = TitleTyp.TitleSelect;
+                        break;
+                    case 1:
+                        OnExit();
+                        titleTyp = TitleTyp.None;
+                        break;
+                }
+            }
         }
         /// <summary>
         /// タイトルボタンセレクト時に画像を切り替えます

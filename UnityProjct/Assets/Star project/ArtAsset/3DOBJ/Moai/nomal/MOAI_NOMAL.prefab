@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5268350531782932701}
   - component: {fileID: 5268350531782129917}
   - component: {fileID: 5268350531781032509}
+  - component: {fileID: 6806887564949781990}
   m_Layer: 13
   m_Name: Group52747
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5268350531783288061}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: -0.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5268350531782932703}
@@ -77,6 +78,25 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!95 &6806887564949781990
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5268350531783288061}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f0ae3969a1c9e434e852275360aa5ae3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5268350531783288063
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,10 +145,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.7
+  m_Radius: 0.7477386
   m_Height: 3.596015
   m_Direction: 1
-  m_Center: {x: 0, y: -0.2, z: 0}
+  m_Center: {x: 2.0977237e-16, y: -0.20000005, z: 0.04773854}
 --- !u!65 &9049697982353482868
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -140,8 +160,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 7.3034897, z: 4.374221}
-  m_Center: {x: -5.247027e-15, y: -1.3482552, z: 1.3692259}
+  m_Size: {x: 3, y: 6.7489567, z: 4.374221}
+  m_Center: {x: -5.247027e-15, y: -1.6255217, z: 1.3692259}
 --- !u!114 &7427509319935714981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +179,6 @@ MonoBehaviour:
   starNum: 0
   deleteTime: 2
   foundationHP: 1000
-  onMove: 0
 --- !u!114 &7882317360731004539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,13 +191,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb6c2ed42ab8ce54c8fc3136b158dee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTyp: 3
-  amountOfMovement: {x: -5, y: 0, z: 0}
+  enemyTyp: 1
+  amountOfMovement: {x: -2, y: 0, z: 0}
   searchMoveSpeed: 6
   lockOnMoveSpeed: 5000
+  attackUpOnMoveSpeed: 1000
   removeMoveSpeed: 5
   defaultAttackTime: 2
   sandEffect: {fileID: 40554699386588258}
+  enemyAnimator: {fileID: 6806887564949781990}
 --- !u!54 &4335596318700933268
 Rigidbody:
   m_ObjectHideFlags: 0

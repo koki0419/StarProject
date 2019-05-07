@@ -712,7 +712,6 @@ public class PlayerMove : MonoBehaviour
         //チャージ
         if (Input.GetKey(KeyCode.T) || Input.GetButton("Charge"))
         {
-            Debug.Log("koko");
             Singleton.Instance.soundManager.PlayPlayerLoopSe(chargeSeNum);
             //チャージ中
             Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(OnCharge(Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10));

@@ -83,10 +83,7 @@ public class ObstacleManager : MonoBehaviour
             foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
             //ダメージテキストにアクセスして生成します
             Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
-            //substanceにアクセスします
-            //var hp = 1.0;
-            //hp -= (foundationHP / foundationHPMax);
-            //OnSliderUpdate((float)hp);
+
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
@@ -109,36 +106,6 @@ public class ObstacleManager : MonoBehaviour
             }
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
-    //    {
-    //        //Hpをへらす
-    //        foundationHP -= OnDamage(playerMove.AttackPower, playerMove.AttackSpeed);
-    //        //ダメージテキストにアクセスして生成します
-    //        Singleton.Instance.OnDamage(OnDamage(playerMove.AttackPower, playerMove.AttackSpeed), this.gameObject.transform);
-    //        //substanceにアクセスします
-    //        //var hp = 1.0;
-    //        //hp -= (foundationHP / foundationHPMax);
-    //        //OnSliderUpdate((float)hp);
-    //        //ObjHｐがOになった時
-    //        if (foundationHP <= 0)
-    //        {
-    //            if (starNum != 0)
-    //            {
-    //                Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
-    //            }
-    //            acquisitionPoint++;
-    //            breakEffect.SetActive(true);
-    //            onRemoveObjFlag = true;
-    //            //gameObject.GetComponent<Renderer>().enabled = false;
-
-    //        }
-    //    }
-    //}
-
-
 
     /// <summary>
     /// ダメージが与えられたとき

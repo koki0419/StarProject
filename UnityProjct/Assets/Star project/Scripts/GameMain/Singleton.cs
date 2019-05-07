@@ -11,7 +11,6 @@ public class Singleton : SingletonMonoBehaviour<Singleton>
     public CameraController cameraController;
     public SoundManager soundManager;
 
-
     //public GameObject damageTextUI;
 
     public void OnDamage(int damage,Transform obj)

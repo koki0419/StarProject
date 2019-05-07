@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
         ReMovePosition,//元の位置に戻る
         StunAttack,//スタン攻撃
         Stun,//スタン攻撃後動かなくなる
+        Died,//死んだ（壊れた）とき）
     }
     public EnemyState enemyState
     {
@@ -32,6 +33,8 @@ public class EnemyController : MonoBehaviour
     }
     [SerializeField] EnemyTyp enemyTyp = EnemyTyp.None;
 
+    private ObstacleManager obstacleManager;
+
     //プレイヤーポジション
     private GameObject playerObj = null;
     private Vector3 startPos = Vector3.zero;
@@ -42,9 +45,8 @@ public class EnemyController : MonoBehaviour
     [Header("各状態の移動速度")]
     [SerializeField] private float searchMoveSpeed;
     [SerializeField] private float lockOnMoveSpeed;
+    [SerializeField] private float attackUpOnMoveSpeed;
     [SerializeField] private float removeMoveSpeed;
-    //[Header("各状態の移動速度")]
-    //[SerializeField] float difference;
     //移動方向
     private Vector3 moveForce = Vector3.zero;
     //進む戻る
@@ -57,6 +59,10 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float defaultAttackTime = 2.0f;
     private float attackTime = 0;
     [SerializeField] private GameObject sandEffect = null;
+
+    private bool attack;
+
+    [SerializeField] private Animator enemyAnimator;
 
     public void Init(GameObject player)
     {
@@ -88,6 +94,8 @@ public class EnemyController : MonoBehaviour
         else FreezePositionAir();
         SandEffectPlay(false);
         enemyState = EnemyState.Search;
+        obstacleManager = GetComponent<ObstacleManager>();
+        attack = false;
     }
     /// <summary>
     /// エネミーアップデート
@@ -112,6 +120,9 @@ public class EnemyController : MonoBehaviour
                     //    ReMovePositionUpdate();
                     //    break;
                     case EnemyState.Stun:
+                        StanUpdate();
+                        break;
+                    case EnemyState.Died:
                         break;
                 }
                 break;
@@ -131,6 +142,9 @@ public class EnemyController : MonoBehaviour
                     //    ReMovePositionUpdate();
                     //    break;
                     case EnemyState.Stun:
+                        StanUpdate();
+                        break;
+                    case EnemyState.Died:
                         break;
                 }
                 break;
@@ -141,6 +155,8 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private void DiscoveryUpdate()
     {
+        enemyAnimator.SetBool("IsAttackPreparation", true);
+        FreezePositionOll();
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -153,20 +169,24 @@ public class EnemyController : MonoBehaviour
         removeForce = enemyVecE;
         //攻撃
         attackTime += Time.deltaTime;
-        if (attackTime >= defaultAttackTime || Input.GetKeyDown(KeyCode.X))
+        if (attackTime >= defaultAttackTime)
         {
+            enemyAnimator.SetBool("IsAttackPreparation", false);
+            attack = true;
             FreezePositionSet();
-            enemyRigidbody.AddForce(enemyVecE * lockOnMoveSpeed, ForceMode.Impulse);
-            attackTime = 0;
-            SandEffectPlay(true);
+            enemyRigidbody.AddForce(Vector3.up * attackUpOnMoveSpeed, ForceMode.Impulse);
+
             enemyState = EnemyState.StunAttack;
         }
+        if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
     /// <summary>
     /// モアイの間合いに入った時、一定時間後にスタン攻撃します
     /// </summary>
     private void MoveEnemy_DiscoveryUpdate()
     {
+        enemyAnimator.SetBool("IsAttackPreparation", true);
+        FreezePositionOll();
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -180,17 +200,36 @@ public class EnemyController : MonoBehaviour
         removeForce = enemyVecE;
         //攻撃
         attackTime += Time.deltaTime;
-        if (attackTime >= defaultAttackTime || Input.GetKeyDown(KeyCode.X))
+        if (attackTime >= defaultAttackTime)
         {
+            enemyAnimator.SetBool("IsAttackPreparation", false);
             FreezePositionSet();
             enemyRigidbody.AddForce(enemyVecE * lockOnMoveSpeed, ForceMode.Impulse);
             attackTime = 0;
             SandEffectPlay(true);
             enemyState = EnemyState.StunAttack;
         }
+
+        if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
     private void StunAttackUpdate()
     {
+        var velocity = enemyRigidbody.velocity;
+        // 下降中
+        if (velocity.y < 0 && attack)
+        {
+            Debug.Log("降下中");
+            enemyRigidbody.AddForce(removeForce * lockOnMoveSpeed, ForceMode.Impulse);
+            attackTime = 0;
+            SandEffectPlay(true);
+            attack = false;
+        }
+        if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
+    }
+
+    private void StanUpdate()
+    {
+        if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
         return;
     }
     /// <summary>
@@ -226,6 +265,7 @@ public class EnemyController : MonoBehaviour
         velocity.x = moveForce.x;
         enemyRigidbody.velocity = velocity;
 
+        if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
     /// <summary>
     /// スタン攻撃後元の位置に戻ります
@@ -310,8 +350,10 @@ public class EnemyController : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery)
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery && !attack)
         {
+            enemyAnimator.SetBool("IsAttackPreparation", false);
+            FreezePositionAir();
             if (isReturn)
             {
                 var rot = -90;
@@ -322,6 +364,7 @@ public class EnemyController : MonoBehaviour
                 var rot = 90;
                 transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
             }
+            attackTime = 0;
             enemyState = EnemyState.Search;
         }
     }
