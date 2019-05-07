@@ -153,6 +153,7 @@ public class PlayerMove : MonoBehaviour
     private const string groundLayerName = "Ground";
     private const string gameOverLineLayerName = "GameOverObj";
     private const string enemyLayerName = "Obstacles";
+    private const string enemyHeadLayerName = "ObstaclesHead";
 
     //初期化
     public void Init()
@@ -223,8 +224,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-
-        Debug.Log("objState : " + objState);
     }
 
     //--------------関数-----------------------------
@@ -250,7 +249,7 @@ public class PlayerMove : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName)
+        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = true;
             isJumpFlag = false;

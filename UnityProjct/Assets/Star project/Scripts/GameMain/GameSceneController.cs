@@ -138,6 +138,7 @@ namespace StarProject.Gamemain
             isOperation = false;
             canCameraShake = false;
 
+            ResultScreenController.all_damage = 0;
         }
 
         //Start()より早く処理する

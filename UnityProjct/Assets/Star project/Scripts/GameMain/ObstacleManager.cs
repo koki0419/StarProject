@@ -28,6 +28,8 @@ public class ObstacleManager : MonoBehaviour
 
     private int breakSeNum = 7;
 
+    [SerializeField] private GameObject obstaclesHeadObj = null;
+
     //-------------フラグ用変数------------------------------
     private bool onRemoveObjFlag = false;
 
@@ -87,6 +89,7 @@ public class ObstacleManager : MonoBehaviour
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
+                Destroy(obstaclesHeadObj);
                 isDestroyed = true;
                 Singleton.Instance.soundManager.StopObstaclesSe();
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);

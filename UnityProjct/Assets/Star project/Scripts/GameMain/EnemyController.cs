@@ -324,6 +324,7 @@ public class EnemyController : MonoBehaviour
     {
         enemyState = EnemyState.Stun;
         FreezePositionOll();
+        yield return null;
         Destroy(enemyRigidbody);
         yield return new WaitForSeconds(1.0f);
         SandEffectPlay(false);
@@ -353,7 +354,7 @@ public class EnemyController : MonoBehaviour
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery && !attack)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
-            FreezePositionAir();
+            if(enemyRigidbody != null) FreezePositionAir();
             if (isReturn)
             {
                 var rot = -90;
