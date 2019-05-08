@@ -10,6 +10,7 @@ public class Singleton : SingletonMonoBehaviour<Singleton>
     public GameSceneController gameSceneController;
     public CameraController cameraController;
     public SoundManager soundManager;
+    public StarEffecSpon starEffecSpon;
 
     //public GameObject damageTextUI;
 

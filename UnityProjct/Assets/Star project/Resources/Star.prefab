@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5790972507732336171}
   - component: {fileID: 6359115995485083371}
   - component: {fileID: 8201827453594380170}
-  m_Layer: 0
-  m_Name: ster_2
+  m_Layer: 17
+  m_Name: Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f644e727281634f8aa30e29e7ef503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  starGenerator: {fileID: 0}
   starPoint: 1
 --- !u!1 &8097752209541557650
 GameObject:
@@ -71,7 +72,7 @@ GameObject:
   - component: {fileID: 8978381338534367276}
   - component: {fileID: 8265480924284856226}
   - component: {fileID: 369247713050440553}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Cylinder001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
