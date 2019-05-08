@@ -97,7 +97,7 @@ public class UiManager : MonoBehaviour
     {
         //初期化
         ForceColor(Color.black);
-        StarUICanvasDisplay(true);
+        StarUICanvasDisplay(false);
         GameOvreUIDisplay(false);
         GameOverDiaLogDisplay(false);
         RetryDiaLogDisplay(false);

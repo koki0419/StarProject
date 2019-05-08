@@ -63,6 +63,7 @@ namespace StarProject.Gamemain
         [SerializeField] private UiManager uiManager = null;
         [SerializeField] private GameOverLineController gameOverLineController = null;
 
+        [SerializeField] private StarGenerator starGenerator;
         //------------数値変数の宣言--------------------
         //現在のステージ番号 // リザルトでリトライやNextステージで使用します
         //タイトルでstageNumを1に設定します。その後はリザルトシーンのみでしか使用しません
@@ -108,15 +109,17 @@ namespace StarProject.Gamemain
             cameraController = Singleton.Instance.cameraController;
 
             //☆子供オブジェクトを取得
-            starChildrenOBJ = new GameObject[starObj.transform.childCount];
-            starControllers = new StarController[starObj.transform.childCount];
-            //☆子供オブジェクト初期化
-            for (int i = 0; starObj.transform.childCount > i; i++)
-            {
-                starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
-                starControllers[i] = starChildrenOBJ[i].GetComponent<StarController>();
-                starControllers[i].Init(playerObj, playerMove);
-            }
+            //starChildrenOBJ = new GameObject[starObj.transform.childCount];
+            //starControllers = new StarController[starObj.transform.childCount];
+            ////☆子供オブジェクト初期化
+            //for (int i = 0; starObj.transform.childCount > i; i++)
+            //{
+            //    starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
+            //    starControllers[i] = starChildrenOBJ[i].GetComponent<StarController>();
+            //    starControllers[i].Init(playerMove,1);
+            //}
+
+
 
             //エネミー子供オブジェクトを取得
             enemyChilledObj = new GameObject[enemysObj.transform.childCount];
@@ -287,6 +290,8 @@ namespace StarProject.Gamemain
         {
             yield return uiManager.FadeOutEnumerator();
             CameraChange();
+            uiManager.StarUICanvasDisplay(true);
+            starGenerator.Init();
             StarsObjDysplay(true);
             playerMove.CharacterAnimation("gameStart");
             yield return uiManager.FadeInEnumerator();
@@ -294,6 +299,7 @@ namespace StarProject.Gamemain
         }
         void GamePlay()
         {
+            starGenerator.StarSponUpdate();
             float deltaTime = Time.deltaTime;
 
             playerMove.OnUpdate(deltaTime);//PlayerのUpdate

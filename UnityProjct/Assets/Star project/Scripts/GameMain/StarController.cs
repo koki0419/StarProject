@@ -10,20 +10,23 @@ public class StarController : MonoBehaviour
 
     //------------クラスの宣言----------------------
     PlayerMove playerMove;
+    public StarGenerator starGenerator;
     //------------数値変数の宣言--------------------
-    [SerializeField]int starPoint;
+    [SerializeField]private int starPoint;
     //------------フラグ変数の宣言------------------
 
+    private const string gameOverLineLayerName = "GameOverObj";
+
     // Start is called before the first frame update
-    public void Init(GameObject player, PlayerMove playermove)
+    public void Init(PlayerMove playermove,int point)
     {
-        playerObj = player;
         playerMove = playermove;
+        starPoint = point;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
             Singleton.Instance.gameSceneController.isGetStar = true;
             if (starPoint == 0 && starPoint == 1)
@@ -37,7 +40,14 @@ public class StarController : MonoBehaviour
                 Singleton.Instance.gameSceneController.ChargePointManager.starChildCountSkip += starPoint;
                 Singleton.Instance.gameSceneController.ChargePointManager.isSkipStar = true;
             }
-            Destroy(this.gameObject);
+            //Singleton.Instance.starEffecSpon.CreatStarEffect();
+            starGenerator.activeCount--;
+            gameObject.SetActive(false);
+            //Destroy(this.gameObject);
+        }else if(LayerMask.LayerToName(other.gameObject.layer) == gameOverLineLayerName)
+        {
+            starGenerator.activeCount--;
+            gameObject.SetActive(false);
         }
     }
 }
