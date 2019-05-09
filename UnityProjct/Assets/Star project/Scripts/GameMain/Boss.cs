@@ -6,6 +6,7 @@ public class Boss : MonoBehaviour
 {
     //-------------Unityコンポーネント関係-------------------
     [SerializeField] private Animator animator = null;
+    [SerializeField] private GameObject sandEffect = null;
     //-------------クラス関係--------------------------------
 
     //『PlayerMove』を取得します
@@ -44,6 +45,7 @@ public class Boss : MonoBehaviour
         hp -= (foundationHP / foundationHPMax);
 
         animator = gameObject.GetComponent<Animator>();
+        SandEffectDysplay(false);
     }
 
 
@@ -58,6 +60,7 @@ public class Boss : MonoBehaviour
             deleteTime -= Time.deltaTime;
             animator.SetTrigger("Break");
             //OnRemoveObj();
+            SandEffectDysplay(true);
             if (deleteTime <= 0)
             {
                 Destroy(this.gameObject);
@@ -94,5 +97,10 @@ public class Boss : MonoBehaviour
         float nowHp = damage * speed / defensePower;
 
         return (int)nowHp;
+    }
+
+    private void SandEffectDysplay(bool isDysplay)
+    {
+        sandEffect.SetActive(isDysplay);
     }
 }

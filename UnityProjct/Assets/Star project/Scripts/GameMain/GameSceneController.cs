@@ -16,11 +16,11 @@ namespace StarProject.Gamemain
         private enum GameMainState
         {
             None,
-            Opening,
-            Play,
-            Pause,
-            GameClear,
-            GameOver,
+            Opening,//オープニング
+            Play,//ゲーム中
+            Pause,//中断
+            GameClear,//ゲームクリア
+            GameOver,//ゲームオーバー
         }
         private GameMainState gameMainState = GameMainState.None;
         //---------Unityコンポーネント宣言--------------
@@ -149,24 +149,6 @@ namespace StarProject.Gamemain
             gameOverLineController.Init();
             yield return null;
             yield return uiManager.FadeInEnumerator();
-            if (!debug)
-            {
-                if (stageNum == 1)
-                {
-                    isMoveCamera = false;
-                }
-                else
-                {
-                    isMoveCamera = true;
-                    Destroy(safeHitGigMoaiObj);
-                    gameOverLineController.gameOverLineState = GameOverLineController.GameOverLineState.Awakening;
-                    gameOverLineController.GameOverLineAnimation();
-                }
-            }
-            else
-            {
-                isMoveCamera = false;
-            }
             gameMainState = GameMainState.Opening;
             if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
             else Singleton.Instance.soundManager.AllAudioVolume();
@@ -223,10 +205,11 @@ namespace StarProject.Gamemain
             gameOverLineController.GameOverLineAnimation();
             yield return new WaitForSeconds(1.0f);
             canCameraShake = true;
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(3.5f);
             canCameraShake = false;
             Destroy(safeHitGigMoaiObj);
             isMoveCamera = true;
+            gameMainState = GameMainState.Play;
         }
 
         //クリア
@@ -236,7 +219,7 @@ namespace StarProject.Gamemain
             ResultScreenController.allStar = chargePointManager.starChildCount;
             yield return new WaitForSeconds(0.5f);
             uiManager.GameClearUIDisplay(true);
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(4.5f);
             canCameraShake = false;
             SceneManager.LoadScene("ResultScene");
 
@@ -278,6 +261,21 @@ namespace StarProject.Gamemain
             starGenerator.Init();
             playerMove.CharacterAnimation("gameStart");
             yield return uiManager.FadeInEnumerator();
+            if (!debug)
+            {
+                if (stageNum == 1)
+                {
+                    isMoveCamera = false;
+                }
+                else
+                {
+                    StartCoroutine(BigMoaiMoveStart());
+                }
+            }
+            else
+            {
+                isMoveCamera = false;
+            }
             gameMainState = GameMainState.Play;
         }
         void GamePlay()

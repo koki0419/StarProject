@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float camaraPos = 1.5f;
     [Header("カメラ移動速度")]
     [SerializeField] private float camaraMove = 1.5f;
-
+    [Header("カメラ終点")] private Vector3 moveEndPsition;
     public void Init()
     {
         var position = transform.position;
