@@ -77,7 +77,6 @@ public class StarController : MonoBehaviour
                     gameObject.SetActive(false);
                     break;
             }
-            //Singleton.Instance.starEffecSpon.CreatStarEffect();
         }
     }
 }
