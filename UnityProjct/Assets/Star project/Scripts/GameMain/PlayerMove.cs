@@ -686,7 +686,7 @@ public class PlayerMove : MonoBehaviour
             rig.AddForce(Vector3.right * stunAmountMovement, ForceMode.Impulse);
         }
         yield return new WaitForSeconds(stunTime);
-        CharacterAnimation("idol");
+        // CharacterAnimation("idol");
         ChargeEffectPlay(false, false);
         canAttack = true;
         isChargeFlag = false;
