@@ -12,18 +12,44 @@ public class StarController : MonoBehaviour
     PlayerMove playerMove;
     public StarGenerator starGenerator;
     //------------数値変数の宣言--------------------
-    [SerializeField]private int starPoint;
+    [SerializeField] private int starPoint;
     //------------フラグ変数の宣言------------------
-
+    public enum StarSponType
+    {
+        None,
+        ObstacleSpon,//モアイから生成
+        SpecifiedSpon,//スクリプトから生成
+    }
+    public StarSponType starSponType = StarSponType.None;
     private const string gameOverLineLayerName = "GameOverObj";
 
     // Start is called before the first frame update
-    public void Init(PlayerMove playermove,int point)
+    public void Init(PlayerMove playermove, int point)
     {
         playerMove = playermove;
         starPoint = point;
     }
 
+    private void Update()
+    {
+        switch (starSponType)
+        {
+            case StarSponType.ObstacleSpon:
+                if (transform.localPosition.x < (Camera.main.transform.position.x - 10.0f))
+                {
+                    gameObject.SetActive(false);
+                }
+                break;
+            case StarSponType.SpecifiedSpon:
+                if (transform.localPosition.x < (Camera.main.transform.position.x - 10.0f))
+                {
+                    starGenerator.activeCount--;
+                    gameObject.SetActive(false);
+                }
+                break;
+        }
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
@@ -40,14 +66,18 @@ public class StarController : MonoBehaviour
                 Singleton.Instance.gameSceneController.ChargePointManager.starChildCountSkip += starPoint;
                 Singleton.Instance.gameSceneController.ChargePointManager.isSkipStar = true;
             }
+
+            switch (starSponType)
+            {
+                case StarSponType.ObstacleSpon:
+                    gameObject.SetActive(false);
+                    break;
+                case StarSponType.SpecifiedSpon:
+                    starGenerator.activeCount--;
+                    gameObject.SetActive(false);
+                    break;
+            }
             //Singleton.Instance.starEffecSpon.CreatStarEffect();
-            starGenerator.activeCount--;
-            gameObject.SetActive(false);
-            //Destroy(this.gameObject);
-        }else if(LayerMask.LayerToName(other.gameObject.layer) == gameOverLineLayerName)
-        {
-            starGenerator.activeCount--;
-            gameObject.SetActive(false);
         }
     }
 }
