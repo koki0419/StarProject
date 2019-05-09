@@ -95,7 +95,8 @@ public class ObstacleManager : MonoBehaviour
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
                 if (starNum != 0)
                 {
-                    Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
+                    //Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
+                    Singleton.Instance.starGenerator.ObstaclesToStarSpon(this.transform.position, starNum);
                 }
                 //壊れたときにキャラクターと当たり判定を持たなくします
                 //レイヤーの変更

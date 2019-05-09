@@ -5,36 +5,41 @@ using UnityEngine;
 [RequireComponent(typeof(ObjectPool))]
 public class StarGenerator : MonoBehaviour
 {
-
+    //プレイヤーオブジェクト
     [SerializeField] private GameObject playerObj = null;
-
+    //プレイヤースクリプト
     [SerializeField] private PlayerMove playerMove = null;
 
-
+    [Header("☆プール生成数")]
     [SerializeField] private int sponMax;
+    [Header("画面内に最大何個☆を表示するか")]
+    [SerializeField] private int starDysplayCount;
+    [Header("☆プレハブ")]
     [SerializeField] private GameObject starPrefab;
-    [SerializeField] private ObjectPool pool;
+    private ObjectPool pool;
+    [Header("☆生成場所と各☆獲得ポイント")]
     [SerializeField] private Vector3[] starSponPosition;
     [SerializeField] private int[] starPoint;
-    [SerializeField] private int starDysplayCount;
 
+    //☆現在の表示数
+    [HideInInspector]
     public int activeCount
     {
-        set;get;
+        set; get;
     }
-
+    //☆生成数（経過）→次生成する☆のインデックス
     private int sponIndex = 0;
 
     public void Init()
     {
-       // pool = GetComponent<ObjectPool>();
+        pool = GetComponent<ObjectPool>();
         pool.CreatePool(starPrefab, sponMax);
         CreatStar();
     }
 
     public void CreatStar()
     {
-        if (sponIndex < starSponPosition.Length-1)
+        if (sponIndex < starSponPosition.Length - 1)
         {
             while (activeCount < starDysplayCount)
             {
@@ -45,44 +50,47 @@ public class StarGenerator : MonoBehaviour
                     star.transform.localPosition = starSponPosition[sponIndex];
                     star.GetComponent<StarController>().Init(playerMove, starPoint[sponIndex]);
                     star.GetComponent<StarController>().starGenerator = this;
+                    star.GetComponent<StarController>().starSponType = StarController.StarSponType.SpecifiedSpon;
                     sponIndex++;
                     activeCount++;
                 }
-                Debug.Log("sponIndex" + sponIndex);
             }
-            Debug.Log("処理されていない");
         }
-
+        else return;
     }
 
     public void StarSponUpdate()
     {
-        Debug.Log("activeCount" + activeCount);
         CreatStar();
     }
 
-    //星を生成します
-    void OnCreate(Vector3 createPos)
+    /// <summary>
+    /// 障害物を壊した際に☆生成時に使用します
+    /// </summary>
+    /// <param name="targetPos">☆生成するときのポジション</param>
+    /// <param name="sponIndex">☆生成数</param>
+    public void ObstaclesToStarSpon(Vector3 targetPos, int sponIndex)
     {
-        // 実体化
-        GameObject starObj =
-            Instantiate(starPrefab, createPos, transform.rotation);
-        //親オブジェクトにくっ付けます
-        starObj.transform.parent = this.gameObject.transform;
-        //『startObj』の初期化
-        starObj.GetComponent<StarController>().Init(playerMove, 1);
+        var spon = 0;
+        var plusPosition = 0;
+        var randPoint = Random.RandomRange(0, 5);
+        while (true)
+        {
+            var star = pool.GetObject();
+            if (star != null)
+            {
+                var randX = Random.Range(-1, 1);
+                var randY = Random.Range(1, 2);
+
+                //プレイヤーの位置座標をスクリーン座標に変換
+                star.transform.localPosition = new Vector3(targetPos.x + randX, targetPos.y + randY + targetPos.z);
+                star.GetComponent<StarController>().Init(playerMove, randPoint);
+                star.GetComponent<StarController>().starGenerator = this;
+                star.GetComponent<StarController>().starSponType = StarController.StarSponType.ObstacleSpon;
+                spon++;
+            }
+            if (spon >= sponIndex) break;
+        }
     }
 
-    //他のスクリプトから呼び出します
-    public void OnCreateStar(Vector3 starPos, int createNum)
-    {
-        var createCount = 0;
-        var randX = Random.Range(-1, 1);
-        var randY = Random.Range(1, 2);
-        do
-        {
-            OnCreate(new Vector3(starPos.x += randX, starPos.y += randY, starPos.z));
-            createCount++;
-        } while (createCount != createNum);
-    }
 }

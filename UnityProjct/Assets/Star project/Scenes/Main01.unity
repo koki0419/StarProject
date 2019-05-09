@@ -1244,7 +1244,7 @@ GameObject:
   - component: {fileID: 183918046}
   - component: {fileID: 183918047}
   - component: {fileID: 183918048}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: StarsSpon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1279,10 +1279,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerObj: {fileID: 1774836254}
   playerMove: {fileID: 1774836255}
-  sponMax: 10
+  sponMax: 15
+  starDysplayCount: 10
   starPrefab: {fileID: 301987961005163294, guid: fe97a53f4f193f44f8109d35f09a11cc,
     type: 3}
-  pool: {fileID: 183918048}
   starSponPosition:
   - {x: -1, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -1298,9 +1298,43 @@ MonoBehaviour:
   - {x: -6, y: 2, z: 0}
   - {x: -5, y: 3, z: 0}
   - {x: -4, y: 4, z: 0}
-  - {x: -7, y: 5, z: 0}
-  starPoint: 010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-  starDysplayCount: 10
+  - {x: 10, y: 5, z: 0}
+  - {x: 15, y: 5, z: 0}
+  - {x: 10, y: 1, z: 0}
+  - {x: 12, y: 5, z: 0}
+  - {x: 16, y: 5, z: 0}
+  - {x: 17, y: 5, z: 0}
+  - {x: 18, y: 5, z: 0}
+  - {x: 20, y: 5, z: 0}
+  - {x: 21, y: 5, z: 0}
+  - {x: 22, y: 5, z: 0}
+  - {x: 23, y: 5, z: 0}
+  - {x: 24, y: 5, z: 0}
+  - {x: 25, y: 5, z: 0}
+  - {x: 26, y: 5, z: 0}
+  - {x: 27, y: 5, z: 0}
+  - {x: 28, y: 5, z: 0}
+  - {x: 29, y: 5, z: 0}
+  - {x: 30, y: 5, z: 0}
+  - {x: 31, y: 5, z: 0}
+  - {x: 32, y: 5, z: 0}
+  - {x: 33, y: 5, z: 0}
+  - {x: 35, y: 5, z: 0}
+  - {x: 36, y: 5, z: 0}
+  - {x: 37, y: 5, z: 0}
+  - {x: 38, y: 5, z: 0}
+  - {x: 39, y: 5, z: 0}
+  - {x: 40, y: 5, z: 0}
+  - {x: 25, y: 4, z: 0}
+  - {x: 26, y: 4, z: 0}
+  - {x: 27, y: 4, z: 0}
+  - {x: 28, y: 1, z: 0}
+  - {x: 28, y: 2, z: 0}
+  - {x: 30, y: 1, z: 0}
+  - {x: 28, y: 6, z: 0}
+  - {x: 28, y: 8, z: 0}
+  - {x: 28, y: 10, z: 0}
+  starPoint: 2800000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
 --- !u!114 &183918048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13557,6 +13591,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: starNum
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d0b38817ee4e944a8ea9d9e75076625, type: 3}
 --- !u!4 &1237985224 stripped
@@ -20158,6 +20197,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Center.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: starNum
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d0b38817ee4e944a8ea9d9e75076625, type: 3}

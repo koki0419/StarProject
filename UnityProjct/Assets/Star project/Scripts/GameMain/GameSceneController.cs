@@ -32,10 +32,7 @@ namespace StarProject.Gamemain
         private EnemyController[] enemyController = null;
         private GameObject[] enemyChilledObj = null;
         private ObstacleManager[] obstacleManager = null;
-        //☆子供オブジェクト取得用
-        [SerializeField] private GameObject starObj = null;
-        private StarController[] starControllers = null;
-        private GameObject[] starChildrenOBJ = null;
+
         [SerializeField] private GameObject mainCamera = null;
         [SerializeField] private GameObject openingCamera = null;
         //------------クラスの宣言----------------------
@@ -108,18 +105,6 @@ namespace StarProject.Gamemain
 
             cameraController = Singleton.Instance.cameraController;
 
-            //☆子供オブジェクトを取得
-            //starChildrenOBJ = new GameObject[starObj.transform.childCount];
-            //starControllers = new StarController[starObj.transform.childCount];
-            ////☆子供オブジェクト初期化
-            //for (int i = 0; starObj.transform.childCount > i; i++)
-            //{
-            //    starChildrenOBJ[i] = starObj.transform.GetChild(i).gameObject;
-            //    starControllers[i] = starChildrenOBJ[i].GetComponent<StarController>();
-            //    starControllers[i].Init(playerMove,1);
-            //}
-
-
 
             //エネミー子供オブジェクトを取得
             enemyChilledObj = new GameObject[enemysObj.transform.childCount];
@@ -159,7 +144,6 @@ namespace StarProject.Gamemain
             yield return null;
             Init();
             starChargeController.Init();
-            StarsObjDysplay(false);
             cameraController.Init();
             chargePointManager.Init();
             gameOverLineController.Init();
@@ -292,7 +276,6 @@ namespace StarProject.Gamemain
             CameraChange();
             uiManager.StarUICanvasDisplay(true);
             starGenerator.Init();
-            StarsObjDysplay(true);
             playerMove.CharacterAnimation("gameStart");
             yield return uiManager.FadeInEnumerator();
             gameMainState = GameMainState.Play;
@@ -384,10 +367,7 @@ namespace StarProject.Gamemain
                 uiManager.GameOverButtonSelectUpdate();
             }
         }
-        void StarsObjDysplay(bool isDysplay)
-        {
-            starObj.SetActive(isDysplay);
-        }
+
         void CameraSelect(bool mainCameraActive, bool openingCameraActive)
         {
             mainCamera.SetActive(mainCameraActive);
