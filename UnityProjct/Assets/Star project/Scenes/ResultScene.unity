@@ -574,11 +574,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6e8d21b60ad573e48bf989d6baab8da1, type: 3}
   - {fileID: 21300000, guid: bd93e042d7e7e034aa031f56f57114ce, type: 3}
   - {fileID: 21300000, guid: 618863b8494224a4ca99127b42186887, type: 3}
+  resultStarUI:
+  - {fileID: 1666691878}
+  - {fileID: 1520051807}
+  - {fileID: 1263268947}
+  - {fileID: 661440446}
+  - {fileID: 697546438}
+  - {fileID: 999367933}
   rankAScore: 40000
   rankBScore: 25000
   rankCScore: 0
-  debug: 0
-  debugStage: 2
+  debug: 1
+  debugStage: 3
 --- !u!4 &172570576
 Transform:
   m_ObjectHideFlags: 0

@@ -262,7 +262,7 @@ public class PlayerMove : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName)
+        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = false;
             Singleton.Instance.soundManager.StopPlayerSe();
