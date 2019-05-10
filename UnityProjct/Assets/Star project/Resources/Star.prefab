@@ -59,8 +59,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f644e727281634f8aa30e29e7ef503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goldStarMaterial: {fileID: 2100000, guid: b5b4db56c97ed6b42a1a5a28953c7b4a, type: 2}
+  silverStarMaterial: {fileID: 2100000, guid: 77384f2faf7383a47a04bce14ff778e2, type: 2}
+  bronzeStarMaterial: {fileID: 2100000, guid: c8fa2b87e2650ab4c989fe6bd0e07a92, type: 2}
+  starRenderer: {fileID: 369247713050440553}
   starGenerator: {fileID: 0}
   starPoint: 1
+  goldStarPoint: 3
+  silverStarPoint: 2
+  bronzeStarPoint: 1
+  starSponType: 0
 --- !u!1 &8097752209541557650
 GameObject:
   m_ObjectHideFlags: 0
