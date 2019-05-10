@@ -78,7 +78,6 @@ public class ObstacleManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (collision.gameObject.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.CanAttackFlag)
         if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             //Hpをへらす

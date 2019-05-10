@@ -10943,6 +10943,11 @@ PrefabInstance:
       propertyPath: attackUpOnMoveSpeed
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: defaultAttackTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: m_Size.y
@@ -12822,6 +12827,11 @@ PrefabInstance:
       propertyPath: attackUpOnMoveSpeed
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: defaultAttackTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: m_Size.y
@@ -14346,6 +14356,11 @@ PrefabInstance:
       propertyPath: attackUpOnMoveSpeed
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: defaultAttackTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: m_Size.y
@@ -15642,6 +15657,11 @@ PrefabInstance:
       propertyPath: attackUpOnMoveSpeed
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: defaultAttackTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: m_Size.y
@@ -16229,6 +16249,11 @@ PrefabInstance:
     - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: enemyTyp
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882317360731004539, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: defaultAttackTime
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9049697982353482868, guid: 2d0b38817ee4e944a8ea9d9e75076625,
@@ -16240,6 +16265,26 @@ PrefabInstance:
         type: 3}
       propertyPath: starNum
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 40554698592841006, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 40554699194328013, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 40554699882591697, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d0b38817ee4e944a8ea9d9e75076625, type: 3}
