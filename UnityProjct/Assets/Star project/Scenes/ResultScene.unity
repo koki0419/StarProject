@@ -491,7 +491,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a3e40ac534f392e43a17c4da42eb1312, type: 3}
   - {fileID: 21300000, guid: 5af2dbdd572d809438ee2bf23ea5ce9a, type: 3}
   - {fileID: 21300000, guid: abb62556ffc8a5a48aac45738950d217, type: 3}
-  stageNumUI: {fileID: 0}
+  stageNumUI: {fileID: 572468634}
   stageNumSprite:
   - {fileID: 21300000, guid: 2d7696ca22f77b243a3fa414e4f0fd65, type: 3}
   - {fileID: 21300000, guid: 400b85818a795c345a6762f15566113d, type: 3}
