@@ -21,14 +21,22 @@ public class PlayerMove : MonoBehaviour
         Normal,//通常状態
         Stun,//スタン状態
         NotAttackMode,//スタン状態
-        AttackJab,//ジャブ攻撃状態
-        AttackUp,//上攻撃状態
-        AttackDown,//下攻撃状態
-        ChargeAttack,//チャージ攻撃状態
+        Attack,//攻撃状態
         OnCharge,//チャージ中状態
         CharacterGameOver,//ゲームオーバー状態
     }
     private ObjState objState = ObjState.None;
+
+    //オブジェクトステータス
+    private enum AttackState
+    {
+        None,
+        AttackJab,//ジャブ攻撃状態
+        AttackUp,//上攻撃状態
+        AttackDown,//下攻撃状態
+        ChargeAttack,//チャージ攻撃状態
+    }
+    private AttackState attackState = AttackState.None;
 
     //-------------Unityコンポーネント関係-------------------
     // 自分のアニメーションコンポーネント
@@ -75,9 +83,6 @@ public class PlayerMove : MonoBehaviour
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
     [SerializeField] private float foundationoffensivePower = 0;
-    //初期移動量
-    [SerializeField] private float foundationSpeedForce = 0;
-    [SerializeField] private float UpFoundationSpeedForce = 0;
 
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
@@ -85,6 +90,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float secondOffensivePower = 0;
     //移動量
     [SerializeField] private float speedForce = 0;
+    [SerializeField] private float speedForceUp = 0;
     //現在のチャージ量
     private float chargeNow = 0.0f;
     //現在のチャージ量
@@ -108,7 +114,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float stunTime;
     //スタン時の移動量
     [SerializeField] private float stunAmountMovement;
-
+    private bool positiveDirection;
+    private Vector3 enemyPosition;
 
     [Header("攻撃時の攻撃時間")]
     [SerializeField] private float attackJabTime;
@@ -149,6 +156,7 @@ public class PlayerMove : MonoBehaviour
     private bool isDownAttack;
     private bool isAttack;
     private bool canAttack;
+    private bool isStun;
 
     private const string groundLayerName = "Ground";
     private const string gameOverLineLayerName = "GameOverObj";
@@ -184,6 +192,7 @@ public class PlayerMove : MonoBehaviour
         isDownAttack = false;
         isAttack = false;
         canAttack = true;
+        isStun = false;
     }
 
     // Update is called once per frame
@@ -204,17 +213,8 @@ public class PlayerMove : MonoBehaviour
             case ObjState.OnCharge:
                 ChargeUpdate();
                 break;
-            case ObjState.AttackJab:
-                AttackUpdate(attackJabTime);
-                break;
-            case ObjState.ChargeAttack:
-                AttackUpdate(chargeAttackTime);
-                break;
-            case ObjState.AttackUp:
-                AttackUpdate(chargeAttackUpTime);
-                break;
-            case ObjState.AttackDown:
-                AttackUpdate(chargeAttackDownTime);
+            case ObjState.Attack:
+                AttackUpdate();
                 break;
             case ObjState.CharacterGameOver:
                 CharacterGameOver();
@@ -243,6 +243,9 @@ public class PlayerMove : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<EnemyController>().enemyState == EnemyController.EnemyState.StunAttack)
             {
+                enemyPosition = collision.gameObject.GetComponent<Transform>().localPosition;
+                positiveDirection = false;
+                isStun = true;
                 objState = ObjState.Stun;
             }
         }
@@ -265,9 +268,12 @@ public class PlayerMove : MonoBehaviour
         if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = false;
-            Singleton.Instance.soundManager.StopPlayerSe();
-            //ジャンプ音再生
-            Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+            if (!canDamage)
+            {
+                Singleton.Instance.soundManager.StopPlayerSe();
+                //ジャンプ音再生
+                Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+            }
         }
     }
 
@@ -348,7 +354,7 @@ public class PlayerMove : MonoBehaviour
     {
         var rig = rigidbody;
         rig.drag = dragPower;
-        attackSpeed = (chargeCount * speedForce + foundationSpeedForce) / 10;
+        attackSpeed = (chargeCount * speedForce);
         if (!isUpAttack && !isDownAttack)
         {
             //右向きの時
@@ -364,13 +370,14 @@ public class PlayerMove : MonoBehaviour
         }
         else if (isUpAttack)
         {
-            attackSpeed = (chargeCount * speedForce + UpFoundationSpeedForce) / 10;
+            attackSpeed = (chargeCount * speedForceUp);
             rig.AddForce(Vector3.up * attackSpeed, ForceMode.Impulse);
         }
         else if (isDownAttack)
         {
             rig.AddForce(Vector3.down * attackSpeed, ForceMode.Impulse);
         }
+
         isChargeFlag = false;
     }
 
@@ -457,26 +464,27 @@ public class PlayerMove : MonoBehaviour
     /// <param name="attackNum"></param>
     void OnAttackMotion(int attackNum)
     {
+        objState = ObjState.Attack;
         switch (attackNum)
         {
             case (int)PlayerAttackIndex.AttackNormal:
                 CharacterAnimation("punch");
-                objState = ObjState.AttackJab;
+                attackState = AttackState.AttackJab;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackNormal:
                 CharacterAnimation("chargepunch");
                 FreezeChargeAttack();
-                objState = ObjState.ChargeAttack;
+                attackState = AttackState.ChargeAttack;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackDown:
                 CharacterAnimation("chargepunchDown");
                 FreezePositionCancel();
-                objState = ObjState.AttackDown;
+                attackState = AttackState.AttackDown;
                 isDownAttack = true;
                 break;
             case (int)PlayerAttackIndex.ChargeAttackUp:
                 CharacterAnimation("chargepunchUp");
-                objState = ObjState.AttackUp;
+                attackState = AttackState.AttackUp;
                 FreezePositionCancel();
                 isUpAttack = true;
                 break;
@@ -494,6 +502,7 @@ public class PlayerMove : MonoBehaviour
         PunchEffectPlay(false);
         isUpAttack = false;
         isDownAttack = false;
+        chargeCount = 0;
         CharacterAnimation("ExitAnimation");
         if (isGround) objState = ObjState.Normal;
         else objState = ObjState.NotAttackMode;
@@ -668,32 +677,35 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void StanUpdate()
     {
+        if (isStun)
+        {
+            isStun = false;
+            CharacterAnimation("knockback");
+            FreezePositionCancel();
+            ChargeEffectPlay(false, false);
+            chargeCount = 0;
+            chargeNow = 0.0f;
+
+            var rig = rigidbody;
+
+            if (enemyPosition.x < transform.position.x)
+            {
+                rig.AddForce(Vector3. right* stunAmountMovement, ForceMode.Impulse);
+            }
+            else
+            {
+                rig.AddForce(Vector3.left * stunAmountMovement, ForceMode.Impulse);
+            }
+        }
         StartCoroutine(StunEnumerator(stunTime));
     }
     IEnumerator StunEnumerator(float stunTime)
     {
-        CharacterAnimation("knockback");
-        FreezePositionCancel();
-        var rig = rigidbody;
-        //右向きの時
-        if (isRightDirection && !isLeftDirection)
-        {
-            rig.AddForce(Vector3.left * stunAmountMovement, ForceMode.Impulse);
-        }
-        //左向きの時
-        else
-        {
-            rig.AddForce(Vector3.right * stunAmountMovement, ForceMode.Impulse);
-        }
         yield return new WaitForSeconds(stunTime);
-        // CharacterAnimation("idol");
-        ChargeEffectPlay(false, false);
+
         canAttack = true;
         isChargeFlag = false;
-        chargeCount = 0;
-        chargeNow = 0.0f;
         objState = ObjState.Normal;
-
     }
     /// <summary>
     /// キャラクターのチャージ時に呼び出します
@@ -763,11 +775,9 @@ public class PlayerMove : MonoBehaviour
             }
 
             ChargeEffectPlay(false, false);
-
             PunchEffectPlay(true);
-            canDamage = true;
-            chargeCount = 0;
             chargeNow = 0.0f;
+            canDamage = true;
             isAttack = true;
 
         }
@@ -776,14 +786,31 @@ public class PlayerMove : MonoBehaviour
     /// 攻撃時のキャラクター更新
     /// </summary>
     /// <param name="animationTime">アニメーション時間</param>
-    void AttackUpdate(float animationTime)
+    void AttackUpdate()
     {
-        MoveAttack();
+        var animationTime = 0.0f;
         if (isAttack)
         {
+            switch (attackState)
+            {
+                case AttackState.AttackJab:
+                    animationTime = attackJabTime;
+                    break;
+                case AttackState.ChargeAttack:
+                    animationTime = chargeAttackTime;
+                    break;
+                case AttackState.AttackUp:
+                    animationTime = chargeAttackUpTime;
+                    break;
+                case AttackState.AttackDown:
+                    animationTime = chargeAttackDownTime;
+                    break;
+            }
             isAttack = false;
             StartCoroutine(OnAttack(animationTime));
+            MoveAttack();
         }
+
     }
 
     void CharacterGameOver()

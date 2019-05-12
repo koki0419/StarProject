@@ -28,7 +28,7 @@ public class Boss : MonoBehaviour
     private float foundationHPMax;
 
     //-------------フラグ用変数------------------------------
-   private bool onRemoveObjFlag = false;
+    private bool onRemoveObjFlag = false;
 
     public void Init()
     {
@@ -94,9 +94,10 @@ public class Boss : MonoBehaviour
     //ダメージ量
     int OnDamage(float damage, float speed)
     {
-        float nowHp = damage * speed / defensePower;
+        if (speed != 0)
+            damage *= speed;
 
-        return (int)nowHp;
+        return (int)damage;
     }
 
     private void SandEffectDysplay(bool isDysplay)

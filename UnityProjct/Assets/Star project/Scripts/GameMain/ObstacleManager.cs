@@ -35,7 +35,7 @@ public class ObstacleManager : MonoBehaviour
 
     public bool isDestroyed
     {
-        get;private set;
+        get; private set;
     }
 
     public void Init()
@@ -94,7 +94,6 @@ public class ObstacleManager : MonoBehaviour
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
                 if (starNum != 0)
                 {
-                    //Singleton.Instance.starGenerator.OnCreateStar(this.transform.position, starNum);
                     Singleton.Instance.starGenerator.ObstaclesToStarSpon(this.transform.position, starNum);
                 }
                 //壊れたときにキャラクターと当たり判定を持たなくします
@@ -118,8 +117,9 @@ public class ObstacleManager : MonoBehaviour
     /// <returns></returns>
     int OnDamage(float damage, float speed)
     {
-        float nowHp = damage * speed;
+        if (speed != 0)
+            damage *= speed;
 
-        return (int)nowHp;
+        return (int)damage;
     }
 }

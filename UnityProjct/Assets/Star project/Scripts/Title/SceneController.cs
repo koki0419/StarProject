@@ -224,7 +224,7 @@ namespace StarProject.Title
             if (SoundManager.audioVolume != 0) Singleton.Instance.soundManager.AudioVolume();
             else Singleton.Instance.soundManager.AllAudioVolume();
             //debugupdateへ
-            if (Input.GetKeyUp(KeyCode.A) && Input.GetKeyUp(KeyCode.S) && Input.GetKeyUp(KeyCode.D) && Input.GetKeyUp(KeyCode.F))
+            if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.W))
             {
                 debugFlag = false;
                 titleTyp = TitleTyp.TitleSelect;
@@ -273,7 +273,7 @@ namespace StarProject.Title
                 }
             }
             //debugupdateへ
-            if (Input.GetKeyUp(KeyCode.A) && Input.GetKeyUp(KeyCode.S) && Input.GetKeyUp(KeyCode.D) && Input.GetKeyUp(KeyCode.F))
+            if (Input.GetKey(KeyCode.R) && Input.GetKey(KeyCode.E))
             {
                 debugFlag = true;
                 titleTyp = TitleTyp.Debug;
