@@ -209,7 +209,8 @@ namespace StarProject.Gamemain
             canCameraShake = false;
             Destroy(safeHitGigMoaiObj);
             isMoveCamera = true;
-            gameMainState = GameMainState.Play;
+            if(gameMainState != GameMainState.Pause) gameMainState = GameMainState.Play;
+
         }
 
         //クリア
