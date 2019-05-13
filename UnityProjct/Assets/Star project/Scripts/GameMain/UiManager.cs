@@ -531,6 +531,7 @@ public class UiManager : MonoBehaviour
         {
             //Time.timeScale = 1.0f;
             ExitDiaLogDisplay(false);
+            RetryDiaLogDisplay(false);
             pauseTyp = PauseTyp.Normal;
         }
     }

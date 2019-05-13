@@ -224,9 +224,30 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
+
+        Debug.Log("playerState : " + objState);
     }
 
     //--------------関数-----------------------------
+    /// <summary>
+    /// スタンアタックを食らったときにキャラクターがエネミーに接触状態だと「OnCollisionEnter」だけだと
+    /// 反応しないので「OnCollisionStay」も使用します
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionStay(Collision collision)
+    {
+        //エネミーとの当たり判定
+        if (LayerMask.LayerToName(collision.gameObject.layer) == enemyLayerName)
+        {
+            if (collision.gameObject.GetComponent<EnemyController>().enemyState == EnemyController.EnemyState.StunAttack)
+            {
+                enemyPosition = collision.gameObject.GetComponent<Transform>().localPosition;
+                positiveDirection = false;
+                isStun = true;
+                objState = ObjState.Stun;
+            }
+        }
+    }
     /// <summary>
     /// コリジョンでの当たり判定
     /// </summary>
@@ -285,8 +306,6 @@ public class PlayerMove : MonoBehaviour
     void CharacterMove(float horizontal, float deltaTime)
     {
         var force = new Vector3(horizontal * moveSpeed, 0.0f, 0.0f);
-
-
         if (!isGround)
         {
             force = new Vector3(horizontal * airUpMoveSpeed, 0.0f, 0.0f);
@@ -301,8 +320,6 @@ public class PlayerMove : MonoBehaviour
             }
         }
         rigidbody.AddForce(force, ForceMode.Force);
-
-
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -316,7 +333,6 @@ public class PlayerMove : MonoBehaviour
             isRightDirection = false;
             isLeftDirection = true;
         }
-
     }
 
     /// <summary>
@@ -540,10 +556,12 @@ public class PlayerMove : MonoBehaviour
                 animatorComponent.SetBool("isJump", false);
                 break;
             case "dash"://走る
+                animatorComponent.SetBool("isKnockBack", false);
                 animatorComponent.SetBool("isDash", true);
                 animatorComponent.SetBool("isJump", false);
                 break;
             case "jump"://ジャンプ
+                animatorComponent.SetBool("isKnockBack", false);
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetBool("isJump", true);
                 break;
@@ -555,6 +573,7 @@ public class PlayerMove : MonoBehaviour
                 animatorComponent.SetBool("isKnockBack", true);
                 break;
             case "charge"://チャージ
+                animatorComponent.SetBool("isKnockBack", false);
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetTrigger("isCharge");
                 animatorComponent.SetBool("isCharge", true);
@@ -614,14 +633,12 @@ public class PlayerMove : MonoBehaviour
             CharacterAnimation("dash");
             Singleton.Instance.soundManager.PlayPlayerSe(dashSeNum);
             SandEffectPlay(true);
-            //canAttack = true;
         }
         else if (!isChargeFlag && isGround)
         {
             CharacterAnimation("idol");
             Singleton.Instance.soundManager.StopPlayerSe();
             SandEffectPlay(false);
-            //canAttack = true;
         }
         else if (!isGround)
         {
@@ -632,7 +649,7 @@ public class PlayerMove : MonoBehaviour
         //移動
         CharacterMove(dx, deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.T) && canAttack || Input.GetButtonDown("Charge") && canAttack)
+        if (Input.GetKey(KeyCode.T) && canAttack || Input.GetButton("Charge") && canAttack)
         {
             canAttack = false;
             FreezePositionOll();
@@ -654,14 +671,12 @@ public class PlayerMove : MonoBehaviour
             CharacterAnimation("dash");
             Singleton.Instance.soundManager.PlayPlayerSe(dashSeNum);
             SandEffectPlay(true);
-            //canAttack = true;
         }
         else if (!isChargeFlag && isGround)
         {
             CharacterAnimation("idol");
             Singleton.Instance.soundManager.StopPlayerSe();
             SandEffectPlay(false);
-            //canAttack = true;
         }
         else if (!isGround)
         {
@@ -683,14 +698,17 @@ public class PlayerMove : MonoBehaviour
             CharacterAnimation("knockback");
             FreezePositionCancel();
             ChargeEffectPlay(false, false);
+            //チャージゲージをリセットします
+            Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(0);
+            //チャージ中☆を戻します
+            Singleton.Instance.gameSceneController.StarChargeController.UpdateBigStarUI(chargeCount);
             chargeCount = 0;
             chargeNow = 0.0f;
 
             var rig = rigidbody;
-
             if (enemyPosition.x < transform.position.x)
             {
-                rig.AddForce(Vector3. right* stunAmountMovement, ForceMode.Impulse);
+                rig.AddForce(Vector3.right * stunAmountMovement, ForceMode.Impulse);
             }
             else
             {
@@ -702,9 +720,9 @@ public class PlayerMove : MonoBehaviour
     IEnumerator StunEnumerator(float stunTime)
     {
         yield return new WaitForSeconds(stunTime);
-
         canAttack = true;
         isChargeFlag = false;
+        FreezePositionCancel();
         objState = ObjState.Normal;
     }
     /// <summary>
@@ -751,8 +769,6 @@ public class PlayerMove : MonoBehaviour
                 //チャージ終了（チャージゲージを0に戻す）
                 attackPower = chargeCount * secondOffensivePower + foundationoffensivePower;
             }
-
-            //attackSpeed = chargeCount * speedForce + foundationSpeedForce;
             //チャージゲージをリセットします
             Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(0);
             //チャージ中☆を戻します
