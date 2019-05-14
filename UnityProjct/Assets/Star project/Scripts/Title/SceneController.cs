@@ -263,6 +263,7 @@ namespace StarProject.Title
                 {
                     case 0:
                         StartCoroutine(GameStartEnumerator());
+                        titleTyp = TitleTyp.None;
                         break;
                     case 1:
                         exitDialogUI.SetActive(true);
@@ -360,10 +361,8 @@ namespace StarProject.Title
         {
             ForceColor(Color.clear);
             yield return FadeEnumerator(Color.clear, fadeOutColor, fadeOutTime);
-            //FadeImageDisplay(false);
             GameSceneController.stageNum = 1;
             SceneManager.LoadScene("main01");
-            titleTyp = TitleTyp.None;
         }
         /// <summary>
         /// フェードアウト
