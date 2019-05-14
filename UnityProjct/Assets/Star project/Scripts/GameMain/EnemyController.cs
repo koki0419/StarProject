@@ -310,14 +310,14 @@ public class EnemyController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack && enemyTyp == EnemyTyp.MoveEnemy )
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
         {
             StartCoroutine(SandEffectEnumerator());
         }
     }
     private void OnCollisionStay(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack && enemyTyp == EnemyTyp.MoveEnemy)
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy)
         {
             StartCoroutine(SandEffectEnumerator());
         }
@@ -328,6 +328,7 @@ public class EnemyController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator SandEffectEnumerator()
     {
+        yield return null;
         enemyState = EnemyState.Stun;
         FreezePositionOll();
         yield return null;

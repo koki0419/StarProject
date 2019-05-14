@@ -224,8 +224,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-
-        Debug.Log("playerState : " + objState);
     }
 
     //--------------関数-----------------------------
@@ -480,7 +478,6 @@ public class PlayerMove : MonoBehaviour
     /// <param name="attackNum"></param>
     void OnAttackMotion(int attackNum)
     {
-        objState = ObjState.Attack;
         switch (attackNum)
         {
             case (int)PlayerAttackIndex.AttackNormal:
@@ -512,7 +509,6 @@ public class PlayerMove : MonoBehaviour
     {
         yield return new WaitForSeconds(animationTime);
         canDamage = false;
-        canAttack = true;
         chargeNowHand = 0.0f;
         FreezePositionCancel();
         PunchEffectPlay(false);
@@ -520,6 +516,7 @@ public class PlayerMove : MonoBehaviour
         isDownAttack = false;
         chargeCount = 0;
         CharacterAnimation("ExitAnimation");
+        canAttack = true;
         if (isGround) objState = ObjState.Normal;
         else objState = ObjState.NotAttackMode;
 
@@ -581,33 +578,37 @@ public class PlayerMove : MonoBehaviour
                 break;
             case "punch"://パンチ
                 animatorComponent.SetBool("isCharge", false);
+                animatorComponent.SetBool("ExitAnimation2", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1000);
                 break;
             case "chargepunch"://チャージパンチ
                 animatorComponent.SetBool("isCharge", false);
+                animatorComponent.SetBool("ExitAnimation2", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1010);
                 break;
             case "chargepunchUp"://チャージアッパー
                 animatorComponent.SetBool("isCharge", false);
+                animatorComponent.SetBool("ExitAnimation2", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1011);
                 break;
             case "chargepunchDown"://チャージダウン
                 animatorComponent.SetBool("isCharge", false);
+                animatorComponent.SetBool("ExitAnimation2", false);
                 animatorComponent.SetTrigger("isPunch");
                 animatorComponent.SetInteger("setPunchNum", 1001);
                 break;
             case "GameOver"://ゲームオーバー
                 animatorComponent.SetBool("isCharge", false);
+                animatorComponent.SetBool("ExitAnimation2", false);
                 animatorComponent.SetBool("isDash", false);
                 animatorComponent.SetBool("isJump", false);
                 animatorComponent.SetTrigger("isGameOver");
                 break;
             case "ExitAnimation":
-                animatorComponent.SetBool("isCharge", false);
-                animatorComponent.SetTrigger("ExitAnimation");
+                animatorComponent.SetBool("ExitAnimation2",true);
                 break;
         }
     }
@@ -796,6 +797,7 @@ public class PlayerMove : MonoBehaviour
             canDamage = true;
             isAttack = true;
 
+            objState = ObjState.Attack;
         }
     }
     /// <summary>
@@ -807,6 +809,7 @@ public class PlayerMove : MonoBehaviour
         var animationTime = 0.0f;
         if (isAttack)
         {
+            isAttack = false;
             switch (attackState)
             {
                 case AttackState.AttackJab:
@@ -822,7 +825,6 @@ public class PlayerMove : MonoBehaviour
                     animationTime = chargeAttackDownTime;
                     break;
             }
-            isAttack = false;
             StartCoroutine(OnAttack(animationTime));
             MoveAttack();
         }
