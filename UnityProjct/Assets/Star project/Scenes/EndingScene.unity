@@ -367,9 +367,9 @@ MonoBehaviour:
   fadeText: {fileID: 1853893854}
   fadeChara: {fileID: 594771192}
   fadeOutColor: {r: 0, g: 0, b: 0, a: 1}
-  fadeOutTime: 3
+  fadeOutTime: 2
   fadeInColor: {r: 1, g: 1, b: 1, a: 1}
-  fadeInTime: 3
+  fadeInTime: 1
 --- !u!4 &506598314
 Transform:
   m_ObjectHideFlags: 0
