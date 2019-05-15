@@ -433,7 +433,7 @@ MonoBehaviour:
   fadeText: {fileID: 882684113}
   fadeChara: {fileID: 702609314}
   fadeOutColor: {r: 1, g: 1, b: 1, a: 1}
-  fadeOutTime: 3
+  fadeOutTime: 1
   nextStageDiaLog: {fileID: 841169601}
   nextStageButton: {fileID: 804381044}
   exitTitleButton: {fileID: 1786620828}
@@ -3453,13 +3453,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1274156890}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 135777241}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -170, y: -193}
