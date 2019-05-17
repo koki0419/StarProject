@@ -328,7 +328,7 @@ public class EnemyController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator SandEffectEnumerator()
     {
-        yield return null;
+        yield return new WaitForSeconds(1.0f);
         enemyState = EnemyState.Stun;
         FreezePositionOll();
         yield return null;

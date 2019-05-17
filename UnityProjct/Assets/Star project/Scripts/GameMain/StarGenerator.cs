@@ -73,7 +73,7 @@ public class StarGenerator : MonoBehaviour
     {
         var spon = 0;
         var plusPosition = 0;
-        var randPoint = Random.RandomRange(0, 5);
+        var randPoint = Random.RandomRange(1, 4);
         while (true)
         {
             var star = pool.GetObject();

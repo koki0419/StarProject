@@ -11828,7 +11828,12 @@ PrefabInstance:
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
-      value: 2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
@@ -12187,7 +12192,12 @@ PrefabInstance:
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
-      value: 3
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
@@ -13922,6 +13932,11 @@ PrefabInstance:
       propertyPath: starNum
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: m_Layer
@@ -14852,6 +14867,7 @@ MonoBehaviour:
   speedForceUp: 300
   stunTime: 2
   stunAmountMovement: 1000
+  stunAirAmountMovement: 0
   attackJabTime: 0.35
   chargeAttackTime: 0.85
   chargeAttackUpTime: 0.5
@@ -15517,7 +15533,12 @@ PrefabInstance:
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
-      value: 3
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
@@ -16952,7 +16973,12 @@ PrefabInstance:
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
-      value: 2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
@@ -17560,7 +17586,12 @@ PrefabInstance:
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: foundationHP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 40554699386588258, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}

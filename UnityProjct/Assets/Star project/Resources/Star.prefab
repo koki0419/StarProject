@@ -60,8 +60,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goldStarMaterial: {fileID: 2100000, guid: b5b4db56c97ed6b42a1a5a28953c7b4a, type: 2}
-  silverStarMaterial: {fileID: 2100000, guid: 77384f2faf7383a47a04bce14ff778e2, type: 2}
-  bronzeStarMaterial: {fileID: 2100000, guid: c8fa2b87e2650ab4c989fe6bd0e07a92, type: 2}
+  silverStarMaterial: {fileID: 2100000, guid: d48ab881e5308184db31e2220bd0a7b6, type: 2}
+  bronzeStarMaterial: {fileID: 2100000, guid: 4abda62a41f47a44299cf99889e0deb3, type: 2}
   starRenderer: {fileID: 369247713050440553}
   starGenerator: {fileID: 0}
   starPoint: 1

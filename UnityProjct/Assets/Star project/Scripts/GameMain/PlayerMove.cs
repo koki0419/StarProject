@@ -114,6 +114,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float stunTime;
     //スタン時の移動量
     [SerializeField] private float stunAmountMovement;
+    [SerializeField] private float stunAirAmountMovement;
     private bool positiveDirection;
     private Vector3 enemyPosition;
 
@@ -707,13 +708,27 @@ public class PlayerMove : MonoBehaviour
             chargeNow = 0.0f;
 
             var rig = rigidbody;
-            if (enemyPosition.x < transform.position.x)
+            if (isGround)
             {
-                rig.AddForce(Vector3.right * stunAmountMovement, ForceMode.Impulse);
+                if (enemyPosition.x < transform.position.x)
+                {
+                    rig.AddForce(Vector3.right * stunAmountMovement, ForceMode.Impulse);
+                }
+                else
+                {
+                    rig.AddForce(Vector3.left * stunAmountMovement, ForceMode.Impulse);
+                }
             }
             else
             {
-                rig.AddForce(Vector3.left * stunAmountMovement, ForceMode.Impulse);
+                if (enemyPosition.x < transform.position.x)
+                {
+                    rig.AddForce(Vector3.right * stunAirAmountMovement, ForceMode.Impulse);
+                }
+                else
+                {
+                    rig.AddForce(Vector3.left * stunAirAmountMovement, ForceMode.Impulse);
+                }
             }
         }
         StartCoroutine(StunEnumerator(stunTime));
