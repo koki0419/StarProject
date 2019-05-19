@@ -62,6 +62,8 @@ public class EnemyController : MonoBehaviour
 
     private bool attack;
 
+    private bool stun;
+
     [SerializeField] private Animator enemyAnimator;
 
     public void Init(GameObject player)
@@ -96,6 +98,7 @@ public class EnemyController : MonoBehaviour
         enemyState = EnemyState.Search;
         obstacleManager = GetComponent<ObstacleManager>();
         attack = false;
+        stun = false;
     }
     /// <summary>
     /// エネミーアップデート
@@ -312,14 +315,20 @@ public class EnemyController : MonoBehaviour
     {
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
         {
-            StartCoroutine(SandEffectEnumerator());
+            if (!stun)
+            {
+                StartCoroutine(SandEffectEnumerator());
+            }
         }
     }
     private void OnCollisionStay(Collision collision)
     {
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy)
         {
-            StartCoroutine(SandEffectEnumerator());
+            if (!stun)
+            {
+                StartCoroutine(SandEffectEnumerator());
+            }
         }
     }
     /// <summary>
@@ -328,6 +337,7 @@ public class EnemyController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator SandEffectEnumerator()
     {
+        stun = true;
         yield return new WaitForSeconds(1.0f);
         enemyState = EnemyState.Stun;
         FreezePositionOll();

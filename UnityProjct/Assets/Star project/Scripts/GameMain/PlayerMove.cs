@@ -67,6 +67,8 @@ public class PlayerMove : MonoBehaviour
     [Header("プレイヤー情報")]
     //移動速度を設定します
     [SerializeField] private float moveSpeed = 0;
+    [SerializeField] private float knockbackMoveSpeedMax = 0;
+    private float knockbackMoveSpeed = 0;
     //ジャンプ中の移動速度
     [SerializeField] private float airUpMoveSpeed = 0;
     [SerializeField] private float airDownMoveSpeed = 0;
@@ -132,8 +134,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private int punchSeNum;
     [SerializeField] private int getStarSeNum;
     //-------------フラグ用変数------------------------------
-    //ジャンプフラグ
-    private bool isJumpFlag;
     //アタックフラグ
     public bool canDamage
     {
@@ -141,6 +141,7 @@ public class PlayerMove : MonoBehaviour
     }
     //地面との接触
     private bool isGround;
+
     //チャージ中かどうか
     private bool isChargeFlag;
     //☆獲得時フラグ
@@ -158,11 +159,24 @@ public class PlayerMove : MonoBehaviour
     private bool isAttack;
     private bool canAttack;
     private bool isStun;
+    private bool notKey;
+
+    private bool rightNotKey;
+    private bool leftNotKey;
+
+    public bool isHit
+    {
+        get; private set;
+    }
 
     private const string groundLayerName = "Ground";
     private const string gameOverLineLayerName = "GameOverObj";
+    private const string screenOutLineLayerName = "SceneRestrictionBar";
     private const string enemyLayerName = "Obstacles";
     private const string enemyHeadLayerName = "ObstaclesHead";
+    //壁ずり対策
+    private const string rightProgressionControlLayerName = "RightProgressionControlObject";
+    private const string leftProgressionControlLayerName = "LeftProgressionControlObject";
 
     //初期化
     public void Init()
@@ -178,7 +192,6 @@ public class PlayerMove : MonoBehaviour
         Singleton.Instance.gameSceneController.StarChargeController.UpdateChargePoint(0);
         //----初期化-----
         canDamage = false;
-        isJumpFlag = false;
         isGround = false;
         isAcquisitionStar = false;
 
@@ -225,6 +238,9 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
+        //Debug.Log("rightNotKey : " + rightNotKey);
+        //Debug.Log("leftNotKey : " + leftNotKey);
+        //Debug.Log("isGround : " + isGround);
     }
 
     //--------------関数-----------------------------
@@ -268,6 +284,38 @@ public class PlayerMove : MonoBehaviour
                 isStun = true;
                 objState = ObjState.Stun;
             }
+            else if (isAttack)
+            {
+                isHit = true;
+            }
+            else
+            {
+                //壁ずり抑制
+                StartCoroutine(KnockBackIEnumerator());
+            }
+        }
+        else if (LayerMask.LayerToName(collision.gameObject.layer) == screenOutLineLayerName)
+        {
+            //壁ずり抑制
+            StartCoroutine(KnockBackIEnumerator());
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
+        {
+            isGround = true;
+        }
+        else if (LayerMask.LayerToName(other.gameObject.layer) == rightProgressionControlLayerName)
+        {
+            //右壁ずり
+            rightNotKey = true;
+        }
+        else if (LayerMask.LayerToName(other.gameObject.layer) == leftProgressionControlLayerName)
+        {
+            //左壁ずり
+            leftNotKey = true;
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -275,26 +323,101 @@ public class PlayerMove : MonoBehaviour
         if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = true;
-            isJumpFlag = false;
+            rightNotKey = false;
+            leftNotKey = false;
             rigidbody.drag = dragPower;
             if (objState == ObjState.NotAttackMode)
             {
                 objState = ObjState.Normal;
             }
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
-        {
-            isGround = false;
-            if (!canDamage)
+            if (notKey)
             {
-                Singleton.Instance.soundManager.StopPlayerSe();
-                //ジャンプ音再生
-                Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+                notKey = false;
             }
         }
+
+    }
+    //この当たり判定から出たとき
+    private void OnTriggerExit(Collider other)
+    {
+        //地面に設置しているとき
+
+        //通常のジャンプ
+        //空中に出たとき
+        if (!rightNotKey && !leftNotKey)
+        {
+            if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
+            {
+                isGround = false;
+                if (!canDamage)
+                {
+                    Singleton.Instance.soundManager.StopPlayerSe();
+                    //ジャンプ音再生
+                    Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+                }
+            }
+        }//LRどちらかのフラグが入っているとき
+        else if (rightNotKey)
+        {
+            //右進行不能フラグから出たとき
+            if (LayerMask.LayerToName(other.gameObject.layer) == rightProgressionControlLayerName)
+            {
+                rightNotKey = false;
+            }
+            else if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || rightNotKey && LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
+            {
+                if (isGround)
+                {
+                    rightNotKey = false;
+                }
+                else
+                {
+                    isGround = false;
+                    rightNotKey = false;
+                    if (!canDamage)
+                    {
+                        Singleton.Instance.soundManager.StopPlayerSe();
+                        //ジャンプ音再生
+                        Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+                    }
+                }
+            }
+        }
+        else if (leftNotKey)
+        {
+            //右進行不能フラグから出たとき
+            if (LayerMask.LayerToName(other.gameObject.layer) == leftProgressionControlLayerName)
+            {
+                leftNotKey = false;
+            }
+            else if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || rightNotKey && LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
+            {
+                if (isGround)
+                {
+                    leftNotKey = false;
+                }
+                else
+                {
+                    isGround = false;
+                    leftNotKey = false;
+                    if (!canDamage)
+                    {
+                        Singleton.Instance.soundManager.StopPlayerSe();
+                        //ジャンプ音再生
+                        Singleton.Instance.soundManager.PlayPlayerSe(jumpSeNum);
+                    }
+                }
+            }
+
+        }
+    }
+    private IEnumerator KnockBackIEnumerator()
+    {
+        notKey = true;
+        knockbackMoveSpeed = knockbackMoveSpeedMax;
+        yield return new WaitForSeconds(0.5f);
+        knockbackMoveSpeed = 0;
+        if (isGround) notKey = false;
     }
 
     /// <summary>
@@ -304,21 +427,45 @@ public class PlayerMove : MonoBehaviour
     /// <param name="deltaTime">GameSceneManagerから受け取ります</param>
     void CharacterMove(float horizontal, float deltaTime)
     {
-        var force = new Vector3(horizontal * moveSpeed, 0.0f, 0.0f);
+
+
+        var velocity = rigidbody.velocity;
+        velocity.x = horizontal * moveSpeed;
         if (!isGround)
         {
-            force = new Vector3(horizontal * airUpMoveSpeed, 0.0f, 0.0f);
-            rigidbody.AddForce(force, ForceMode.Force);
-            var velocity = rigidbody.velocity;
+            velocity.x = horizontal * airUpMoveSpeed;
+
             // 下降中
             if (velocity.y < 0)
             {
                 rigidbody.drag = 0;
-                force = new Vector3(horizontal * airDownMoveSpeed, 0.0f, 0.0f);
-                rigidbody.AddForce(force, ForceMode.Force);
+                velocity.x = horizontal * airDownMoveSpeed;
             }
         }
-        rigidbody.AddForce(force, ForceMode.Force);
+
+        if (notKey)
+        {
+            //キャラクターの向き
+            if (horizontal > 0)
+            {
+                velocity.x = -knockbackMoveSpeed;
+            }
+            else if (horizontal < 0)
+            {
+                velocity.x = knockbackMoveSpeed;
+            }
+        }
+
+        if (rightNotKey && horizontal > 0)
+        {
+            velocity.x = 0;
+        }
+        else if (leftNotKey && horizontal < 0)
+        {
+            velocity.x = 0;
+        }
+        rigidbody.velocity = velocity;
+
         //キャラクターの向き
         if (horizontal > 0)
         {
@@ -518,6 +665,7 @@ public class PlayerMove : MonoBehaviour
         chargeCount = 0;
         CharacterAnimation("ExitAnimation");
         canAttack = true;
+        isHit = false;
         if (isGround) objState = ObjState.Normal;
         else objState = ObjState.NotAttackMode;
 
@@ -609,7 +757,7 @@ public class PlayerMove : MonoBehaviour
                 animatorComponent.SetTrigger("isGameOver");
                 break;
             case "ExitAnimation":
-                animatorComponent.SetBool("ExitAnimation2",true);
+                animatorComponent.SetBool("ExitAnimation2", true);
                 break;
         }
     }

@@ -187,7 +187,7 @@ namespace StarProject.Gamemain
         {
             if (gameMainState == GameMainState.Play)//ゲームスタート
             {
-                if (isMoveCamera) cameraController.MoveUpdate();
+
 
                 if (isGetStar)
                 {
@@ -283,7 +283,7 @@ namespace StarProject.Gamemain
         {
             starGenerator.StarSponUpdate();
             float deltaTime = Time.deltaTime;
-
+            if (isMoveCamera) cameraController.MoveUpdate(deltaTime);
             playerMove.OnUpdate(deltaTime);//PlayerのUpdate
                                            //☆エネミー子供オブジェクト初期化
             if (enemysObj.transform.childCount != 0)

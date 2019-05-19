@@ -73,10 +73,9 @@ public class Boss : MonoBehaviour
         }
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.name == "middle_01_r" && acquisitionPoint == 0 && playerMove.canDamage)
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
             Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
@@ -94,9 +93,6 @@ public class Boss : MonoBehaviour
     //ダメージ量
     int OnDamage(float damage, float speed)
     {
-        if (speed != 0)
-            damage *= speed;
-
         return (int)damage;
     }
 

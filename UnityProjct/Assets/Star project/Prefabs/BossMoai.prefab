@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3229803013164336479}
   - component: {fileID: 3229803013164336464}
   - component: {fileID: 3229803013164336477}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BossMoai
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3229803013164336466}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 5.275656, y: 14.723717, z: 3.9736848}
@@ -111,6 +111,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: sand_effect
+      objectReference: {fileID: 0}
+    - target: {fileID: 7922827524511410148, guid: 0b215b342ce601c4d96170c49bcf08db,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 7922827524511410145, guid: 0b215b342ce601c4d96170c49bcf08db,
         type: 3}
@@ -182,6 +187,21 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 7922827525300995752, guid: 0b215b342ce601c4d96170c49bcf08db,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 7922827525777705035, guid: 0b215b342ce601c4d96170c49bcf08db,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 7922827525022080599, guid: 0b215b342ce601c4d96170c49bcf08db,
+        type: 3}
+      propertyPath: m_Layer
+      value: 21
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b215b342ce601c4d96170c49bcf08db, type: 3}
 --- !u!1 &4693059852303110607 stripped
@@ -203,11 +223,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 7a5a980e2826be14eb78ca7dfc0abc33, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 7a5a980e2826be14eb78ca7dfc0abc33, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a5a980e2826be14eb78ca7dfc0abc33, type: 3}
       propertyPath: m_LocalPosition.x
@@ -278,11 +298,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: fc2bad3b57a72444bb265beb586e7970, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: fc2bad3b57a72444bb265beb586e7970, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: fc2bad3b57a72444bb265beb586e7970, type: 3}
       propertyPath: m_LocalPosition.x
