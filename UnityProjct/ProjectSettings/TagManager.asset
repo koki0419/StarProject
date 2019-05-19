@@ -24,10 +24,10 @@ TagManager:
   - Ground
   - ObstaclesHead
   - Stars
-  - 
-  - 
-  - 
-  - 
+  - LeftProgressionControlObject
+  - RightProgressionControlObject
+  - AttackHand
+  - Boss
   - 
   - 
   - 

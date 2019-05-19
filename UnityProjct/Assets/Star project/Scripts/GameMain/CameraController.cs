@@ -7,10 +7,8 @@ public class CameraController : MonoBehaviour
 
     //プレイヤーのTransformを取得
     [SerializeField] private Transform player = null;
-    [SerializeField] private float camaraPos = 1.5f;
-    [Header("カメラ移動速度")]
-    [SerializeField] private float camaraMove = 1.5f;
-    [Header("カメラ終点")] private Vector3 moveEndPsition;
+    private float camaraPos = 6;
+    private float camaraMove = 1.5f;
     public void Init()
     {
         var position = transform.position;
@@ -18,10 +16,10 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void MoveUpdate()
+    public void MoveUpdate(float deltaTime)
     {
         var position = transform.position;
-        position.x += camaraMove;
+        position.x += camaraMove * deltaTime;
         position.y = camaraPos;
         transform.position = position;
     }

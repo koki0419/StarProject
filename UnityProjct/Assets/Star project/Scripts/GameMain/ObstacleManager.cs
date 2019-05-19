@@ -78,12 +78,13 @@ public class ObstacleManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
+        //Debug.Log(collision.gameObject.layer)
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             //Hpをへらす
-            foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
+            foundationHP -= playerMove.attackPower;
             //ダメージテキストにアクセスして生成します
-            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
+            Singleton.Instance.OnDamage((int)playerMove.attackPower, this.gameObject.transform);
 
             //ObjHｐがOになった時
             if (foundationHP <= 0)
@@ -108,18 +109,8 @@ public class ObstacleManager : MonoBehaviour
             }
         }
     }
-
-    /// <summary>
-    /// ダメージが与えられたとき
-    /// </summary>
-    /// <param name="damage"></param>
-    /// <param name="speed"></param>
-    /// <returns></returns>
-    int OnDamage(float damage, float speed)
+    private void OnTriggerEnter(Collider other)
     {
-        if (speed != 0)
-            damage *= speed;
-
-        return (int)damage;
+        
     }
 }
