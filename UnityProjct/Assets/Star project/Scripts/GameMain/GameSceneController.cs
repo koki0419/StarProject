@@ -74,6 +74,7 @@ namespace StarProject.Gamemain
         {
             set; private get;
         }
+        private bool gameClearMovie;
         //ゲームオーバー
         public bool isGameOver
         {
@@ -125,6 +126,7 @@ namespace StarProject.Gamemain
             isGameOver = false;
             isOperation = false;
             canCameraShake = false;
+            gameClearMovie = false;
 
             ResultScreenController.all_damage = 0;
         }
@@ -323,6 +325,7 @@ namespace StarProject.Gamemain
             if (isGameClear)
             {
                 Singleton.Instance.soundManager.PlayJingle("GameClear");
+                gameClearMovie = true;
                 gameMainState = GameMainState.GameClear;
             }
             //ポーズ
@@ -350,7 +353,11 @@ namespace StarProject.Gamemain
         /// </summary>
         void GameClear()
         {
-            StartCoroutine(OnClear());
+            if (gameClearMovie)
+            {
+                gameClearMovie = false;
+                StartCoroutine(OnClear());
+            }
         }
         /// <summary>
         /// ゲームオーバー時の処理
