@@ -215,28 +215,6 @@ namespace StarProject.Gamemain
 
         }
 
-        //クリア
-        IEnumerator OnClear()
-        {
-            canCameraShake = true;
-            ResultScreenController.allStar = chargePointManager.starChildCount;
-            yield return new WaitForSeconds(0.5f);
-            uiManager.GameClearUIDisplay(true);
-            yield return new WaitForSeconds(3.0f);
-            canCameraShake = false;
-            SceneManager.LoadScene("ResultScene");
-
-        }
-
-        //ゲームオーバー
-        IEnumerator OnGameOver()
-        {
-            yield return new WaitForSeconds(0.5f);
-            uiManager.GameOvreUIDisplay(true);
-            yield return new WaitForSeconds(2.5f);
-            uiManager.GameOverDiaLogDisplay(true);
-            isOperation = true;
-        }
         /// <summary>
         /// ゲーム開始時登場演出
         /// </summary>
@@ -374,6 +352,28 @@ namespace StarProject.Gamemain
             }
         }
 
+        //クリア
+        IEnumerator OnClear()
+        {
+            canCameraShake = true;
+            ResultScreenController.allStar = chargePointManager.starChildCount;
+            yield return new WaitForSeconds(0.5f);
+            uiManager.GameClearUIDisplay(true);
+            yield return new WaitForSeconds(3.0f);
+            canCameraShake = false;
+            SceneManager.LoadScene("ResultScene");
+
+        }
+
+        //ゲームオーバー
+        IEnumerator OnGameOver()
+        {
+            yield return new WaitForSeconds(0.5f);
+            uiManager.GameOvreUIDisplay(true);
+            yield return new WaitForSeconds(2.5f);
+            uiManager.GameOverDiaLogDisplay(true);
+            isOperation = true;
+        }
         void CameraSelect(bool mainCameraActive, bool openingCameraActive)
         {
             mainCamera.SetActive(mainCameraActive);
