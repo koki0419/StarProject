@@ -48,6 +48,7 @@ public class SoundManager : MonoBehaviour
     /// <param name="playBjmName">再生したいBGMの種類を取得します</param>
     public void PlayBgm(string playBjmName)
     {
+        bgmAudio.loop = true;
         if (bgmAudio.isPlaying)
         {
             bgmAudio.Stop();
@@ -104,6 +105,7 @@ public class SoundManager : MonoBehaviour
         }
         if (playJingleName == "GameClear")
         {
+            bgmAudio.loop = false;
             bgmAudio.clip = jingleClear;
         }
         else if (playJingleName == "GameOver")
