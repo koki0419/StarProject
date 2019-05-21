@@ -19,6 +19,8 @@ public class SoundManager : MonoBehaviour
     static public float bgmVolume = 1.0f;
     static public float seVolume = 1.0f;
 
+    private int previousSEIndex;
+
     /// <summary>
     /// 全てのオーディオの音量を管理します（音量0の時実装）
     /// </summary>
@@ -116,14 +118,26 @@ public class SoundManager : MonoBehaviour
     /// <param name="playSeNum"></param>
     public void PlayPlayerSe(int playSeNum)
     {
-        if (playerSeAudio.isPlaying && playerLoopSeAudio.isPlaying)
+        if (playSeNum == 5 && previousSEIndex == 4)
         {
             return;
         }
-        else if (!playerSeAudio.isPlaying)
+        else
         {
-            playerSeAudio.PlayOneShot(se[playSeNum]);
+            if(playSeNum == 5)
+            {
+                StopPlayerSe();
+            }
+            if (playerSeAudio.isPlaying && playerLoopSeAudio.isPlaying)
+            {
+                return;
+            }
+            else if (!playerSeAudio.isPlaying)
+            {
+                playerSeAudio.PlayOneShot(se[playSeNum]);
+            }
         }
+        previousSEIndex = playSeNum;
     }
     /// <summary>
     /// プレイヤーのSEをループ再生します

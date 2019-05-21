@@ -676,7 +676,7 @@ public class PlayerMove : MonoBehaviour
     /// <returns></returns>
     private IEnumerator OnGetStar()
     {
-        Singleton.Instance.soundManager.StopPlayerSe();
+        //Singleton.Instance.soundManager.StopPlayerSe();
         Singleton.Instance.soundManager.PlayPlayerSe(getStarSeNum);
         isAcquisitionStar = false;
         GetStarEffectPlay(true);

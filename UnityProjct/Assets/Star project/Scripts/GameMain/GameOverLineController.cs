@@ -37,7 +37,6 @@ public class GameOverLineController : MonoBehaviour
     public void PlayMoaiAwakeningSE()
     {
         Singleton.Instance.soundManager.StopPlayerSe();
-        //ジャンプ音再生
         Singleton.Instance.soundManager.PlayPlayerSe(awakeningSeNum);
     }
 }
