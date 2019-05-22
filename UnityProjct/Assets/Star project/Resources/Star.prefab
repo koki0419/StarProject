@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5790972507732336171}
   - component: {fileID: 6359115995485083371}
   - component: {fileID: 8201827453594380170}
+  - component: {fileID: 8502124214705256432}
   m_Layer: 17
   m_Name: Star
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 301987961005163294}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -1.18, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8978381338534367276}
   m_Father: {fileID: 0}
@@ -43,10 +44,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 4.0335436
-  m_Height: 8.067087
+  m_Radius: 0.5
+  m_Height: 0.5
   m_Direction: 1
-  m_Center: {x: 0, y: -4.0880944e-15, z: 0.3751087}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8201827453594380170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +70,25 @@ MonoBehaviour:
   silverStarPoint: 2
   bronzeStarPoint: 1
   starSponType: 0
+--- !u!95 &8502124214705256432
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301987961005163294}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f70b022f94766c045872bf2628da8cd0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8097752209541557650
 GameObject:
   m_ObjectHideFlags: 0

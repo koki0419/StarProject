@@ -82,7 +82,6 @@ public class StarGenerator : MonoBehaviour
                 var randX = Random.Range(-1, 1);
                 var randY = Random.Range(1, 2);
 
-                //プレイヤーの位置座標をスクリーン座標に変換
                 star.transform.localPosition = new Vector3(targetPos.x + randX, targetPos.y + randY + targetPos.z);
                 star.GetComponent<StarController>().Init(playerMove, randPoint);
                 star.GetComponent<StarController>().starGenerator = this;
