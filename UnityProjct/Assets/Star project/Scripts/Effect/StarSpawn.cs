@@ -3,32 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(ObjectPool))]
-public class StarSpon : MonoBehaviour
+public class StarSpawn : MonoBehaviour
 {
     //プレイヤーオブジェクト
     [SerializeField] private RectTransform target = null;
     [Header("☆プール生成数")]
-    [SerializeField] private int sponMax;
+    [SerializeField] private int spawnMax;
     [Header("☆プレハブ")]
     [SerializeField] private GameObject starEffectPrefab;
     private ObjectPool pool;
 
+    [SerializeField] private Camera mainCamera = null;
+
     public void Init()
     {
         pool = GetComponent<ObjectPool>();
-        pool.CreatePool(starEffectPrefab, sponMax);
+        pool.CreatePool(starEffectPrefab, spawnMax);
     }
+
+    public Vector3 debugVector = Vector3.zero;
 
     public void CreatStarEffect(Vector3 sponPos)
     {
+        //this.spawnPos = Camera.main.WorldToScreenPoint(sponPos);
+
         //sponPosはワールド座標で取得するのでスクリーン座標に変換
-        var screenPos = RectTransformUtility.WorldToScreenPoint(null,sponPos);
-        Debug.Log("sponPos : " + sponPos);
-        Debug.Log("screenPos : " + screenPos);
+        var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, sponPos);
+        //this.debugVector = screenPos;
         var starEffect = pool.GetObject();
         if (starEffect != null)
         {
-            starEffect.transform.localPosition = sponPos;
+            starEffect.GetComponent<RectTransform>().position = screenPos;
             starEffect.GetComponent<StarEffect>().Init(target);
         }
     }
