@@ -13,7 +13,7 @@ public class StarEffect : MonoBehaviour
     {
         target = t;
     }
-    
+
     private Vector3 Direction()
     {
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -31,8 +31,7 @@ public class StarEffect : MonoBehaviour
     private void Update()
     {
         gameObject.transform.localPosition += Direction();
-        Debug.Log(Direction());
-        if(target.localPosition.x- errorPosition <= gameObject.transform.localPosition.x && target.localPosition.y- errorPosition <= gameObject.transform.localPosition.y)
+        if (target.position.x + errorPosition >= transform.position.x && target.position.y - errorPosition <= transform.position.y)
         {
             gameObject.SetActive(false);
         }

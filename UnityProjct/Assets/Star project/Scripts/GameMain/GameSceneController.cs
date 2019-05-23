@@ -61,7 +61,7 @@ namespace StarProject.Gamemain
         [SerializeField] private GameOverLineController gameOverLineController = null;
 
         [SerializeField] private StarGenerator starGenerator;
-        [SerializeField] private StarSpon starSpon;
+        //[SerializeField] private StarSpon starSpon;
 
         //------------数値変数の宣言--------------------
         //現在のステージ番号 // リザルトでリトライやNextステージで使用します
@@ -151,7 +151,7 @@ namespace StarProject.Gamemain
             cameraController.Init();
             chargePointManager.Init();
             gameOverLineController.Init();
-            starSpon.Init();
+            //starSpon.Init();
             yield return null;
             yield return uiManager.FadeInEnumerator();
             gameMainState = GameMainState.Opening;

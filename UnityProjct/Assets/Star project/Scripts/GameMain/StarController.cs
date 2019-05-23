@@ -73,7 +73,7 @@ public class StarController : MonoBehaviour
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
             Singleton.Instance.gameSceneController.isGetStar = true;
-            Singleton.Instance.starSpon.CreatStarEffect(transform.localPosition);
+            //Singleton.Instance.starSpon.CreatStarEffect(transform.position);
             if (starPoint == 0 && starPoint == 1)
             {
                 playerMove.isAcquisitionStar = true;
