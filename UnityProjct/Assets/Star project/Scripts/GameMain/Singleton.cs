@@ -14,14 +14,14 @@ public class Singleton : SingletonMonoBehaviour<Singleton>
 
     //public GameObject damageTextUI;
 
-    public void OnDamage(int damage,Transform obj)
+    public void OnDamage(int damage,Vector3 obj)
     {
         // プレハブデータ取得
         GameObject prefab = (GameObject)Resources.Load("DamageText");
 
         // 実体化
         GameObject damageText =
-            Instantiate(prefab, obj.position, transform.rotation);
+            Instantiate(prefab, obj, transform.rotation);
 
         damageText.GetComponent<DamageText>().SetText(damage);
     } 

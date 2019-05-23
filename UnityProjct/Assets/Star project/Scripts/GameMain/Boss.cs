@@ -73,14 +73,22 @@ public class Boss : MonoBehaviour
         }
     }
 
+    //プレイヤーとの当たり判定
     private void OnCollisionEnter(Collision collision)
     {
+        //プレイヤーが「アタック状態」このボスが「1回も倒されていない」時
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
-            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), this.gameObject.transform);
+            //TextMeshProを表示
+            var textPos = gameObject.transform;
+            var textSponPos = textPos.position;
+            textSponPos.z -= 5.0f;
+
+            Debug.Log("textPos" + textSponPos);
+            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), textSponPos);
             var hp = 1.0;
-            hp -= (foundationHP / foundationHPMax);
+            hp -= foundationHP / foundationHPMax;
             if (foundationHP <= 0)
             {
                 acquisitionPoint++;
