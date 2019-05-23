@@ -11,7 +11,7 @@ public class StarGenerator : MonoBehaviour
     [SerializeField] private PlayerMove playerMove = null;
 
     [Header("☆プール生成数")]
-    [SerializeField] private int sponMax;
+    [SerializeField] private int spawnMax;
     [Header("画面内に最大何個☆を表示するか")]
     [SerializeField] private int starDysplayCount;
     [Header("☆プレハブ")]
@@ -33,7 +33,7 @@ public class StarGenerator : MonoBehaviour
     public void Init()
     {
         pool = GetComponent<ObjectPool>();
-        pool.CreatePool(starPrefab, sponMax);
+        pool.CreatePool(starPrefab, spawnMax);
         CreatStar();
     }
 

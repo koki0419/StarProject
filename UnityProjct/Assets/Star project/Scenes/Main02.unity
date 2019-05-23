@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerObj: {fileID: 1555640410}
   playerMove: {fileID: 1555640408}
-  sponMax: 15
+  spawnMax: 0
   starDysplayCount: 25
   starPrefab: {fileID: 301987961005163294, guid: fe97a53f4f193f44f8109d35f09a11cc,
     type: 3}
@@ -1141,6 +1141,7 @@ MonoBehaviour:
   uiManager: {fileID: 1219740086}
   gameOverLineController: {fileID: 1047188198}
   starGenerator: {fileID: 183918047}
+  starSpawn: {fileID: 1231812596}
   debug: 0
 --- !u!4 &185138400
 Transform:
@@ -1172,6 +1173,7 @@ MonoBehaviour:
   gameSceneController: {fileID: 185138399}
   cameraController: {fileID: 534669906}
   soundManager: {fileID: 1486205185}
+  starSpawn: {fileID: 1231812596}
 --- !u!1001 &188910986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6307,6 +6309,8 @@ GameObject:
   - component: {fileID: 1231812592}
   - component: {fileID: 1231812591}
   - component: {fileID: 1231812595}
+  - component: {fileID: 1231812596}
+  - component: {fileID: 1231812590}
   m_Layer: 5
   m_Name: StarUICanvas
   m_TagString: Untagged
@@ -6314,6 +6318,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1231812590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231812589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a37ec419258d714cb59cd1b08cf8ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1231812591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6432,6 +6448,24 @@ MonoBehaviour:
   - {fileID: 21300018, guid: 5ec60952fdbba0d408de0546be1f58ca, type: 3}
   AcquisitionStarCount_1_10Animator: {fileID: 1981647042}
   AcquisitionStarCount_10_10Animator: {fileID: 57062468}
+--- !u!114 &1231812596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231812589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea42ff03f037c0b4ea4e80029aa3b48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1981647039}
+  spawnMax: 3
+  starEffectPrefab: {fileID: 7935623550007287030, guid: 4c8a4dd8dcbed8541bc1cdad6e61745a,
+    type: 3}
+  mainCamera: {fileID: 534669904}
+  debugVector: {x: 0, y: 0, z: 0}
 --- !u!1001 &1233198367
 PrefabInstance:
   m_ObjectHideFlags: 0
