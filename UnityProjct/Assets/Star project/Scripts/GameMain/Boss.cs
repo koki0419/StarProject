@@ -85,7 +85,6 @@ public class Boss : MonoBehaviour
             var textSponPos = textPos.position;
             textSponPos.z -= 5.0f;
 
-            Debug.Log("textPos" + textSponPos);
             Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), textSponPos);
             var hp = 1.0;
             hp -= foundationHP / foundationHPMax;
