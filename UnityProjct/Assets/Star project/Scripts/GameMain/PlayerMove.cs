@@ -84,15 +84,15 @@ public class PlayerMove : MonoBehaviour
 
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
-    [SerializeField] private float foundationoffensivePower = 0;
+    private const float foundationoffensivePower = 1000000;
 
     [Header("チャージ回数に掛け算される力")]
     //攻撃力
-    [SerializeField] private float fastOffensivePower = 0;
-    [SerializeField] private float secondOffensivePower = 0;
+    private const float fastOffensivePower = 700000;
+    private const float secondOffensivePower = 800000;
     //移動量
-    [SerializeField] private float speedForce = 0;
-    [SerializeField] private float speedForceUp = 0;
+    private const float speedForce = 300;
+    private const float speedForceUp = 350;
     //現在のチャージ量
     private float chargeNow = 0.0f;
     //現在のチャージ量

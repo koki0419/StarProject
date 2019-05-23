@@ -28,8 +28,7 @@ public class StarSpon : MonoBehaviour
         var starEffect = pool.GetObject();
         if (starEffect != null)
         {
-            //プレイヤーの位置座標をスクリーン座標に変換
-            starEffect.transform.localPosition = screenPos;
+            starEffect.transform.localPosition = sponPos;
             starEffect.GetComponent<StarEffect>().Init(target);
         }
     }
