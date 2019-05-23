@@ -84,7 +84,7 @@ public class ObstacleManager : MonoBehaviour
             //Hpをへらす
             foundationHP -= playerMove.attackPower;
             //ダメージテキストにアクセスして生成します
-            Singleton.Instance.OnDamage((int)playerMove.attackPower, this.gameObject.transform);
+            Singleton.Instance.OnDamage((int)playerMove.attackPower, this.gameObject.transform.localPosition);
 
             //ObjHｐがOになった時
             if (foundationHP <= 0)

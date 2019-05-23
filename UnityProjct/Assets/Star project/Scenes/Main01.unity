@@ -1129,8 +1129,7 @@ MonoBehaviour:
   uiManager: {fileID: 1219740086}
   gameOverLineController: {fileID: 1047188198}
   starGenerator: {fileID: 183918047}
-  starSpon: {fileID: 1231812596}
-  debug: 0
+  debug: 1
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -1161,7 +1160,6 @@ MonoBehaviour:
   gameSceneController: {fileID: 185138399}
   cameraController: {fileID: 534669906}
   soundManager: {fileID: 1486205185}
-  starSpon: {fileID: 1231812596}
 --- !u!4 &187459952 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2708746674337277248, guid: 2eba3bc082ece324f86cf6b40a242ce9,
@@ -11706,6 +11704,16 @@ PrefabInstance:
         type: 3}
       propertyPath: secondOffensivePower
       value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591038753852166544, guid: aaa686a59c6e88843abd9426202be9c6,
+        type: 3}
+      propertyPath: stunAmountMovement
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7591038753852166544, guid: aaa686a59c6e88843abd9426202be9c6,
+        type: 3}
+      propertyPath: stunAirAmountMovement
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 7591038753852166573, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
