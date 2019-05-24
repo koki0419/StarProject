@@ -953,7 +953,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
-    m_Resolution: -1
+    m_Resolution: 2
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.1
@@ -6761,11 +6761,6 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 5268350531782932701, guid: 2d0b38817ee4e944a8ea9d9e75076625,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7427509319935714981, guid: 2d0b38817ee4e944a8ea9d9e75076625,
         type: 3}
       propertyPath: starNum
@@ -6799,6 +6794,11 @@ PrefabInstance:
     - target: {fileID: 624697934, guid: 2d0b38817ee4e944a8ea9d9e75076625, type: 3}
       propertyPath: m_Layer
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5268350531782932701, guid: 2d0b38817ee4e944a8ea9d9e75076625,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d0b38817ee4e944a8ea9d9e75076625, type: 3}
@@ -12078,6 +12078,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4017034652658340519, guid: aaa686a59c6e88843abd9426202be9c6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7591038753852166544, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
       propertyPath: secondOffensivePower
@@ -12106,7 +12111,7 @@ PrefabInstance:
     - target: {fileID: 7591038753852166573, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 7591038753852166573, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
