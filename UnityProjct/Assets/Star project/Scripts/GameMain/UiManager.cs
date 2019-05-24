@@ -27,7 +27,7 @@ public class UiManager : MonoBehaviour
 
     //フェード関係
     //FadeLayerクラスを取得
-    [SerializeField] private FadeLayer fadeLayer　= null;
+    [SerializeField] private FadeLayer fadeLayer = null;
     [Header("フェード関係")]
     [SerializeField] private GameObject fadeText = null;
     [SerializeField] private GameObject fadeChara = null;
@@ -535,6 +535,4 @@ public class UiManager : MonoBehaviour
             pauseTyp = PauseTyp.Normal;
         }
     }
-
-
 }

@@ -5,19 +5,19 @@ using UnityEngine;
 public class StarEffect : MonoBehaviour
 {
 
-    [SerializeField] private RectTransform target;
-    private float moveSpeed = 30;
+    private RectTransform target = null;
+    private float moveSpeed = 15;
     private float errorPosition = 5.0f;
 
-    public void Init(RectTransform t)
+    public void Init(RectTransform target)
     {
-        target = t;
+        this.target = target;
     }
 
     private Vector3 Direction()
     {
         //自分の座標をプレイヤーの座標からベクトル作成
-        Vector3 targetVec = target.localPosition - gameObject.transform.localPosition;
+        Vector3 targetVec = this.target.position - GetComponent<RectTransform>().position;
         //単位ベクトル作成（上記のベクトル）
         Vector3 targetVecE = targetVec.normalized;
         //長さを調節
@@ -30,10 +30,14 @@ public class StarEffect : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.localPosition += Direction();
-        if (target.position.x + errorPosition >= transform.position.x && target.position.y - errorPosition <= transform.position.y)
+        //GetComponent<RectTransform>().LookAt(target);
+        if (this.target != null)
         {
-            gameObject.SetActive(false);
+            gameObject.transform.localPosition += Direction();
+            if (target.position.x + errorPosition >= transform.position.x && target.position.y - errorPosition <= transform.position.y)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

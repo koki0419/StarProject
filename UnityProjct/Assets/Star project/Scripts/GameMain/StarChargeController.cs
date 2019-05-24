@@ -40,6 +40,8 @@ public class StarChargeController : MonoBehaviour
     //小さい☆獲得UI10/10のアニメーション
     [SerializeField] private Animator AcquisitionStarCount_10_10Animator = null;
 
+    [SerializeField] private Animator chargeStarUIAnimator = null;
+
     public void Init()
     {
         starChargeMaxFlag = false;
@@ -111,5 +113,17 @@ public class StarChargeController : MonoBehaviour
             AcquisitionStarCount_1_10Animator.SetTrigger("isUpdate");
         }
         UpdateBigStarUI(smollSratCount / 10);
+    }
+    /// <summary>
+    /// チャージ時に星がたまった時のアニメーション
+    /// </summary>
+    /// <param name="chargeCount"></param>
+    public void ChargeStarUIAnimationInt(int chargeCount)
+    {
+        chargeStarUIAnimator.SetInteger("ChargeStarCount", chargeCount);
+    }
+    public void ChargeStarUIAnimationBool(bool chargeCountMax)
+    {
+        chargeStarUIAnimator.SetBool("ChargeMax", chargeCountMax);
     }
 }
