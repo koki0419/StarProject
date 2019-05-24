@@ -39,6 +39,7 @@ public class PlayerMove : MonoBehaviour
     private AttackState attackState = AttackState.None;
 
     //-------------Unityコンポーネント関係-------------------
+    [SerializeField] private StarChargeController starChargeController;
     // 自分のアニメーションコンポーネント
     [SerializeField] private Animator animatorComponent = null;
     public Animator playerAnimator
@@ -238,9 +239,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-        //Debug.Log("rightNotKey : " + rightNotKey);
-        //Debug.Log("leftNotKey : " + leftNotKey);
-        //Debug.Log("isGround : " + isGround);
     }
 
     //--------------関数-----------------------------
@@ -919,7 +917,12 @@ public class PlayerMove : MonoBehaviour
             {
                 ChargeEffectPlay(false, true);
             }
-
+            starChargeController.ChargeStarUIAnimationInt(chargeCount);
+            var chargeStarMax = Singleton.Instance.gameSceneController.ChargePointManager.starChildCount / 10;
+            if (chargeCount == chargeStarMax)
+            {
+                starChargeController.ChargeStarUIAnimationBool(true);
+            }
         }
         if (Input.GetKeyUp(KeyCode.T) || Input.GetButtonUp("Charge"))
         {
@@ -953,13 +956,16 @@ public class PlayerMove : MonoBehaviour
                 Singleton.Instance.soundManager.StopPlayerSe();
                 Singleton.Instance.soundManager.PlayPlayerSe(chargeAttackSeNum);
             }
+            //チャージ時の☆アニメーションを戻す
+            //starChargeController.ChargeStarUIAnimationInt(0);
+            starChargeController.ChargeStarUIAnimationBool(false);
+            Debug.Log("chargeCount_Exit" + chargeCount);
 
             ChargeEffectPlay(false, false);
             PunchEffectPlay(true);
             chargeNow = 0.0f;
             canDamage = true;
             isAttack = true;
-
             objState = ObjState.Attack;
         }
     }

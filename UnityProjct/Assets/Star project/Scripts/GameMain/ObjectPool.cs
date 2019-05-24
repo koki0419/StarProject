@@ -15,7 +15,7 @@ public class ObjectPool : MonoBehaviour
         for(int i = 0; i < maxCount; i++)
         {
             var newObj = CreatNewObject();
-            newObj.transform.parent = gameObject.transform;
+            newObj.transform.SetParent(gameObject.transform);
             newObj.SetActive(false);
             poolObjList.Add(newObj);
         }

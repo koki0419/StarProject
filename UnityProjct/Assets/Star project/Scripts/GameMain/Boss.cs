@@ -20,9 +20,6 @@ public class Boss : MonoBehaviour
 
     [SerializeField] private float deleteTime = 2.0f;
 
-    //防御力
-    [SerializeField] private float defensePower = 0;
-
     //Hp
     [SerializeField] private float foundationHP;
     private float foundationHPMax;

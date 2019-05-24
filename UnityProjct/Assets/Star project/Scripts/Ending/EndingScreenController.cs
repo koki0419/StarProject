@@ -6,14 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class EndingScreenController : MonoBehaviour
 {
-    private enum EndingSceneState
-    {
-        None,
-        FadeIn,
-        Ending,
-    }
-    private EndingSceneState endingSceneState = EndingSceneState.None;
-
     //フェード関係
     [Header("フェード関係")]
     [SerializeField] private GameObject fadeImageObj = null;
