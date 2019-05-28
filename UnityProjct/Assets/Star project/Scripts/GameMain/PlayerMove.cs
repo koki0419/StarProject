@@ -142,6 +142,10 @@ public class PlayerMove : MonoBehaviour
     }
     //地面との接触
     private bool isGround;
+    public bool IsGround
+    {
+        set { isGround = value; }
+    }
 
     //チャージ中かどうか
     private bool isChargeFlag;
@@ -239,6 +243,8 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
+
+        Debug.Log("isGround : " + isGround);
     }
 
     //--------------関数-----------------------------

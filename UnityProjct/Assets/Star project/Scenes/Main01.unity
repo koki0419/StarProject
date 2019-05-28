@@ -1130,7 +1130,7 @@ MonoBehaviour:
   gameOverLineController: {fileID: 1047188198}
   starGenerator: {fileID: 183918047}
   starSpawn: {fileID: 1231812596}
-  debug: 0
+  debug: 1
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
