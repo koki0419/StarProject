@@ -159,7 +159,7 @@ public class EnemyController : MonoBehaviour
     private void DiscoveryUpdate()
     {
         enemyAnimator.SetBool("IsAttackPreparation", true);
-        FreezePositionOll();
+        if(enemyRigidbody != null) FreezePositionOll();
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -176,7 +176,7 @@ public class EnemyController : MonoBehaviour
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
             attack = true;
-            FreezePositionSet();
+            if(enemyRigidbody != null)FreezePositionSet();
             enemyRigidbody.AddForce(Vector3.up * attackUpOnMoveSpeed, ForceMode.Impulse);
 
             enemyState = EnemyState.StunAttack;
@@ -189,7 +189,7 @@ public class EnemyController : MonoBehaviour
     private void MoveEnemy_DiscoveryUpdate()
     {
         enemyAnimator.SetBool("IsAttackPreparation", true);
-        FreezePositionOll();
+        if (enemyRigidbody != null) FreezePositionOll();
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -206,7 +206,7 @@ public class EnemyController : MonoBehaviour
         if (attackTime >= defaultAttackTime)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
-            FreezePositionSet();
+            if (enemyRigidbody != null) FreezePositionSet();
             enemyRigidbody.AddForce(enemyVecE * lockOnMoveSpeed, ForceMode.Impulse);
             attackTime = 0;
             SandEffectPlay(true);
@@ -313,12 +313,28 @@ public class EnemyController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
+        if (enemyTyp == EnemyTyp.AirMoveEnemy)
         {
-            if (!stun)
+            if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
             {
-                StartCoroutine(SandEffectEnumerator());
+                if (!stun)
+                {
+                    StartCoroutine(SandEffectEnumerator());
+                    //stun = true;
+                    //enemyState = EnemyState.Stun;
+                    //FreezePositionOll();
+                    //Destroy(enemyRigidbody);
+                    //SandEffectPlay(false);
+                }
             }
+        }
+        else
+        {
+            stun = true;
+            enemyState = EnemyState.Stun;
+            if (enemyRigidbody != null) FreezePositionOll();
+            Destroy(enemyRigidbody);
+            SandEffectPlay(false);
         }
     }
     private void OnCollisionStay(Collision collision)
@@ -327,7 +343,12 @@ public class EnemyController : MonoBehaviour
         {
             if (!stun)
             {
-                StartCoroutine(SandEffectEnumerator());
+                //StartCoroutine(SandEffectEnumerator());
+                stun = true;
+                enemyState = EnemyState.Stun;
+                if (enemyRigidbody != null) FreezePositionOll();
+                Destroy(enemyRigidbody);
+                SandEffectPlay(false);
             }
         }
     }
@@ -340,7 +361,7 @@ public class EnemyController : MonoBehaviour
         stun = true;
         yield return new WaitForSeconds(1.0f);
         enemyState = EnemyState.Stun;
-        FreezePositionOll();
+        if (enemyRigidbody != null) FreezePositionOll();
         yield return null;
         Destroy(enemyRigidbody);
         yield return new WaitForSeconds(1.0f);
@@ -371,7 +392,7 @@ public class EnemyController : MonoBehaviour
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery && !attack)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
-            if(enemyRigidbody != null) FreezePositionAir();
+            if (enemyRigidbody != null) FreezePositionAir();
             if (isReturn)
             {
                 var rot = -90;

@@ -164,7 +164,7 @@ namespace StarProject.Result
             if (animInfo.normalizedTime < 1.0f)
             {
                 //アニメーション早送り
-                if (Input.GetKey(KeyCode.Return) || Input.GetButtonDown("SelectOk"))
+                if (Input.GetKey(KeyCode.Return) || Input.GetButton("SelectOk"))
                 {
                     Time.timeScale = 2.5f;
                 }
