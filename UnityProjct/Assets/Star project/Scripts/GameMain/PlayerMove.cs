@@ -252,7 +252,7 @@ public class PlayerMove : MonoBehaviour
         //エネミーとの当たり判定
         if (LayerMask.LayerToName(collision.gameObject.layer) == enemyLayerName)
         {
-            if (collision.gameObject.GetComponent<EnemyController>().enemyState == EnemyController.EnemyState.StunAttack)
+            if (collision.gameObject.GetComponent<EnemyController>().enemyState == EnemyController.EnemyState.StunAttack && objState != ObjState.Stun)
             {
                 enemyPosition = collision.gameObject.GetComponent<Transform>().localPosition;
                 positiveDirection = false;
@@ -304,6 +304,7 @@ public class PlayerMove : MonoBehaviour
         if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = true;
+            Debug.Log("[OnTriggerStay] other.gameObject.layer : " + other.gameObject.layer);
         }
         else if (LayerMask.LayerToName(other.gameObject.layer) == rightProgressionControlLayerName)
         {
@@ -876,8 +877,8 @@ public class PlayerMove : MonoBehaviour
                     rig.AddForce(Vector3.left * stunAirAmountMovement, ForceMode.Impulse);
                 }
             }
+            StartCoroutine(StunEnumerator(stunTime));
         }
-        StartCoroutine(StunEnumerator(stunTime));
     }
     IEnumerator StunEnumerator(float stunTime)
     {
@@ -959,7 +960,6 @@ public class PlayerMove : MonoBehaviour
             //チャージ時の☆アニメーションを戻す
             //starChargeController.ChargeStarUIAnimationInt(0);
             starChargeController.ChargeStarUIAnimationBool(false);
-            Debug.Log("chargeCount_Exit" + chargeCount);
 
             ChargeEffectPlay(false, false);
             PunchEffectPlay(true);
