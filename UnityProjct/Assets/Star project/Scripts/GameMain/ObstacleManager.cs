@@ -95,6 +95,7 @@ public class ObstacleManager : MonoBehaviour
             if (foundationHP <= 0)
             {
                 Destroy(obstaclesHeadObj);
+                playerMove.IsGround = false;
                 isDestroyed = true;
                 Singleton.Instance.soundManager.StopObstaclesSe();
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
