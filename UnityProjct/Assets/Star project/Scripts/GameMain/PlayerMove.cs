@@ -81,7 +81,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float jumpSpeed = 0;
 
     //チャージポイント使用時のユーザーゲージ上昇量
-    [SerializeField] private float userChargePonitUp = 0.001f;
+    [SerializeField] private float userChargePonitUp;
 
     [Header("プレイヤー攻撃初期情報")]
     //初期攻撃力
@@ -304,7 +304,6 @@ public class PlayerMove : MonoBehaviour
         if (LayerMask.LayerToName(other.gameObject.layer) == groundLayerName || LayerMask.LayerToName(other.gameObject.layer) == enemyHeadLayerName)
         {
             isGround = true;
-            Debug.Log("[OnTriggerStay] other.gameObject.layer : " + other.gameObject.layer);
         }
         else if (LayerMask.LayerToName(other.gameObject.layer) == rightProgressionControlLayerName)
         {
