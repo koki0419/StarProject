@@ -11,18 +11,6 @@ public class Singleton : SingletonMonoBehaviour<Singleton>
     public CameraController cameraController;
     public SoundManager soundManager;
     public StarSpawn starSpawn;
+    public DamageTextSpawn damageTextSpawn;
 
-    //public GameObject damageTextUI;
-
-    public void OnDamage(int damage,Vector3 obj)
-    {
-        // プレハブデータ取得
-        GameObject prefab = (GameObject)Resources.Load("DamageText");
-
-        // 実体化
-        GameObject damageText =
-            Instantiate(prefab, obj, transform.rotation);
-
-        damageText.GetComponent<DamageText>().SetText(damage);
-    } 
 }

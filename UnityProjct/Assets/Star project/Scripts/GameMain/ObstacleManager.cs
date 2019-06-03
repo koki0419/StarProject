@@ -83,14 +83,10 @@ public class ObstacleManager : MonoBehaviour
         {
             //Hpをへらす
             foundationHP -= playerMove.attackPower;
-            ////ダメージテキストにアクセスして生成します
-            //Singleton.Instance.OnDamage((int)playerMove.attackPower, this.gameObject.transform.localPosition);
-                        //TextMeshProを表示
-            var textPos = gameObject.transform;
-            var textSponPos = textPos.position;
-            textSponPos.z -= 5.0f;
 
-            Singleton.Instance.OnDamage((int)playerMove.attackPower, textSponPos);
+            //新しく生成したオブジェクト
+            Singleton.Instance.damageTextSpawn.CreatDamageEffect(transform.position, (int)playerMove.attackPower);
+
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {

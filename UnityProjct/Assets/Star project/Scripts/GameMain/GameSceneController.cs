@@ -60,8 +60,9 @@ namespace StarProject.Gamemain
         [SerializeField] private UiManager uiManager = null;
         [SerializeField] private GameOverLineController gameOverLineController = null;
 
-        [SerializeField] private StarGenerator starGenerator;
-        [SerializeField] private StarSpawn starSpawn;
+        [SerializeField] private StarGenerator starGenerator = null;
+        [SerializeField] private StarSpawn starSpawn = null;
+        [SerializeField] private DamageTextSpawn damageTextSpawn = null;
 
         //------------数値変数の宣言--------------------
         //現在のステージ番号 // リザルトでリトライやNextステージで使用します
@@ -152,6 +153,7 @@ namespace StarProject.Gamemain
             chargePointManager.Init();
             gameOverLineController.Init();
             starSpawn.Init();
+            damageTextSpawn.Init();
             yield return null;
             yield return uiManager.FadeInEnumerator();
             gameMainState = GameMainState.Opening;
