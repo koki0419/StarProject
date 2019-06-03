@@ -77,12 +77,10 @@ public class Boss : MonoBehaviour
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             foundationHP -= OnDamage(playerMove.attackPower, playerMove.attackSpeed);
-            //TextMeshProを表示
-            var textPos = gameObject.transform;
-            var textSponPos = textPos.position;
-            textSponPos.z -= 5.0f;
 
-            Singleton.Instance.OnDamage(OnDamage(playerMove.attackPower, playerMove.attackSpeed), textSponPos);
+            //新しく生成したオブジェクト
+            Singleton.Instance.damageTextSpawn.CreatDamageEffect(transform.localPosition, (int)playerMove.attackPower);
+
             var hp = 1.0;
             hp -= foundationHP / foundationHPMax;
             if (foundationHP <= 0)

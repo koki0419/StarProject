@@ -243,8 +243,6 @@ public class PlayerMove : MonoBehaviour
         {
             StartCoroutine(OnGetStar());
         }
-
-        Debug.Log("isGround : " + isGround);
     }
 
     //--------------関数-----------------------------

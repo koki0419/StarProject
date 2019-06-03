@@ -25,8 +25,6 @@ public class StarSpawn : MonoBehaviour
 
     public void CreatStarEffect(Vector3 sponPos)
     {
-        //this.spawnPos = Camera.main.WorldToScreenPoint(sponPos);
-
         //sponPosはワールド座標で取得するのでスクリーン座標に変換
         var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, sponPos);
         //this.debugVector = screenPos;
