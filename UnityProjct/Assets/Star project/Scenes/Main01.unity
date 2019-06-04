@@ -7681,7 +7681,7 @@ MonoBehaviour:
   obstaclesPrefab: {fileID: 3757774616426377930, guid: 09737e884a9ba7344a2c858b64d9a824,
     type: 3}
   obataclesSponPosition:
-  - {x: 7.8, y: 4, z: 0}
+  - {x: 7.8, y: 2, z: 0}
   - {x: 38, y: 2, z: 0}
   - {x: 54, y: 2, z: 0}
   - {x: 62.3, y: 2, z: 0}
