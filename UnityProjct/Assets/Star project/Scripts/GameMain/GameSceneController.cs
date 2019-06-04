@@ -269,9 +269,6 @@ namespace StarProject.Gamemain
         }
         void GamePlay()
         {
-            Debug.Log("fastTargetObj : " + fastTargetObj.name);
-
-            Debug.Log("isDestroyed : " + fastTargetObj.GetComponent<ObstacleManager>().isDestroyed);
             starGenerator.StarSponUpdate();
             obstacleSpawn.ObstaclesSponUpdate();
             float deltaTime = Time.deltaTime;

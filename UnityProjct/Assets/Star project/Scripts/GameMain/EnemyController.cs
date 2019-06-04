@@ -24,7 +24,7 @@ public class EnemyController : MonoBehaviour
     /// <summary>
     /// エネミーのタイプ
     /// </summary>
-     public enum EnemyTyp
+    public enum EnemyTyp
     {
         None,
         NotMoveEnemy,//
@@ -56,7 +56,7 @@ public class EnemyController : MonoBehaviour
     private Vector3 removePosition = Vector3.zero;
     //戻る移動方向
     private Vector3 removeForce = Vector3.zero;
-    [HideInInspector] public float defaultAttackTime = 2.0f;
+    [HideInInspector] public float defaultAttackTime;
     private float attackTime = 0;
     [SerializeField] private GameObject sandEffect = null;
 
@@ -94,7 +94,7 @@ public class EnemyController : MonoBehaviour
         removePosition = transform.localPosition;
         if (enemyTyp == EnemyTyp.NotMoveEnemy)
         {
-            //FreezePositionOll(); Destroy(enemyRigidbody);Debug.Log("消した");
+            FreezePositionOll(); Destroy(enemyRigidbody); Debug.Log("消した");
         }
         else FreezePositionAir();
         SandEffectPlay(false);
@@ -102,6 +102,7 @@ public class EnemyController : MonoBehaviour
         obstacleManager = GetComponent<ObstacleManager>();
         attack = false;
         stun = false;
+        attackTime = 0.0f;
         StartCoroutine(standDelayTime());
     }
     private IEnumerator standDelayTime()
@@ -115,7 +116,6 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        Debug.Log(gameObject.name + "のステータス : " + "enemyTyp : " + enemyTyp + "enemyState : " + enemyState);
         switch (enemyTyp)
         {
             case EnemyTyp.AirMoveEnemy:
@@ -173,7 +173,7 @@ public class EnemyController : MonoBehaviour
     private void DiscoveryUpdate()
     {
         enemyAnimator.SetBool("IsAttackPreparation", true);
-        if(enemyRigidbody != null) FreezePositionOll();
+        if (enemyRigidbody != null) FreezePositionOll();
         //プレイヤーポジション取得
         var playerPos = playerObj.transform.position;
         //自分の座標をプレイヤーの座標からベクトル作成
@@ -190,7 +190,7 @@ public class EnemyController : MonoBehaviour
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
             attack = true;
-            if(enemyRigidbody != null)FreezePositionSet();
+            if (enemyRigidbody != null) FreezePositionSet();
             enemyRigidbody.AddForce(Vector3.up * attackUpOnMoveSpeed, ForceMode.Impulse);
 
             enemyState = EnemyState.StunAttack;
@@ -222,7 +222,6 @@ public class EnemyController : MonoBehaviour
             enemyAnimator.SetBool("IsAttackPreparation", false);
             if (enemyRigidbody != null) FreezePositionSet();
             enemyRigidbody.AddForce(enemyVecE * lockOnMoveSpeed, ForceMode.Impulse);
-            attackTime = 0;
             SandEffectPlay(true);
             enemyState = EnemyState.StunAttack;
         }
@@ -236,7 +235,6 @@ public class EnemyController : MonoBehaviour
         if (velocity.y < 0 && attack)
         {
             enemyRigidbody.AddForce(removeForce * lockOnMoveSpeed, ForceMode.Impulse);
-            attackTime = 0;
             SandEffectPlay(true);
             attack = false;
         }
@@ -335,32 +333,29 @@ public class EnemyController : MonoBehaviour
                 {
                     if (!stun)
                     {
+                        stun = true;
                         StartCoroutine(SandEffectEnumerator());
                     }
                 }
             }
             else
             {
-                stun = true;
-                enemyState = EnemyState.Stun;
-                if (enemyRigidbody != null) FreezePositionOll();
-                // Destroy(enemyRigidbody);
-                SandEffectPlay(false);
+                if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
+                {
+                    stun = true;
+                    StartCoroutine(SandEffectEnumerator());
+                }
             }
         }
     }
     private void OnCollisionStay(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy)
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack && playObj)// && enemyTyp == EnemyTyp.MoveEnemy)
         {
             if (!stun)
             {
-                //StartCoroutine(SandEffectEnumerator());
                 stun = true;
-                enemyState = EnemyState.Stun;
-                if (enemyRigidbody != null) FreezePositionOll();
-                //Destroy(enemyRigidbody);
-                SandEffectPlay(false);
+                StartCoroutine(SandEffectEnumerator());
             }
         }
     }
@@ -375,7 +370,7 @@ public class EnemyController : MonoBehaviour
         enemyState = EnemyState.Stun;
         if (enemyRigidbody != null) FreezePositionOll();
         yield return null;
-        //Destroy(enemyRigidbody);
+        Destroy(enemyRigidbody);
         yield return new WaitForSeconds(1.0f);
         SandEffectPlay(false);
     }
@@ -395,6 +390,7 @@ public class EnemyController : MonoBehaviour
                 var rot = 90;
                 transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
             }
+            attackTime = 0;
             enemyState = EnemyState.Discovery;
         }
     }
@@ -415,7 +411,6 @@ public class EnemyController : MonoBehaviour
                 var rot = 90;
                 transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
             }
-            attackTime = 0;
             enemyState = EnemyState.Search;
         }
     }
