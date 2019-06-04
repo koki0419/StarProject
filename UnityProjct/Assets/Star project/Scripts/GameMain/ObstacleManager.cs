@@ -87,7 +87,7 @@ public class ObstacleManager : MonoBehaviour
         }
         if (tragetCamera != null)
         {
-            if (tragetCamera.transform.position.x - 20.0f > gameObject.transform.localPosition.x)
+            if (tragetCamera.transform.position.x - 10.0f > gameObject.transform.localPosition.x)
             {
                 gameObject.SetActive(false);
             }

@@ -43,7 +43,7 @@ public class ObstacleSpawn : MonoBehaviour
     private float lockOnMoveSpeed = 5000;
     private float attackUpOnMoveSpeed = 1000;
     //[SerializeField] private float[] removeMoveSpeed;
-    private float defaultAttackTime = 2.0f;
+    [SerializeField] private float[] defaultAttackTime;
 
     //☆現在の表示数
     [HideInInspector]
@@ -96,7 +96,7 @@ public class ObstacleSpawn : MonoBehaviour
                     obstacle.GetComponent<EnemyController>().lockOnMoveSpeed = this.lockOnMoveSpeed;
                     obstacle.GetComponent<EnemyController>().attackUpOnMoveSpeed = this.attackUpOnMoveSpeed;
                     //obstacle.GetComponent<EnemyController>().removeMoveSpeed = this.removeMoveSpeed[spawnIndex];
-                    obstacle.GetComponent<EnemyController>().defaultAttackTime = this.defaultAttackTime;
+                    obstacle.GetComponent<EnemyController>().defaultAttackTime = this.defaultAttackTime[spawnIndex];
                     obstacle.GetComponent<EnemyController>().Init(this.playerObj);
 
 

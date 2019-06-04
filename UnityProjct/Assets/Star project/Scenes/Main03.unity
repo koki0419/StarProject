@@ -7964,6 +7964,20 @@ MonoBehaviour:
   - 3
   - 0
   - 2
+  defaultAttackTime:
+  - 0
+  - 2
+  - 1.5
+  - 3
+  - 0
+  - 3
+  - 1.5
+  - 2
+  - 4
+  - 1
+  - 1
+  - 0
+  - 1
 --- !u!1 &1533053994
 GameObject:
   m_ObjectHideFlags: 0
