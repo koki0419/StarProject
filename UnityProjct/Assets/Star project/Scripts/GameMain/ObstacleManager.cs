@@ -8,28 +8,36 @@ public class ObstacleManager : MonoBehaviour
     //エフェクト
     [SerializeField] private GameObject breakEffect = null;
     [SerializeField] private Renderer moaiRenderer = null;
+    private Camera tragetCamera;
     //-------------クラス関係--------------------------------
 
     //『PlayerMove』を取得します
-    private PlayerMove playerMove = null;
+    [HideInInspector]
+    public PlayerMove playerMove;
+    [HideInInspector]
+    public ObstacleSpawn obstacleSpawn;
     //-------------数値用変数--------------------------------
     //生成する星の数
-    [SerializeField] private int starNum = 0;
+    [HideInInspector]
+    public int spawnStarNum = 0;
 
     //ポイントを獲得した回数
     private int acquisitionPoint = 0;
 
-    [SerializeField] private float deleteTime = 2.0f;
+    private float deleteTime = 2.0f;
 
     //Hp
-    [SerializeField] private float foundationHP;
+    [HideInInspector]
+    public float foundationHP;
     //HpMax
     private float foundationHPMax;
 
-    private int breakSeNum = 7;
+    private const int breakSeNum = 7;
 
     [SerializeField] private GameObject obstaclesHeadObj = null;
 
+    private const string normalLayer = "Obstacles";
+    private const string breakLayer = "BreakObstacls";
     //-------------フラグ用変数------------------------------
     private bool onRemoveObjFlag = false;
 
@@ -41,24 +49,31 @@ public class ObstacleManager : MonoBehaviour
     public void Init()
     {
         foundationHPMax = foundationHP;
-        //『PlayerMove』を取得します
-        playerMove = Singleton.Instance.gameSceneController.PlayerMove;
         //オブジェクトを削除するかどうか
         onRemoveObjFlag = false;
         //ポイントを獲得した回数
         acquisitionPoint = 0;
+        deleteTime = 2.0f;
 
-        var hp = 1.0;
-        hp -= foundationHP / foundationHPMax;
         isDestroyed = false;
         breakEffect.SetActive(false);
+
+        obstaclesHeadObj.SetActive(true);
+
+        //壊れたときにキャラクターと当たり判定を持たなくします
+        //レイヤーの変更
+        //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
+        gameObject.layer = LayerMask.NameToLayer(normalLayer);
+        moaiRenderer.enabled = true;
+
+        tragetCamera = Camera.main;
     }
 
 
 
 
     // Update is called once per frame
-    public void ObstacleControllerUpdate()
+    private void Update()
     {
         //オブジェクトを消去します
         if (onRemoveObjFlag)
@@ -66,12 +81,15 @@ public class ObstacleManager : MonoBehaviour
             deleteTime -= Time.deltaTime;
             if (deleteTime <= 0)
             {
-
-                foreach (Transform child in gameObject.transform)
-                {
-                    Destroy(child.gameObject);
-                }
-                Destroy(this.gameObject);
+                onRemoveObjFlag = false;
+                gameObject.SetActive(false);
+            }
+        }
+        if (tragetCamera != null)
+        {
+            if (tragetCamera.transform.position.x - 20.0f > gameObject.transform.localPosition.x)
+            {
+                gameObject.SetActive(false);
             }
         }
     }
@@ -90,29 +108,31 @@ public class ObstacleManager : MonoBehaviour
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
-                Destroy(obstaclesHeadObj);
-                playerMove.IsGround = false;
+                obstaclesHeadObj.SetActive(false);
                 isDestroyed = true;
+                playerMove.IsGround = false;
+
                 Singleton.Instance.soundManager.StopObstaclesSe();
                 Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
-                if (starNum != 0)
+                if (spawnStarNum != 0)
                 {
-                    Singleton.Instance.starGenerator.ObstaclesToStarSpon(this.transform.position, starNum);
+                    Singleton.Instance.starGenerator.ObstaclesToStarSpon(this.transform.position, spawnStarNum);
                 }
                 //壊れたときにキャラクターと当たり判定を持たなくします
                 //レイヤーの変更
                 //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
-                gameObject.layer = LayerMask.NameToLayer("BreakObstacls");
+                gameObject.layer = LayerMask.NameToLayer(breakLayer);
                 acquisitionPoint++;
                 breakEffect.SetActive(true);
                 onRemoveObjFlag = true;
                 moaiRenderer.enabled = false;
+                obstacleSpawn.activeCount--;
 
             }
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        
+
     }
 }

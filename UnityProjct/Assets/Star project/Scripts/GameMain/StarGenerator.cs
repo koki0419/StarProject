@@ -28,7 +28,7 @@ public class StarGenerator : MonoBehaviour
         set; get;
     }
     //☆生成数（経過）→次生成する☆のインデックス
-    private int sponIndex = 0;
+    private int spawnIndex = 0;
 
     public void Init()
     {
@@ -39,7 +39,7 @@ public class StarGenerator : MonoBehaviour
 
     public void CreatStar()
     {
-        if (sponIndex < starSponPosition.Length - 1)
+        if (spawnIndex < starSponPosition.Length - 1)
         {
             while (activeCount < starDysplayCount)
             {
@@ -47,11 +47,11 @@ public class StarGenerator : MonoBehaviour
                 if (star != null)
                 {
                     //プレイヤーの位置座標をスクリーン座標に変換
-                    star.transform.localPosition = starSponPosition[sponIndex];
-                    star.GetComponent<StarController>().Init(playerMove, starPoint[sponIndex]);
+                    star.transform.localPosition = starSponPosition[spawnIndex];
+                    star.GetComponent<StarController>().Init(playerMove, starPoint[spawnIndex]);
                     star.GetComponent<StarController>().starGenerator = this;
                     star.GetComponent<StarController>().starSponType = StarController.StarSponType.SpecifiedSpon;
-                    sponIndex++;
+                    spawnIndex++;
                     activeCount++;
                 }
             }

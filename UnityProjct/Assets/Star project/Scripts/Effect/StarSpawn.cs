@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(ObjectPool))]
 public class StarSpawn : MonoBehaviour
@@ -27,7 +25,7 @@ public class StarSpawn : MonoBehaviour
     {
         //sponPosはワールド座標で取得するのでスクリーン座標に変換
         var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, sponPos);
-        //this.debugVector = screenPos;
+
         var starEffect = pool.GetObject();
         if (starEffect != null)
         {
