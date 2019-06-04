@@ -13,7 +13,7 @@ namespace StarProject.Gamemain
         /// <summary>
         /// ゲームのシーン状態
         /// </summary>
-        private enum GameMainState
+        public enum GameMainState
         {
             None,
             Opening,//オープニング
@@ -22,7 +22,13 @@ namespace StarProject.Gamemain
             GameClear,//ゲームクリア
             GameOver,//ゲームオーバー
         }
-        private GameMainState gameMainState = GameMainState.None;
+        public GameMainState gameMainState
+        {
+            private set;
+            get;
+        }
+
+
         //---------Unityコンポーネント宣言--------------
         [SerializeField] private GameObject playerObj = null;
 
@@ -35,6 +41,8 @@ namespace StarProject.Gamemain
 
         [SerializeField] private GameObject mainCamera = null;
         [SerializeField] private GameObject openingCamera = null;
+
+        private GameObject fastTargetObj = null;
         //------------クラスの宣言----------------------
         [SerializeField] private PlayerMove playerMove = null;
         public PlayerMove PlayerMove
@@ -63,6 +71,7 @@ namespace StarProject.Gamemain
         [SerializeField] private StarGenerator starGenerator = null;
         [SerializeField] private StarSpawn starSpawn = null;
         [SerializeField] private DamageTextSpawn damageTextSpawn = null;
+        [SerializeField] private ObstacleSpawn obstacleSpawn = null;
 
         //------------数値変数の宣言--------------------
         //現在のステージ番号 // リザルトでリトライやNextステージで使用します
@@ -110,19 +119,12 @@ namespace StarProject.Gamemain
             cameraController = Singleton.Instance.cameraController;
 
 
-            //エネミー子供オブジェクトを取得
-            enemyChilledObj = new GameObject[enemysObj.transform.childCount];
-            enemyController = new EnemyController[enemysObj.transform.childCount];
-            obstacleManager = new ObstacleManager[enemysObj.transform.childCount];
-            //☆エネミー子供オブジェクト初期化
-            for (int i = 0; enemysObj.transform.childCount > i; i++)
-            {
-                enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
-                enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
-                enemyController[i].Init(playerObj);
-                obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
-                obstacleManager[i].Init();
-            }
+            ////エネミー子供オブジェクトを取得
+            enemyChilledObj = new GameObject[obstacleSpawn.SpawnMax];
+            enemyController = new EnemyController[obstacleSpawn.SpawnMax];
+            obstacleManager = new ObstacleManager[obstacleSpawn.SpawnMax];
+
+            fastTargetObj = enemysObj.transform.GetChild(0).gameObject;
 
             isGetStar = false;
             isGameClear = false;
@@ -147,6 +149,7 @@ namespace StarProject.Gamemain
             exitOpning = false;
             playerMove.Init();
             yield return null;
+            obstacleSpawn.Init();
             Init();
             starChargeController.Init();
             cameraController.Init();
@@ -266,25 +269,30 @@ namespace StarProject.Gamemain
         }
         void GamePlay()
         {
+            Debug.Log("fastTargetObj : " + fastTargetObj.name);
+
+            Debug.Log("isDestroyed : " + fastTargetObj.GetComponent<ObstacleManager>().isDestroyed);
             starGenerator.StarSponUpdate();
+            obstacleSpawn.ObstaclesSponUpdate();
             float deltaTime = Time.deltaTime;
             if (isMoveCamera) cameraController.MoveUpdate(deltaTime);
             playerMove.OnUpdate(deltaTime);//PlayerのUpdate
                                            //☆エネミー子供オブジェクト初期化
             if (enemysObj.transform.childCount != 0)
             {
-                for (int i = 0; enemysObj.transform.childCount > i; i++)
-                {
-                    enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
-                    enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
-                    enemyController[i].EnemyControllerUpdate();
-                    obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
-                    obstacleManager[i].ObstacleControllerUpdate();
-                }
+                //for (int i = 0; enemysObj.transform.childCount > i; i++)
+                //{
+                //    enemyChilledObj[i] = enemysObj.transform.GetChild(i).gameObject;
+                //    enemyController[i] = enemyChilledObj[i].GetComponent<EnemyController>();
+                //    enemyController[i].EnemyControllerUpdate();
+                //    obstacleManager[i] = enemyChilledObj[i].GetComponent<ObstacleManager>();
+                //    obstacleManager[i].ObstacleControllerUpdate();
+                //    Debug.Log("objName : " + enemysObj.transform.GetChild(i).name);
+                //}
             }
             if (!debug)
             {
-                if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && stageNum == 1 && destroyCount == 0)
+                if (fastTargetObj != null && fastTargetObj.GetComponent<ObstacleManager>().isDestroyed && stageNum == 1 && destroyCount == 0)
                 {
                     destroyCount++;
                     StartCoroutine(BigMoaiMoveStart());
@@ -292,7 +300,7 @@ namespace StarProject.Gamemain
             }
             else
             {
-                if (obstacleManager[0] != null && obstacleManager[0].isDestroyed && destroyCount == 0)
+                if (fastTargetObj != null && fastTargetObj.GetComponent<ObstacleManager>().isDestroyed && destroyCount == 0)
                 {
                     destroyCount++;
                     StartCoroutine(BigMoaiMoveStart());

@@ -24,14 +24,15 @@ public class EnemyController : MonoBehaviour
     /// <summary>
     /// エネミーのタイプ
     /// </summary>
-    public enum EnemyTyp
+     public enum EnemyTyp
     {
         None,
         NotMoveEnemy,//
         MoveEnemy,
         AirMoveEnemy,
     }
-    [SerializeField] EnemyTyp enemyTyp = EnemyTyp.None;
+    //[HideInInspector] public EnemyTyp enemyTyp = EnemyTyp.None;
+    public EnemyTyp enemyTyp;
 
     private ObstacleManager obstacleManager;
 
@@ -40,13 +41,12 @@ public class EnemyController : MonoBehaviour
     private Vector3 startPos = Vector3.zero;
     private Vector3 endPos = Vector3.zero;
     // 
-    [SerializeField] private Vector3 amountOfMovement = Vector3.zero;
+    public Vector3 amountOfMovement;
     //移動スピード
-    [Header("各状態の移動速度")]
-    [SerializeField] private float searchMoveSpeed;
-    [SerializeField] private float lockOnMoveSpeed;
-    [SerializeField] private float attackUpOnMoveSpeed;
-    [SerializeField] private float removeMoveSpeed;
+    public float searchMoveSpeed;
+    [HideInInspector] public float lockOnMoveSpeed;
+    [HideInInspector] public float attackUpOnMoveSpeed;
+    ///[HideInInspector] public float removeMoveSpeed;
     //移動方向
     private Vector3 moveForce = Vector3.zero;
     //進む戻る
@@ -56,7 +56,7 @@ public class EnemyController : MonoBehaviour
     private Vector3 removePosition = Vector3.zero;
     //戻る移動方向
     private Vector3 removeForce = Vector3.zero;
-    [SerializeField] private float defaultAttackTime = 2.0f;
+    [HideInInspector] public float defaultAttackTime = 2.0f;
     private float attackTime = 0;
     [SerializeField] private GameObject sandEffect = null;
 
@@ -66,8 +66,11 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private Animator enemyAnimator;
 
+    private bool playObj;
+
     public void Init(GameObject player)
     {
+        playObj = false;
         enemyState = EnemyState.None;
         playerObj = player;
         enemyRigidbody = GetComponent<Rigidbody>();
@@ -91,20 +94,28 @@ public class EnemyController : MonoBehaviour
         removePosition = transform.localPosition;
         if (enemyTyp == EnemyTyp.NotMoveEnemy)
         {
-            FreezePositionOll(); Destroy(enemyRigidbody);
+            //FreezePositionOll(); Destroy(enemyRigidbody);Debug.Log("消した");
         }
         else FreezePositionAir();
         SandEffectPlay(false);
-        enemyState = EnemyState.Search;
+
         obstacleManager = GetComponent<ObstacleManager>();
         attack = false;
         stun = false;
+        StartCoroutine(standDelayTime());
+    }
+    private IEnumerator standDelayTime()
+    {
+        yield return new WaitForSeconds(1.0f);
+        enemyState = EnemyState.Search;
+        playObj = true;
     }
     /// <summary>
     /// エネミーアップデート
     /// </summary>
-    public void EnemyControllerUpdate()
+    private void Update()
     {
+        Debug.Log(gameObject.name + "のステータス : " + "enemyTyp : " + enemyTyp + "enemyState : " + enemyState);
         switch (enemyTyp)
         {
             case EnemyTyp.AirMoveEnemy:
@@ -151,8 +162,11 @@ public class EnemyController : MonoBehaviour
                         break;
                 }
                 break;
+            case EnemyTyp.NotMoveEnemy:
+                break;
         }
     }
+
     /// <summary>
     /// モアイの間合いに入った時、一定時間後にスタン攻撃します
     /// </summary>
@@ -313,28 +327,26 @@ public class EnemyController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (enemyTyp == EnemyTyp.AirMoveEnemy)
+        if (Singleton.Instance.gameSceneController.gameMainState == StarProject.Gamemain.GameSceneController.GameMainState.Play && playObj)
         {
-            if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
+            if (enemyTyp == EnemyTyp.AirMoveEnemy)
             {
-                if (!stun)
+                if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground" && enemyState == EnemyState.StunAttack || LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack)// && enemyTyp == EnemyTyp.MoveEnemy )
                 {
-                    StartCoroutine(SandEffectEnumerator());
-                    //stun = true;
-                    //enemyState = EnemyState.Stun;
-                    //FreezePositionOll();
-                    //Destroy(enemyRigidbody);
-                    //SandEffectPlay(false);
+                    if (!stun)
+                    {
+                        StartCoroutine(SandEffectEnumerator());
+                    }
                 }
             }
-        }
-        else
-        {
-            stun = true;
-            enemyState = EnemyState.Stun;
-            if (enemyRigidbody != null) FreezePositionOll();
-            Destroy(enemyRigidbody);
-            SandEffectPlay(false);
+            else
+            {
+                stun = true;
+                enemyState = EnemyState.Stun;
+                if (enemyRigidbody != null) FreezePositionOll();
+                // Destroy(enemyRigidbody);
+                SandEffectPlay(false);
+            }
         }
     }
     private void OnCollisionStay(Collision collision)
@@ -347,7 +359,7 @@ public class EnemyController : MonoBehaviour
                 stun = true;
                 enemyState = EnemyState.Stun;
                 if (enemyRigidbody != null) FreezePositionOll();
-                Destroy(enemyRigidbody);
+                //Destroy(enemyRigidbody);
                 SandEffectPlay(false);
             }
         }
@@ -363,7 +375,7 @@ public class EnemyController : MonoBehaviour
         enemyState = EnemyState.Stun;
         if (enemyRigidbody != null) FreezePositionOll();
         yield return null;
-        Destroy(enemyRigidbody);
+        //Destroy(enemyRigidbody);
         yield return new WaitForSeconds(1.0f);
         SandEffectPlay(false);
     }
