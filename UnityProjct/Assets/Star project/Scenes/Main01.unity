@@ -1126,7 +1126,7 @@ MonoBehaviour:
   starSpawn: {fileID: 1231812596}
   damageTextSpawn: {fileID: 1921160815}
   obstacleSpawn: {fileID: 1531786342}
-  debug: 1
+  debug: 0
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
