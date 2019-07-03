@@ -18,6 +18,7 @@ public class StarGenerator : MonoBehaviour
     [SerializeField] private GameObject starPrefab;
     private ObjectPool pool;
     [Header("☆生成場所と各☆獲得ポイント")]
+    [SerializeField] private int cleatStarNumMax = 0;//いくつ星を作るのか
     [SerializeField] private Vector3[] starSponPosition;
     [SerializeField] private int[] starPoint;
 
@@ -30,11 +31,33 @@ public class StarGenerator : MonoBehaviour
     //☆生成数（経過）→次生成する☆のインデックス
     private int spawnIndex = 0;
 
+    //データファイル名
+    [SerializeField] string fileName = "";
+    //csvデータ
+    private CsvlInport csvInport = new CsvlInport();
+
     public void Init()
     {
         pool = GetComponent<ObjectPool>();
         pool.CreatePool(starPrefab, spawnMax);
+
+        //配列を初期化
+        starSponPosition = new Vector3[cleatStarNumMax];
+        starPoint = new int[cleatStarNumMax];
+
+        //データファイルを読み込み
+        csvInport.DateRead(fileName);
+        //ポジション＆ポイントデータを代入
+        for (int i = 1; i < csvInport.csvDatas.Count; i++)
+        {
+            starSponPosition[i - 1].x = float.Parse(csvInport.csvDatas[i][1]);
+            starSponPosition[i - 1].y = float.Parse(csvInport.csvDatas[i][2]);
+            starSponPosition[i - 1].z = float.Parse(csvInport.csvDatas[i][3]);
+            starPoint[i - 1] = int.Parse(csvInport.csvDatas[i][4]);
+        }
+
         CreatStar();
+
     }
 
     public void CreatStar()

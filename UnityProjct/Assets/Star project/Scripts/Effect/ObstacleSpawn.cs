@@ -21,6 +21,7 @@ public class ObstacleSpawn : MonoBehaviour
     [SerializeField] private GameObject obstaclesPrefab;
     private ObjectPool pool;
     [Header("障害物生成場所と各障害物HPと壊した際の☆生成数")]
+    [SerializeField] private int cleatEnemyNumMax = 0;//いくつエネミーを作るのか
     [SerializeField] private Vector3[] obataclesSponPosition;
     [SerializeField] private int[] obataclesHp;
     [SerializeField] private int[] spawnStarNum;
@@ -57,11 +58,77 @@ public class ObstacleSpawn : MonoBehaviour
     }
     //☆生成数（経過）→次生成する☆のインデックス
     private int spawnIndex = 0;
+
+    //データファイル名
+    [SerializeField] string fileName = "";
+    //csvデータ
+    private CsvlInport csvInport = new CsvlInport();
+
     //エネミーobjectPoolの初期化
     public void Init()
     {
         pool = GetComponent<ObjectPool>();
         pool.CreatePool(obstaclesPrefab, spawnMax);
+
+        enemyTyp = new EnemyTyp[cleatEnemyNumMax];
+        obataclesSponPosition = new Vector3[cleatEnemyNumMax];
+        obataclesHp = new int[cleatEnemyNumMax];
+        amountOfMovement = new Vector3[cleatEnemyNumMax];
+        searchMoveSpeed = new float[cleatEnemyNumMax];
+        defaultAttackTime = new float[cleatEnemyNumMax];
+        spawnStarNum = new int[cleatEnemyNumMax];
+
+        //データファイルを読み込み
+        csvInport.DateRead(fileName);
+        //ポジション＆ポイントデータを代入
+        int index = 2;
+        for (int i = 1; i < csvInport.csvDatas.Count-1; i++)
+        {
+            index = 2;
+            switch (csvInport.csvDatas[i][index])
+            {
+                case "None":
+                    enemyTyp[i - 1] = EnemyTyp.None;
+                    break;
+                case "NotMoveEnemy":
+                    enemyTyp[i - 1] = EnemyTyp.NotMoveEnemy;
+                    break;
+                case "MoveEnemy":
+                    enemyTyp[i - 1] = EnemyTyp.MoveEnemy;
+                    break;
+                case "AirMoveEnemy":
+                    enemyTyp[i - 1] = EnemyTyp.AirMoveEnemy;
+                    break;
+
+            }
+            index++;
+            // 配置座標を取得
+            obataclesSponPosition[i - 1].x = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            obataclesSponPosition[i - 1].y = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            obataclesSponPosition[i - 1].z = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            // 移動方向と距離
+            amountOfMovement[i - 1].x = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            amountOfMovement[i - 1].y = 0;
+            amountOfMovement[i - 1].z = 0;
+            // HPを取得
+            // obataclesHp[i - 1] = int.Parse(csvInport.csvDatas[i][index]);
+            Debug.Log(csvInport.csvDatas[i][index]);
+            index++;
+            // 徘徊速さ
+            searchMoveSpeed[i - 1] = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            // 攻撃時待機時間
+            defaultAttackTime[i - 1] = float.Parse(csvInport.csvDatas[i][index]);
+            index++;
+            //破壊時の☆出現数
+            spawnStarNum[i - 1] = int.Parse(csvInport.csvDatas[i][index]);
+            index++;
+        }
+
         CreatObstacle();
     }
     //エネミーを生成する
@@ -75,7 +142,7 @@ public class ObstacleSpawn : MonoBehaviour
                 if (obstacle != null)
                 {
                     //生成するときに「Rigidbody」がなければAddする
-                    if (obstacle.GetComponent<Rigidbody>() == null) { obstacle.AddComponent<Rigidbody>();}
+                    if (obstacle.GetComponent<Rigidbody>() == null) { obstacle.AddComponent<Rigidbody>(); }
                     //初期化
                     obstacle.transform.localPosition = obataclesSponPosition[spawnIndex];
                     obstacle.GetComponent<ObstacleManager>().playerMove = this.playerMove;
