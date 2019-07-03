@@ -1126,7 +1126,7 @@ MonoBehaviour:
   starSpawn: {fileID: 1231812596}
   damageTextSpawn: {fileID: 1921160815}
   obstacleSpawn: {fileID: 1531786342}
-  debug: 1
+  debug: 0
 --- !u!4 &185138400
 Transform:
   m_ObjectHideFlags: 0
@@ -7676,6 +7676,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMove: {fileID: 1774836255}
   playerObj: {fileID: 1774836254}
+  tragetCamera: {fileID: 534669904}
   spawnMax: 5
   obstaclesDysplayCount: 4
   obstaclesPrefab: {fileID: 3757774616426377930, guid: 09737e884a9ba7344a2c858b64d9a824,
@@ -9321,7 +9322,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5af2dbdd572d809438ee2bf23ea5ce9a, type: 3}
   - {fileID: 21300000, guid: abb62556ffc8a5a48aac45738950d217, type: 3}
   mainCamera: {fileID: 534669904}
-  debugVector: {x: 0, y: 0, z: 0}
 --- !u!114 &1921160816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11217,11 +11217,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 4017034652658340519, guid: aaa686a59c6e88843abd9426202be9c6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7591038753852166544, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
       propertyPath: secondOffensivePower
@@ -11295,6 +11290,11 @@ PrefabInstance:
     - target: {fileID: 7591038753852166573, guid: aaa686a59c6e88843abd9426202be9c6,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017034652658340519, guid: aaa686a59c6e88843abd9426202be9c6,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3751127323377219259, guid: aaa686a59c6e88843abd9426202be9c6,

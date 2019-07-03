@@ -1,24 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ダメージエフェクトの処理
+/// </summary>
 public class DamageEffect : MonoBehaviour
 {
     //Damage用にテキストオブジェ
     [SerializeField]private GameObject[] damageText = null;
+    //スコア表示画像
     public Sprite[] scoreNumbreSprite = new Sprite[10];
+    //最大スコア
     private const int MaxScore = 99999999;
-
+    /// <summary>
+    /// 初期化
+    /// </summary>
     public void Init()
     {
-        //damageTextオブジェクトを取得
-        //for (int i = 0;i < transform.childCount; i++)
-        //{
-        //    damageText[i] = transform.GetChild(i).gameObject;
-        //}
+        //ダメージ表示を全て非表示する
         ScoreUIDysplay(damageText.Length, false);
     }
+    /// <summary>
+    /// ダメージを設定してダメージ桁分セットアクティブをtrueにする
+    /// </summary>
+    /// <param name="damage"></param>
     public void SetDamage(int damage)
     {
         //テキストを設定する
@@ -67,18 +72,20 @@ public class DamageEffect : MonoBehaviour
             damageText[i].SetActive(isDysPlay);
         }
     }
-    // #TODO 時間で消えるようになっているがアニメーションが終了したら
-    //       SetActive(fales)に設定したほうがアニメーションが変わっても可用性は損なわれない
+    //ダメージ表示時間
     float lifeTime = 2.0f;
     [SerializeField] private Animator damageEffectAnimator;
     private void Update()
     {
+        //アニメーターがplay中かどうか
         AnimatorStateInfo animInfo = damageEffectAnimator.GetCurrentAnimatorStateInfo(0);
         if (animInfo.normalizedTime < 1.0f)
         {
+            //再生中の処理
         }
         else
         {
+            //終了したときの処理
             gameObject.SetActive(false);
         }
             lifeTime -= Time.deltaTime;
