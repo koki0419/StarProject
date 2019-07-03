@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// オブジェクトプール
+/// </summary>
 public class ObjectPool : MonoBehaviour
 {
     private List<GameObject> poolObjList;
@@ -20,7 +22,10 @@ public class ObjectPool : MonoBehaviour
             poolObjList.Add(newObj);
         }
     }
-
+    /// <summary>
+    /// 外部から参照されたときにオブジェクトを返します
+    /// </summary>
+    /// <returns>生成されたオブジェクトを返します</returns>
     public GameObject GetObject()
     {
         //使用中でないモノを探して返す

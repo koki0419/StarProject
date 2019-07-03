@@ -8,7 +8,7 @@ public class ObstacleManager : MonoBehaviour
     //エフェクト
     [SerializeField] private GameObject breakEffect = null;
     [SerializeField] private Renderer moaiRenderer = null;
-    private Camera tragetCamera;
+    [HideInInspector] public Camera tragetCamera;
     //-------------クラス関係--------------------------------
 
     //『PlayerMove』を取得します
@@ -31,8 +31,10 @@ public class ObstacleManager : MonoBehaviour
     public float foundationHP;
     //HpMax
     private float foundationHPMax;
-
+    //破壊音インデックス
     private const int breakSeNum = 7;
+    //オブジェクトをReMoveするポジション
+    private const float reMoveX = 10.0f;
 
     [SerializeField] private GameObject obstaclesHeadObj = null;
 
@@ -65,8 +67,6 @@ public class ObstacleManager : MonoBehaviour
         //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
         gameObject.layer = LayerMask.NameToLayer(normalLayer);
         moaiRenderer.enabled = true;
-
-        tragetCamera = Camera.main;
     }
 
 
@@ -87,16 +87,15 @@ public class ObstacleManager : MonoBehaviour
         }
         if (tragetCamera != null)
         {
-            if (tragetCamera.transform.position.x - 10.0f > gameObject.transform.localPosition.x)
+            if (tragetCamera.transform.position.x- reMoveX > gameObject.transform.localPosition.x)
             {
-                gameObject.SetActive(false);
+                ObjectBreak();
             }
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log(collision.gameObject.layer)
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && acquisitionPoint == 0 && playerMove.canDamage)
         {
             //Hpをへらす
@@ -108,31 +107,30 @@ public class ObstacleManager : MonoBehaviour
             //ObjHｐがOになった時
             if (foundationHP <= 0)
             {
-                obstaclesHeadObj.SetActive(false);
-                isDestroyed = true;
+                ObjectBreak();
                 playerMove.IsGround = false;
-
-                Singleton.Instance.soundManager.StopObstaclesSe();
-                Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
                 if (spawnStarNum != 0)
                 {
                     Singleton.Instance.starGenerator.ObstaclesToStarSpon(this.transform.position, spawnStarNum);
                 }
-                //壊れたときにキャラクターと当たり判定を持たなくします
-                //レイヤーの変更
-                //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
-                gameObject.layer = LayerMask.NameToLayer(breakLayer);
-                acquisitionPoint++;
-                breakEffect.SetActive(true);
-                onRemoveObjFlag = true;
-                moaiRenderer.enabled = false;
-                obstacleSpawn.activeCount--;
-
             }
         }
     }
-    private void OnTriggerEnter(Collider other)
-    {
 
+    private void ObjectBreak()
+    {
+        obstaclesHeadObj.SetActive(false);
+        isDestroyed = true;
+        Singleton.Instance.soundManager.StopObstaclesSe();
+        Singleton.Instance.soundManager.PlayObstaclesSe(breakSeNum);
+        //壊れたときにキャラクターと当たり判定を持たなくします
+        //レイヤーの変更
+        //レイヤーはやりすぎか？コライダー消去の方がよけれは修正要
+        gameObject.layer = LayerMask.NameToLayer(breakLayer);
+        acquisitionPoint++;
+        breakEffect.SetActive(true);
+        onRemoveObjFlag = true;
+        moaiRenderer.enabled = false;
+        obstacleSpawn.activeCount--;
     }
 }

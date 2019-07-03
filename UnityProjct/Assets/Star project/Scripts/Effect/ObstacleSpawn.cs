@@ -6,6 +6,7 @@ public class ObstacleSpawn : MonoBehaviour
     //プレイヤースクリプト
     [SerializeField] private PlayerMove playerMove = null;
     [SerializeField] private GameObject playerObj = null;
+    [SerializeField] private Camera tragetCamera = null;
 
     [Header("障害物プール生成数")]
     [SerializeField] private int spawnMax;
@@ -30,19 +31,22 @@ public class ObstacleSpawn : MonoBehaviour
     private enum EnemyTyp
     {
         None,
-        NotMoveEnemy,//
-        MoveEnemy,
-        AirMoveEnemy,
+        NotMoveEnemy,//静動エネミー
+        MoveEnemy,   //動くエネミー
+        AirMoveEnemy,//空飛ぶエネミー
     }
     [SerializeField] private EnemyTyp[] enemyTyp;
-
+    // 移動距離
     [SerializeField] private Vector3[] amountOfMovement;
     //移動スピード
     [Header("各状態の移動速度")]
     [SerializeField] private float[] searchMoveSpeed;
+    //攻撃時のスピード
     private float lockOnMoveSpeed = 5000;
+    //戻るスピード
     private float attackUpOnMoveSpeed = 1000;
     //[SerializeField] private float[] removeMoveSpeed;
+    //攻撃時待機時間
     [SerializeField] private float[] defaultAttackTime;
 
     //☆現在の表示数
@@ -53,14 +57,14 @@ public class ObstacleSpawn : MonoBehaviour
     }
     //☆生成数（経過）→次生成する☆のインデックス
     private int spawnIndex = 0;
-
+    //エネミーobjectPoolの初期化
     public void Init()
     {
         pool = GetComponent<ObjectPool>();
         pool.CreatePool(obstaclesPrefab, spawnMax);
         CreatObstacle();
     }
-
+    //エネミーを生成する
     public void CreatObstacle()
     {
         if (spawnIndex < obataclesSponPosition.Length - 1)
@@ -70,10 +74,12 @@ public class ObstacleSpawn : MonoBehaviour
                 var obstacle = pool.GetObject();
                 if (obstacle != null)
                 {
-                    if (obstacle.GetComponent<Rigidbody>() == null) { obstacle.AddComponent<Rigidbody>(); Debug.Log("追加した"); }
-                    //プレイヤーの位置座標をスクリーン座標に変換
+                    //生成するときに「Rigidbody」がなければAddする
+                    if (obstacle.GetComponent<Rigidbody>() == null) { obstacle.AddComponent<Rigidbody>();}
+                    //初期化
                     obstacle.transform.localPosition = obataclesSponPosition[spawnIndex];
                     obstacle.GetComponent<ObstacleManager>().playerMove = this.playerMove;
+                    obstacle.GetComponent<ObstacleManager>().tragetCamera = this.tragetCamera;
                     obstacle.GetComponent<ObstacleManager>().foundationHP = this.obataclesHp[spawnIndex];
                     obstacle.GetComponent<ObstacleManager>().spawnStarNum = this.spawnStarNum[spawnIndex];
                     obstacle.GetComponent<ObstacleManager>().obstacleSpawn = this;
@@ -95,11 +101,8 @@ public class ObstacleSpawn : MonoBehaviour
                     obstacle.GetComponent<EnemyController>().searchMoveSpeed = this.searchMoveSpeed[spawnIndex];
                     obstacle.GetComponent<EnemyController>().lockOnMoveSpeed = this.lockOnMoveSpeed;
                     obstacle.GetComponent<EnemyController>().attackUpOnMoveSpeed = this.attackUpOnMoveSpeed;
-                    //obstacle.GetComponent<EnemyController>().removeMoveSpeed = this.removeMoveSpeed[spawnIndex];
                     obstacle.GetComponent<EnemyController>().defaultAttackTime = this.defaultAttackTime[spawnIndex];
                     obstacle.GetComponent<EnemyController>().Init(this.playerObj);
-
-
                     spawnIndex++;
                     activeCount++;
                 }

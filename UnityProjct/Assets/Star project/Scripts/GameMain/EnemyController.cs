@@ -10,13 +10,16 @@ public class EnemyController : MonoBehaviour
     public enum EnemyState
     {
         None,
-        Search,//索敵
-        Discovery,//プレイヤー発見
-        ReMovePosition,//元の位置に戻る
-        StunAttack,//スタン攻撃
-        Stun,//スタン攻撃後動かなくなる
-        Died,//死んだ（壊れた）とき）
+        Search,         //索敵
+        Discovery,      //プレイヤー発見
+        ReMovePosition, //元の位置に戻る
+        StunAttack,     //スタン攻撃
+        Stun,           //スタン攻撃後動かなくなる
+        Died,           //死んだ（壊れた）とき）
     }
+    /// <summary>
+    /// エネミーのステータスを外部入力できるように設定
+    /// </summary>
     public EnemyState enemyState
     {
         get; private set;
@@ -27,24 +30,27 @@ public class EnemyController : MonoBehaviour
     public enum EnemyTyp
     {
         None,
-        NotMoveEnemy,//
-        MoveEnemy,
-        AirMoveEnemy,
+        NotMoveEnemy,//静動エネミー
+        MoveEnemy,   //動くエネミー
+        AirMoveEnemy,//空飛ぶエネミー
     }
-    //[HideInInspector] public EnemyTyp enemyTyp = EnemyTyp.None;
-    public EnemyTyp enemyTyp;
-
+    [HideInInspector] public EnemyTyp enemyTyp;
+    //エネミーの『ObstacleManager』参照
     private ObstacleManager obstacleManager;
 
     //プレイヤーポジション
     private GameObject playerObj = null;
+    //エネミー動きはじめの「startPos」
     private Vector3 startPos = Vector3.zero;
+    //エネミー動き終点の「endPos」
     private Vector3 endPos = Vector3.zero;
-    // 
-    public Vector3 amountOfMovement;
+    // 移動距離
+    [HideInInspector] public Vector3 amountOfMovement;
     //移動スピード
-    public float searchMoveSpeed;
+    [HideInInspector] public float searchMoveSpeed;
+    //攻撃時のスピード
     [HideInInspector] public float lockOnMoveSpeed;
+    //戻るスピード
     [HideInInspector] public float attackUpOnMoveSpeed;
     ///[HideInInspector] public float removeMoveSpeed;
     //移動方向
@@ -56,30 +62,37 @@ public class EnemyController : MonoBehaviour
     private Vector3 removePosition = Vector3.zero;
     //戻る移動方向
     private Vector3 removeForce = Vector3.zero;
+    //攻撃時待機時間
     [HideInInspector] public float defaultAttackTime;
+    //攻撃待機時間を計測するカウンター
     private float attackTime = 0;
+    //砂煙エフェクト
     [SerializeField] private GameObject sandEffect = null;
-
+    //攻撃フラグ
     private bool attack;
-
+    //スタンフラグ
     private bool stun;
-
+    //エネミー用のanimator
     [SerializeField] private Animator enemyAnimator;
-
+    //オブジェクトを配置してからのStandby状態を管理するフラグ
     private bool playObj;
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    /// <param name="player">プレイヤオブジェクト</param>
     public void Init(GameObject player)
     {
         playObj = false;
         enemyState = EnemyState.None;
         playerObj = player;
         enemyRigidbody = GetComponent<Rigidbody>();
+
         // StartPosをオブジェクトに初期位置に設定
         startPos = transform.localPosition;
         var pos = transform.localPosition;
         endPos = pos += amountOfMovement;
-        // 1秒当たりの移動量を算出
-        if (searchMoveSpeed == 0) searchMoveSpeed = 1;
+        if (searchMoveSpeed == 0) searchMoveSpeed = 1;// 1秒当たりの移動量を算出
         //スタート位置と移動終点の差を確認
         //スタート位置が終点よりも大きいときスタート位置と終点を入れ替える
         if (startPos.x > endPos.x)
@@ -89,22 +102,31 @@ public class EnemyController : MonoBehaviour
             startPos = endPos;
             endPos = temp;
         }
-        else
-            isReturn = false;
+        else isReturn = false;
         removePosition = transform.localPosition;
+        //エネミータイプによって「enemyRigidbody」と「FreezePosition」を設定する
         if (enemyTyp == EnemyTyp.NotMoveEnemy)
         {
-            FreezePositionOll(); Destroy(enemyRigidbody); Debug.Log("消した");
+            //「enemyRigidbody」を消去する
+            FreezePositionOll(); Destroy(enemyRigidbody);
         }
         else FreezePositionAir();
-        SandEffectPlay(false);
-
+        //-----------各種初期化--------
         obstacleManager = GetComponent<ObstacleManager>();
+        SandEffectPlay(false);
         attack = false;
         stun = false;
         attackTime = 0.0f;
+        //Standbyコルーチンを発動
         StartCoroutine(standDelayTime());
     }
+    /// <summary>
+    /// Standbyコルーチン
+    /// </summary>
+    /// objectPool使用により配置移動が起こると当たり判定が入って「スタン状態」に
+    /// なってしまうためコルーチンを使用して『playObjフラグ』＝trueになるまで
+    /// 当たり判定を行わないようにした
+    /// <returns></returns>
     private IEnumerator standDelayTime()
     {
         yield return new WaitForSeconds(1.0f);
@@ -186,15 +208,17 @@ public class EnemyController : MonoBehaviour
         removeForce = enemyVecE;
         //攻撃
         attackTime += Time.deltaTime;
+        //攻撃待ち時間が経過したら攻撃
         if (attackTime >= defaultAttackTime)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
             attack = true;
             if (enemyRigidbody != null) FreezePositionSet();
-            enemyRigidbody.AddForce(Vector3.up * attackUpOnMoveSpeed, ForceMode.Impulse);
+            enemyRigidbody.AddForce(enemyVecE * attackUpOnMoveSpeed, ForceMode.Impulse);
 
             enemyState = EnemyState.StunAttack;
         }
+        //どんな状態でもプレイヤーに倒されたら死ぬ
         if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
     /// <summary>
@@ -217,6 +241,7 @@ public class EnemyController : MonoBehaviour
         removeForce = enemyVecE;
         //攻撃
         attackTime += Time.deltaTime;
+        //攻撃待ち時間が経過したら攻撃
         if (attackTime >= defaultAttackTime)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
@@ -225,9 +250,10 @@ public class EnemyController : MonoBehaviour
             SandEffectPlay(true);
             enemyState = EnemyState.StunAttack;
         }
-
+        //どんな状態でもプレイヤーに倒されたら死ぬ
         if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
+    //スタン攻撃のアップデート
     private void StunAttackUpdate()
     {
         var velocity = enemyRigidbody.velocity;
@@ -238,11 +264,16 @@ public class EnemyController : MonoBehaviour
             SandEffectPlay(true);
             attack = false;
         }
+        //どんな状態でもプレイヤーに倒されたら死ぬ
         if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
-
+    /// <summary>
+    /// 攻撃後スタン状態
+    /// </summary>
+    /// スタン状態は何もできないが壊させた判定だけはできる
     private void StanUpdate()
     {
+        //どんな状態でもプレイヤーに倒されたら死ぬ
         if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
         return;
     }
@@ -253,32 +284,32 @@ public class EnemyController : MonoBehaviour
     private void SearchUpdate()
     {
         var velocity = enemyRigidbody.velocity;
-        //進む
+        //+方向に進む
         if (!isReturn)
         {
             if (transform.localPosition.x > endPos.x)
             {
                 isReturn = true;
                 var rot = -90;
-                transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+                transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));//方向転換
             }
             moveForce.x = searchMoveSpeed;
         }
-        //戻る
+        //-方向に進む
         else
         {
             if (transform.localPosition.x < startPos.x)
             {
                 isReturn = false;
                 var rot = 90;
-                transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));
+                transform.localRotation = Quaternion.AngleAxis(rot, new Vector3(0, 1, 0));//方向転換
             }
             moveForce.x = -searchMoveSpeed;
         }
 
         velocity.x = moveForce.x;
         enemyRigidbody.velocity = velocity;
-
+        //どんな状態でもプレイヤーに倒されたら死ぬ
         if (obstacleManager.isDestroyed) enemyState = EnemyState.Died;
     }
     /// <summary>
@@ -323,6 +354,7 @@ public class EnemyController : MonoBehaviour
     {
         enemyRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
+    //当たり判定から出たときの処理
     private void OnCollisionEnter(Collision collision)
     {
         if (Singleton.Instance.gameSceneController.gameMainState == StarProject.Gamemain.GameSceneController.GameMainState.Play && playObj)
@@ -348,9 +380,11 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
+    //当たり判定に居続ける処理
     private void OnCollisionStay(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack && playObj)// && enemyTyp == EnemyTyp.MoveEnemy)
+        //プレイヤーに対してスタンアタックを食らわしたときの処理
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.StunAttack && playObj)
         {
             if (!stun)
             {
@@ -374,6 +408,7 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         SandEffectPlay(false);
     }
+    //当たり判定に居続ける処理
     private void OnTriggerStay(Collider collision)
     {
         //プレイキャラクターを発見
@@ -394,13 +429,15 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.Discovery;
         }
     }
-
+    //当たり判定から出たときの処理
     private void OnTriggerExit(Collider collision)
     {
+        //プレイヤーが攻撃していないときにプレイヤー発見エリアから脱出したときの処理
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Player" && enemyState == EnemyState.Discovery && !attack)
         {
             enemyAnimator.SetBool("IsAttackPreparation", false);
             if (enemyRigidbody != null) FreezePositionAir();
+            //元の移動方向に戻るために「isReturn」を判断
             if (isReturn)
             {
                 var rot = -90;
@@ -414,7 +451,10 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.Search;
         }
     }
-
+    /// <summary>
+    /// 砂煙エフェクトのSetActiveを管理
+    /// </summary>
+    /// <param name="isPlay"></param>
     private void SandEffectPlay(bool isPlay)
     {
         sandEffect.SetActive(isPlay);
