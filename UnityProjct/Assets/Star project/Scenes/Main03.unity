@@ -706,10 +706,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerObj: {fileID: 1790097418}
   playerMove: {fileID: 1790097420}
-  spawnMax: 0
+  spawnMax: 20
   starDysplayCount: 10
   starPrefab: {fileID: 301987961005163294, guid: fe97a53f4f193f44f8109d35f09a11cc,
     type: 3}
+  cleatStarNumMax: 21
   starSponPosition:
   - {x: 3.1, y: 1, z: 0}
   - {x: 3.1, y: 2, z: 0}
@@ -733,6 +734,7 @@ MonoBehaviour:
   - {x: 60.5, y: 9.8, z: 0}
   - {x: 62.1, y: 8, z: 0}
   starPoint: 010000000100000001000000020000000300000003000000030000000200000001000000010000000100000001000000010000000100000001000000010000000200000003000000010000000300000001000000
+  fileName: TripStar_StarPos_Stage3
 --- !u!114 &183918048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7919,6 +7921,7 @@ MonoBehaviour:
   obstaclesDysplayCount: 4
   obstaclesPrefab: {fileID: 3757774616426377930, guid: 09737e884a9ba7344a2c858b64d9a824,
     type: 3}
+  cleatEnemyNumMax: 13
   obataclesSponPosition:
   - {x: 0, y: 2, z: 0}
   - {x: 9, y: 2, z: 0}
@@ -7978,6 +7981,7 @@ MonoBehaviour:
   - 1
   - 0
   - 1
+  fileName: TripStar_EnemyPos_Stage3
 --- !u!1 &1533053994
 GameObject:
   m_ObjectHideFlags: 0
